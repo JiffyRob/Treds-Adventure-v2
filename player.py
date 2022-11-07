@@ -4,6 +4,7 @@ Player.py
 Holds the player class
 """
 import pygame
+
 import engine.entities as entities
 
 

@@ -4,6 +4,7 @@ Objects.py
 Basic stationary game objects
 """
 import pygame
+
 import engine.entities as entities
 
 

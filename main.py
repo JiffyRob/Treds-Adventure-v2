@@ -11,8 +11,9 @@ Holds main game loop
 Runs and coordinates all else
 """
 import pygame
-import engine.util as util
+
 import engine.entities as entities
+import engine.util as util
 import player
 
 pygame.init()

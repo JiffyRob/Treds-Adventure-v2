@@ -6,6 +6,8 @@ Holds component classes
 Holds ComponentRegistry class
 """
 import pygame
+import pymunk
+
 from . import util
 
 
@@ -213,7 +215,15 @@ class GeometryRender(Component):
 class ImageRender(Component):
     """Component to render a static image"""
 
-    ...
+    def __init__(self, entity: Entity, id: int, image: pygame.Surface):
+        super().__init__(entity, id)
+        self.image = image
+        self._type = "render"
+
+    def render(self, surf):
+        """Render the image at all entity positions"""
+        for entity in self._entities:
+            surf.blit(self.image, entity.pos)
 
 
 class AnimRender(Component):
@@ -228,16 +238,52 @@ class StateRender(Component):
     ...
 
 
-class TopDownPhysics(Component):
-    """Component to deal with top down physics (pushing, ground friction, etc.)"""
+class RigidBodyComponent(Component):
+    """
+    Pymunk rigid body to do physics with
 
-    ...
+    rb_params: dict = **kwargs to give to pymunk.Body of the component
+    see https://www.pymunk.org/en/latest/pymunk.html#pymunk.Body for details
 
+    shapes: tuple = tuple of pymunk shape dicts:
+        type: "circle" | "poly" = what type of shape it is
+        params: params to pass to corresponding constructor
 
-class BasicPlatformerPhysics(Component):
-    """Component to deal with platformer physics (top down + gravity)"""
+    see:
+        https://www.pymunk.org/en/latest/pymunk.html#pymunk.Poly (poly)
+        https://www.pymunk.org/en/latest/pymunk.html#pymunk.Circle (circle)
+    """
 
-    ...
+    def __init__(
+        self,
+        entity: Entity,
+        id: int,
+        rb_params: dict,
+        shapes: tuple[dict | pymunk.Shape] | None = None,
+    ):
+        super().__init__(entity, id)
+        self._body = pymunk.Body(**rb_params)
+        shapes = shapes or ()
+        for shape in shapes:
+            # try to get type of shape
+            try:
+                type = shape["type"]
+            except:
+                raise ValueError("Invalid shape dict {shape}")
+            del shape["type"]
+            # make shape
+            if type == "circle":
+                shape = pymunk.Circle(body=self._body, **shape)
+            elif type == "poly":
+                shape = pymunk.Poly(body=self._body, **shape)
+            else:
+                raise ValueError(
+                    f"Shape type {type} not recognized.  Recognized are 'circle', 'poly'"
+                )
+
+    def update(self, dt):
+        """update the physics on this component"""
+        pass  # for now
 
 
 class StateComponent(Component):
