@@ -3,7 +3,7 @@ entity
  - basic entity class
  - entity container group
 """
-from typing import Union
+from typing import Union, Sequence, Iterable
 
 import pygame
 
@@ -62,9 +62,7 @@ class EntityGroup(pygame.sprite.RenderUpdates):
 
     def __init__(
         self,
-        *sprites: Union[
-            pygame.sprite.Sprite, pygame.sprite.Sequence[pygame.sprite.Sprite]
-        ],
+        *sprites: Union[pygame.sprite.Sprite, Sequence[pygame.sprite.Sprite]],
     ) -> None:
         self._id_table = {}
         self._components = {}
@@ -75,9 +73,7 @@ class EntityGroup(pygame.sprite.RenderUpdates):
         *sprites: Union[
             pygame.sprite.Sprite,
             pygame.sprite.AbstractGroup,
-            pygame.sprite.Iterable[
-                Union[pygame.sprite.Sprite, pygame.sprite.AbstractGroup]
-            ],
+            Iterable[Union[pygame.sprite.Sprite, pygame.sprite.AbstractGroup]],
         ],
     ) -> None:
         """Add entity(s) to the group"""
