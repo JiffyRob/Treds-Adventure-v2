@@ -3,7 +3,7 @@ entity
  - basic entity class
  - entity container group
 """
-from typing import Union, Sequence, Iterable
+from typing import Iterable, Sequence, Union
 
 import pygame
 
