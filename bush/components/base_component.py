@@ -61,6 +61,6 @@ class Component:
         """Return type of the component"""
         return self._type
 
-    def update(self):
-        """Call this every frame.  Left empty for now"""
+    def update(self, dt: int):
+        """Call this every frame using given delta time.  Left empty for now"""
         pass
