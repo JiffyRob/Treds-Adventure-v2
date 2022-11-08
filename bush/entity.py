@@ -50,6 +50,10 @@ class Entity(pygame.sprite.DirtySprite):
         """Check list of messages"""
         return list(self._messages)
 
+    def get_components(self):
+        """Return tuple of all components of the entity"""
+        return tuple(self._components)
+
 
 class EntityGroup(pygame.sprite.RenderUpdates):
     """
@@ -65,7 +69,15 @@ class EntityGroup(pygame.sprite.RenderUpdates):
         *sprites: Union[pygame.sprite.Sprite, Sequence[pygame.sprite.Sprite]],
     ) -> None:
         self._id_table = {}
-        self._components = {}
+        self._components = {
+            "physics": [],
+            "render": [],
+            "ai": [],
+            "state_machine": [],
+            "input": [],
+            "undef": [],
+            "NULL": [],
+        }
         super().__init__(*sprites)
 
     def add(
@@ -85,6 +97,7 @@ class EntityGroup(pygame.sprite.RenderUpdates):
         for e in entities:
             self._id_table[e.get_id()] = e
             for c in e.get_components():
+                print(c.get_type())
                 if c.get_type() not in self._components.keys():
                     self._components[c.get_type()] = []
                     print("new component type", c.get_type())
@@ -112,3 +125,30 @@ class EntityGroup(pygame.sprite.RenderUpdates):
         if id not in self._id_table:
             raise ValueError(f"Given id {id} not found")
         return self._id_table[id]
+
+    def get_all(self, type: str):
+        """Get all components of given type.  Returns empty tuple if type not found"""
+        if type in self._components:
+            return tuple(self._components[type])
+        return ()
+
+    def update(self, dt: float, types: Union[Sequence, None] = None):
+        """
+        Update the given types of objects, using given delta time, in order given.
+
+        If no types given, all types will be updated indiscriminantly.
+        No two objects will ever be updated twice in one call.
+        """
+        types = tuple(types) or tuple(self._components.keys())
+        for key in types:
+            try:
+                components = self._components[key]
+            except KeyError:
+                raise ValueError(f"Component type {key} not found")
+            for component in components:
+                component.update(dt)
+
+    def render(self, surface: pygame.Surface, offset: Sequence[float] = (0, 0)):
+        """render all render components to given surface with given offset"""
+        for component in self.get_all("render"):
+            component.render(surface, offset)
