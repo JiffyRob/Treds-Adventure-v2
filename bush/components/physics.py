@@ -1,4 +1,4 @@
 """
 physics
- - components for physics using pymunk
+ - components for physics using bush.physics
 """
