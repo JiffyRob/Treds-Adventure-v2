@@ -31,6 +31,14 @@ class CircleRender(base_component.Component):
 
     def render(self, surface, offset: Sequence[float] = (0, 0)):
         """Render my entities's circles to given surface, positions offset by given value"""
+        rects = []
         for entity in self.get_entities():
+            # if not entity.dirty:
+            #    continue
             pos = entity.pos + offset
-            pygame.draw.circle(surface, self.color, pos, self.radius, self.outline)
+            rects.append(
+                pygame.draw.circle(
+                    surface, self.color, pos, self.radius, self.outline
+                ).inflate(10, 10)
+            )
+        return rects

@@ -42,3 +42,4 @@ class Player(entity.Entity):
     def move(self, vec: pygame.Vector2):
         """Move the player by given vec"""
         self.pos += vec
+        self.dirty = 1

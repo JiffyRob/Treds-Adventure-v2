@@ -34,4 +34,3 @@ class DumbButtonInput(base_component.Component):
         for key in self._callbacks:
             if keys[key]:
                 self._callbacks[key](dt)
-                print("callback")

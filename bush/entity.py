@@ -149,6 +149,12 @@ class EntityGroup(pygame.sprite.RenderUpdates):
                 component.update(dt)
 
     def render(self, surface: pygame.Surface, offset: Sequence[float] = (0, 0)):
-        """render all render components to given surface with given offset"""
+        """
+        render all render components to given surface with given offset
+
+        returns list of rects of spaces that have been modified
+        """
+        rects = []
         for component in self.get_all("render"):
-            component.render(surface, offset)
+            rects.extend(component.render(surface, offset))
+        return rects
