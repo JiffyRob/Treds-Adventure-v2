@@ -5,7 +5,7 @@ from typing import Union
 
 import pygame
 
-from bush import components, entity
+from bush import component, entity
 
 
 class Player(entity.Entity):
@@ -18,7 +18,7 @@ class Player(entity.Entity):
 
     def __init__(self, pos: Union[pygame.Vector2, list, tuple], id=None):
         speed = 96
-        input_component = components.DumbButtonInput(
+        input_component = component.DumbButtonInput(
             id=0,
             entities=(self,),
             key_to_callback_dict={
@@ -36,7 +36,7 @@ class Player(entity.Entity):
                 ),
             },
         )
-        render_component = components.CircleRender(1, (self,))
+        render_component = component.CircleRender(1, (self,))
         super().__init__(pos, id, input_component, render_component)
 
     def move(self, vec: pygame.Vector2):
