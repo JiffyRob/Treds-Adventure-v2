@@ -1,9 +1,9 @@
 """
 Components - mini package that holds a large set of vanilla entity components
 """
-from bush.components import ai, input, physics, render, state_machine
-from bush.components.ai import *
-from bush.components.input import *
-from bush.components.physics import *
-from bush.components.render import *
-from bush.components.state_machine import *
+from bush.component import ai, input, physics, render, state_machine
+from bush.component.ai import *
+from bush.component.input import *
+from bush.component.physics import *
+from bush.component.render import *
+from bush.component.state_machine import *

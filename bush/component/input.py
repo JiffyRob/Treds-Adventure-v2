@@ -5,7 +5,7 @@ from typing import Callable, Sequence, Union
 
 import pygame
 
-from bush.components import base_component
+from bush.component import base_component
 
 
 class DumbButtonInput(base_component.Component):
