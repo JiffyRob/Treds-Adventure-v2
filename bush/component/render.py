@@ -6,7 +6,7 @@ from typing import Sequence, Union
 
 import pygame
 
-from bush.components import base_component
+from bush.component import base_component
 
 
 class CircleRender(base_component.Component):
