@@ -10,14 +10,14 @@ import shapely.affinity as affinity
 import shapely.geometry as shapes
 import shapely.ops as ops
 
-LAYER1 = 0b1
-LAYER2 = 0b10
-LAYER3 = 0b100
-LAYER4 = 0b1000
-LAYER5 = 0b10000
-LAYER6 = 0b100000
-LAYER7 = 0b1000000
-LAYER8 = 0b10000000
+LAYERF = 0b1
+LAYER1 = 0b10
+LAYER2 = 0b100
+LAYER3 = 0b1000
+LAYER4 = 0b10000
+LAYER5 = 0b100000
+LAYER6 = 0b1000000
+LAYER7 = 0b10000000
 
 
 class Shape:
@@ -56,7 +56,7 @@ class Rect(Shape, shapes.Polygon):
     def draw(self, origin: Sequence[float], surface: pygame.Surface):
         """Draw the rect to a given surface, offset from given origin"""
         pygame.draw.rect(
-            surface, (0, 0, 255), pygame.Vector2(origin) + self._rect.topleft
+            surface, (0, 0, 255), pygame.Vector2(origin) + self._rect.topleft, width=1
         )
 
     def __getattribute__(self, __name: str):
@@ -124,7 +124,7 @@ class Poly(Shape, shapes.Polygon):
         points = []
         for point in self.exterior.coords:
             points.append(pygame.Vector2(point) + origin)
-        pygame.draw.polygon(surface, (0, 0, 255), points)
+        pygame.draw.polygon(surface, (0, 0, 255), points, width=1)
 
 
 class Point(Shape, shapes.Point):
@@ -151,9 +151,9 @@ class RigidBody:
         pos: Sequence[float] = (0, 0),
         mass: float = 0,
         restitution: float = 0,
-        layers: Sequence[int] = LAYER1,
+        layers: Sequence[int] = LAYER1 | LAYERF,
         friction: Sequence[float] = (0.25, 0.25),
-        *shapes: Shape,
+        shapes: Sequence[Poly | Rect] = (),
     ):
         self._shape = ops.unary_union(shapes)
         self._shape = Poly(self._shape.exterior.coords)
@@ -221,6 +221,8 @@ class RigidBody:
         # get aabb of shape
         bounds = collision_polygon.bounds
         print(bounds)
+        if not bounds:
+            return pygame.Vector2(), 0
         # get width of aabb
         width = bounds[3] - bounds[1]
         # create a vector with shape and direction
@@ -250,14 +252,25 @@ class Space:
         # collision detection?
         checked = set()
         resolve = set()
+        friction = set()
         for body1 in self._bodies:
             for body2 in self._bodies:
-                if (
-                    (body1 is body2)  # no collision with self
-                    or ((body2, body1) in checked)  # pair already checked inverse
-                    or not (body2._layers & body1._layers)  # pair not on same layers
-                ):
+                if (body1 is body2) or (  # no collision with self
+                    (body2, body1) in checked
+                ):  # pair already checked inverse
                     continue
+                if body1._layers & body2._layers:
+                    if (
+                        body1._layers == LAYERF
+                    ):  # if one is on friction layer, and other is friction poly
+                        friction.add((body1, body2))
+                        continue
+                    if body2._layers == LAYERF:
+                        # will meet above friction condition later or before
+                        continue
+                else:
+                    continue  # if no layers in common
+
                 # cheap bounding rect check
                 if pygame.Rect(body1.bounds).colliderect(body2.bounds):
                     # expensive shape collision check
@@ -265,31 +278,28 @@ class Space:
                         resolve.add((body1, body2))
                 # add to list of checked pairs
                 checked.add((body1, body2))
-        # impulse resolution
-        for body1, body2 in resolve:
-            collision_normal, collision_depth = body1.get_normal(body2)
-            # calculate relative velocity
-            relative_velocity = body2._velocity - body1._velocity
-            # calculate relative velocity in terms of normal direction
-            velocity_along_normal = collision_normal.dot(relative_velocity)
-            # do not resolve if bodies are seperating
-            if velocity_along_normal > 0:
-                continue
-            # calculate restitution
-            restitution = min(body1._restitution, body2._restitution)
-            # calculate impulse scalar
-            impulse_scalar = -(1 + restitution) * velocity_along_normal
-            impulse_scalar /= body1._inverse_mass + body2._inverse_mass
-            # apply impulse
-            impulse = impulse_scalar * collision_normal
-            mult1 = body1._mass / body2._mass
-            mult2 = body1._mass / body2._mass
-            body1._velocity -= body1._inverse_mass * impulse * mult1
-            body2._velocity += body2._inverse_mass * impulse * mult2
+
+        # motion
         for body in self._bodies:
-            body._velocity += (body._force / body._mass) * dt / 1000
+            body._velocity += (body._force * body._inverse_mass) * dt / 1000
             body._position += body._velocity * dt / 1000
             body._force = pygame.Vector2()
+
+        # fake impulse resolution
+        for body1, body2 in resolve:
+            collision_normal, collision_depth = body1.get_normal(body2)
+            mass_sum = body1._inverse_mass + body2._inverse_mass
+            body1_motion = (
+                collision_normal * collision_depth * body1._inverse_mass / mass_sum
+            )
+            body2_motion = (
+                collision_normal * collision_depth * body2._inverse_mass / mass_sum
+            )
+            body1._velocity -= body1_motion
+            body2._velocity += body2_motion
+
+        # fake friction
+        ...
 
         # warping
         if self.warp:
@@ -332,12 +342,16 @@ def get_mass(shape, density):
 def test():
     """A test of the physics engine"""
     body1 = RigidBody(
-        (45, 45), 10, 0.5, [LAYER1], (1.25, 1.25), Poly.as_circle(6, (0, 0))
+        (45, 45), 10, 1.5, [LAYER1], (1.25, 1.25), Poly.as_circle(6, (0, 0))
     )
     body2 = RigidBody(
-        (45, 100), 10, 0.5, [LAYER1], (1.25, 1.25), Poly.as_circle(6, (0, 0))
+        (45, 100), 10, 1.5, [LAYER1], (1.25, 1.25), Poly.as_circle(6, (0, 0))
     )
-    space = Space((400, 400), 0.01, body1, body2)
+    body3 = RigidBody(
+        (45, 145), 30, 3, [LAYER1], (1.25, 1.25), Poly.as_circle(8, (0, 0))
+    )
+    body4 = RigidBody((45, 300), 0, 3, [LAYER1], (1.25, 1.25), Rect(30, 40))
+    space = Space((400, 400), 0.01, body1, body2, body3, body4)
     clock = pygame.time.Clock()
     running = True
     dt = 0
