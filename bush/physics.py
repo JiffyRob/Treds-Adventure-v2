@@ -1,7 +1,5 @@
 """
-physics - underlying physics primitives used by physics components.
-
-You can create your own physics component using a different engine if you would like.
+physics - simple top down physics + shape primitives
 """
 from typing import Sequence, Union
 
@@ -9,16 +7,6 @@ import pygame
 import shapely.affinity as affinity
 import shapely.geometry as shapes
 import shapely.ops as ops
-
-# layer constants
-LAYERF = 0b1
-LAYER1 = 0b10
-LAYER2 = 0b100
-LAYER3 = 0b1000
-LAYER4 = 0b10000
-LAYER5 = 0b100000
-LAYER6 = 0b1000000
-LAYER7 = 0b10000000
 
 
 class Shape:
@@ -144,292 +132,94 @@ class LineString(Shape, shapes.LineString):
         pygame.draw.lines(surface, (0, 0, 255), False, points)
 
 
-class RigidBody:
-    """A Rigid Body with shapes"""
+class Body(pygame.sprite.Sprite):
+    """Rigid body for top down physics"""
 
-    # init methods
-    def __init__(
-        self,
-        pos: Sequence[float] = (0, 0),
-        mass: float = 0,
-        restitution: float = 0,
-        layers: Sequence[int] = (LAYER1, LAYERF),
-        friction: Sequence[float] = (0.25, 0.25),
-        shapes: Sequence[Poly | Rect] = (),
-    ):
-        self._shape = ops.unary_union(shapes)
-        self._shape = Poly(self._shape.exterior.coords)
-        self._position = pygame.Vector2(pos)
-        self._velocity = pygame.Vector2()
-        self._force = pygame.Vector2()
-        self._restitution = restitution
-        self._static_friction, self._dynamic_friction = friction
-        self._kinematic_velocty = pygame.Vector2()
-        if mass > 0:
-            self._mass = mass
-            self._inverse_mass = 1 / mass
-        else:
-            self._mass = self._inverse_mass = 0
-        self._layers = 0b00000000
-        for layer in layers:
-            self._layers |= layer
+    def __init__(self, pos, mass, shapes, group, pushable=False, min_speed=1):
+        super().__init__(group)
+        self.mass = mass
+        self.velocity = pygame.Vector2()
+        self.shape = Poly(ops.unary_union(shapes))
+        bounds = self.shape.bounds
+        self.rect = pygame.Rect(*self.pos, 0, 0)
+        self.rect.bottomright = bounds[2:]
+        self.group = group
+        self.pushable = pushable
+        self.friction = 0
+        self.pos = pygame.Vector2(pos)
+        self.image = pygame.Surface(self.rect.size)
+        self.shape.draw((0, 0), self.image)
+        self.min_speed = 1
 
-    @classmethod
-    def as_dynamic(
-        cls,
-        pos: Sequence[float] = (0, 0),
-        mass: float = 0,
-        restitution: float = 0,
-        layers: Sequence[int] = (LAYER1, LAYERF),
-        friction: Sequence[float] = (0.25, 0.25),
-        shapes: Sequence[Poly | Rect] = (),
-    ):
-        assert tuple(layers) != LAYERF
-        return cls(pos, mass, restitution, layers, friction, shapes)
+    def update(self, dt):
+        if self.velocity:
+            friction = -self.velocity.copy()
+            friction.scale_to_length(min(self.friction, 1))
+            self.pos += self.velocity + friction * dt
+        self.rect.topleft = self.pos
 
-    @classmethod
-    def as_static(
-        cls,
-        pos: Sequence[float] = (0, 0),
-        restitution: float = 0,
-        layers: Sequence[int] = (LAYER1, LAYERF),
-        friction: Sequence[float] = (0.25, 0.25),
-        shapes: Sequence[Poly | Rect] = (),
-    ):
-        assert tuple(layers) != LAYERF
-        return cls(pos, 0, restitution, layers, friction, shapes)
+    def move(self, direc):
+        self.velocity += direc
 
-    @classmethod
-    def as_kinematic(
-        cls,
-        pos: Sequence[float] = (0, 0),
-        restitution: float = 0,
-        layers: Sequence[int] = (LAYER1, LAYERF),
-        friction: Sequence[float] = (0.25, 0.25),
-        shapes: Sequence[Poly | Rect] = (),
-    ):
-        assert tuple(layers) != LAYERF
-        return cls(pos, 0, restitution, layers, friction, shapes)
+    def stop(self):
+        self.velocity = pygame.Vector2()
 
-    @classmethod
-    def as_friction_space(
-        cls,
-        pos: Sequence[float] = (0, 0),
-        friction: Sequence[float] = (0.25, 0.25),
-        shapes: Sequence[Poly | Rect] = (),
-    ):
-        return cls(pos, 0, 0, (LAYERF,), friction, shapes)
+    def handle_collisions(self):
+        for body in self.group.get_bodies():
+            # don't move away from pushables (yet)
+            if body.pushable:
+                continue
+            normal, depth = self.collision_data(body)
+            if normal is None:
+                continue
+            if normal.x:
+                self.velocity.x = 0
+            if normal.y:
+                self.velocity.y = 0
+            self.pos += normal * depth
 
-    # print
-    def __repr__(self):
-        return f"<RigidBody object (pos:{self._position})>"
-
-    # layer methods
-    def add_to_layer(self, layer: int):
-        """Add body to given layer"""
-        self._layers |= layer
-
-    def remove_from_layer(self, layer: int):
-        """Remove body from given layer (works fine if not in given layer"""
-        self._layers &= ~layer
-
-    def in_layer(self, layer: int):
-        """Return if body in given layer"""
-        return self._layers & layer
-
-    # motion methods
-    def apply_force(self, force: Sequence[float]):
-        """Apply given for to an object"""
-        self._force += pygame.Vector2(force)
-
-    def move(self, offset):
-        """Move the object"""
-        assert self._layers != LAYERF and self._mass == 0
-        self._kinematic_velocty += offset
-
-    # drawing method
-    def draw(self, surface):
-        """Debug draw function"""
-        self._shape.draw(self._position, surface)
-
-    # geometry
-    def get_shape(self, world_space: bool = True):
-        """Return a copy of this body's shape"""
-        if world_space:
-            return affinity.translate(self._shape, *self._position)
-        return self._shape.copy()
-
-    @property
-    def bounds(self):
-        """Return bounds of the object (top, left, bottom, right)"""
-        return self._shape.bounds
-
-    def collidebody(self, body):
-        """Return if colliding with other body"""
-        return self.get_shape().intersects(body.get_shape())
-
-    def get_normal(self, other):
-        """Return collision normal with other body"""
-        # get polygon representing collision
-        collision_polygon = self.get_shape().intersection(other.get_shape())
-        # get direction of "bounce"
-        normal_direc = pygame.Vector2(other._position - self._position).normalize()
-        # rotate collision polygon so that bounce direction becomes axis aligned
-        turn_degrees = normal_direc.angle_to(pygame.Vector2(-1, 0))
-        collision_polygon = affinity.rotate(collision_polygon, turn_degrees)
-        # get aabb of shape
-        bounds = collision_polygon.bounds
-        print(bounds)
-        if not bounds:
-            return pygame.Vector2(), 0
-        # get width of aabb
-        width = bounds[3] - bounds[1]
-        # create a vector with shape and direction
-        print(width * normal_direc)
-        return normal_direc, width
+    def collision_data(self, other):
+        if self.rect.colliderect(other.rect):
+            intersection = self.shape.intersection(other.shape)
+            if intersection.area:
+                # get direction of "bounce"
+                if self.velocity:
+                    normal_direc = -self.velocity
+                else:
+                    normal_direc = (other.pos - self.pos).normalize()
+                # rotate collision polygon so that bounce direction becomes axis aligned
+                turn_degrees = normal_direc.angle_to(pygame.Vector2(-1, 0))
+                collision_polygon = affinity.rotate(collision_polygon, turn_degrees)
+                # get aabb of shape
+                bounds = collision_polygon.bounds
+                # get width of aabb
+                width = bounds[3] - bounds[1]
+                # create a vector with shape and direction
+                print(width * normal_direc)
+                return normal_direc, width
+        return None, 0
 
 
-class Space:
-    """
-    space for physics simulation
-
-    warp_values (int, int) = size of simulation space.  If an object's position exits this it warps around to the beginning
-    """
-
-    def __init__(
-        self,
-        warp_values: Union[Sequence[int], None] = None,
-        friction: float = 0.1,
-        *bodies: RigidBody,
-    ):
-        self._bodies = bodies
-        self.warp = warp_values
-        self.friction = friction
-
-    def step(self, dt):
-        """Step the physics engine"""
-        # collision detection?
-        checked = set()
-        resolve = set()
-        friction = set()
-        for body1 in self._bodies:
-            for body2 in self._bodies:
-                if (body1 is body2) or (  # no collision with self
-                    ((body2, body1) in checked)  # pair already checked inverse
-                    or (not body1._layers & body2._layers)  # not on same layer
-                    or (  # both friction bodies
-                        body1._layers == LAYERF == body2._layers
-                    )
-                ):
-                    continue
-
-                # cheap bounding rect check
-                if pygame.Rect(body1.bounds).colliderect(body2.bounds):
-                    # expensive shape collision check
-                    if body1.collidebody(body2):
-                        if body1._layers == LAYERF:
-                            friction.add((body1, body2))
-                            continue
-                        if body2._layers == LAYERF:
-                            friction.add((body2, body1))
-                            continue
-                        resolve.add((body1, body2))
-                # add to list of checked pairs
-                checked.add((body1, body2))
-
-        # fake friction
-        for friction_body, receiving_body in friction:
-            print("fric")
-            if receiving_body._velocity.magnitude_squared():
-                friction = friction_body._dynamic_friction
-                friction_vector = -receiving_body._velocity
-                friction_vector.scale_to_length(
-                    min(friction, receiving_body._velocity.magnitude())
-                )
-                receiving_body._velocity += friction_vector
-                friction_vector.scale_to_length(
-                    min(friction, receiving_body._kinematic.magnitude())
-                )
-                receiving_body._kinematic_velocity += friction_vector
-
-        # motion
-        for body in self._bodies:
-            body._velocity += (body._force * body._inverse_mass) * dt / 1000
-            body._position += body._velocity * dt / 1000
-            body._position += body._kinematic_velocty
-            body._kinematic_velocty.xy = (0, 0)
-            body._force = pygame.Vector2()
-
-        # fake impulse resolution
-        for body1, body2 in resolve:
-            collision_normal, collision_depth = body1.get_normal(body2)
-            mass_sum = body1._inverse_mass + body2._inverse_mass
-            body1_motion = (
-                collision_normal * collision_depth * body1._inverse_mass / mass_sum
-            )
-            body2_motion = (
-                collision_normal * collision_depth * body2._inverse_mass / mass_sum
-            )
-            body1._velocity -= body1_motion
-            body2._velocity += body2_motion
-
-        # warping
-        if self.warp:
-            for body in self._bodies:
-                x_off = body._position.x - self.warp[0]
-                if x_off > 0:
-                    body._position.x = x_off
-                if body._position.x < 0:
-                    body._position.x = -x_off
-                y_off = body._position.y - self.warp[1]
-                if y_off > 0:
-                    body._position.y = y_off
-                if body._position.y < 0:
-                    body._position.y = -y_off
-
-    def add_body(self, *bodies: Sequence[RigidBody]):
-        """Add bodies to the Space"""
-        for body in bodies:
-            self._bodies.append(body)
-
-    def remove_body(self, body):
-        """Return and remove given body from the space"""
-        return self._bodies.remove(body)
-
-    def has_body(self, body):
-        """Return if body in the space"""
-        return body in self._bodies
-
-    def draw(self, surface: pygame.Surface):
-        """Draw the space to the given surface"""
-        for body in self._bodies:
-            body.draw(surface)
-
-
-def get_mass(shape, density):
-    """Get mass of a shape from its density"""
-    return density * shape.volume
+class BodyGroup(pygame.sprite.Group):
+    def get_bodies(self):
+        return self.sprites()
 
 
 def test():
-    """A test of the physics engine"""
+    screen = pygame.display.set_mode((400, 400))
+    body_group = BodyGroup()
     # small arrow key controlled object
-    body1 = RigidBody.as_kinematic(
-        (45, 45), restitution=1.5, shapes=Poly.as_circle(6, (0, 0))
-    )
+    body1 = Body((45, 45), 10, Poly.as_circle(6, (0, 0)), body_group)
     # identical to body one without control
-    body2 = RigidBody.as_dynamic((45, 100), 10, 1.5, shapes=Poly.as_circle(6, (0, 0)))
+    body2 = Body((45, 100), 10, Poly.as_circle(6, (0, 0)), body_group)
     # bigger heavier one
-    body3 = RigidBody.as_dynamic((45, 145), 30, 3, shapes=Poly.as_circle(8, (0, 0)))
+    body3 = Body((45, 145), 30, Poly.as_circle(8, (0, 0)), body_group)
     # static rectangle
-    body4 = RigidBody.as_static((45, 300), 3, [LAYER1], (1.25, 1.25), Rect(30, 40))
+    body4 = Body((45, 300), 3, Rect(30, 40), body_group)
     # friction rectangle
-    fric1 = RigidBody.as_friction_space((300, 300), (0.25, 0.9), Rect(30, 30))
-    space = Space((400, 400), 0.01, body1, body2, body3, body4, fric1)
     clock = pygame.time.Clock()
     running = True
     dt = 0
-    screen = pygame.display.set_mode((400, 400))
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -445,18 +235,10 @@ def test():
         if keys[pygame.K_RIGHT]:
             vec.x += 100
         body1.move(vec * dt / 1000)
-        space.step(dt)
+        body_group.update(dt)
         screen.fill((0, 0, 0))
-        space.draw(screen)
+        body_group.draw(screen)
         pygame.display.update()
         dt = clock.tick(60)
 
     pygame.quit()
-
-
-def q():
-    pygame.quit()
-
-
-if __name__ == "__main__":
-    test()
