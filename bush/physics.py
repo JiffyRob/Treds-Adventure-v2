@@ -8,6 +8,11 @@ import shapely.affinity as affinity
 import shapely.geometry as shapes
 import shapely.ops as ops
 
+<<<<<<< Updated upstream
+=======
+from bush import util
+
+>>>>>>> Stashed changes
 
 class Shape:
     """Shape baseclass for Polygons, Circles, Points, and Lines.  Adds in-place translation"""
@@ -141,14 +146,29 @@ class Body(pygame.sprite.Sprite):
         self.velocity = pygame.Vector2()
         self.shape = Poly(ops.unary_union(shapes))
         bounds = self.shape.bounds
+<<<<<<< Updated upstream
         self.rect = pygame.Rect(*self.pos, 0, 0)
         self.rect.bottomright = bounds[2:]
+=======
+        self.pos = pygame.Vector2(pos)
+        self.rect = pygame.Rect(
+            bounds[0], bounds[1], bounds[2] - bounds[0] + 1, bounds[3] - bounds[1] + 1
+        )
+        self.rect.center = self.pos
+>>>>>>> Stashed changes
         self.group = group
         self.pushable = pushable
         self.friction = 0
         self.pos = pygame.Vector2(pos)
+<<<<<<< Updated upstream
         self.image = pygame.Surface(self.rect.size)
         self.shape.draw((0, 0), self.image)
+=======
+        self.image = pygame.Surface(self.rect.size, pygame.SRCALPHA)
+        self.shape.draw((self.rect.width // 2, self.rect.height // 2), self.image)
+        # util.debug_view(self.image)
+        print(self.rect)
+>>>>>>> Stashed changes
         self.min_speed = 1
 
     def update(self, dt):
@@ -156,7 +176,11 @@ class Body(pygame.sprite.Sprite):
             friction = -self.velocity.copy()
             friction.scale_to_length(min(self.friction, 1))
             self.pos += self.velocity + friction * dt
+<<<<<<< Updated upstream
         self.rect.topleft = self.pos
+=======
+        self.rect.center = self.pos
+>>>>>>> Stashed changes
 
     def move(self, direc):
         self.velocity += direc
@@ -236,6 +260,10 @@ def test():
             vec.x += 100
         body1.move(vec * dt / 1000)
         body_group.update(dt)
+<<<<<<< Updated upstream
+=======
+        body1.stop()
+>>>>>>> Stashed changes
         screen.fill((0, 0, 0))
         body_group.draw(screen)
         pygame.display.update()
