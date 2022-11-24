@@ -8,11 +8,8 @@ import shapely.affinity as affinity
 import shapely.geometry as shapes
 import shapely.ops as ops
 
-<<<<<<< Updated upstream
-=======
 from bush import util
 
->>>>>>> Stashed changes
 
 class Shape:
     """Shape baseclass for Polygons, Circles, Points, and Lines.  Adds in-place translation"""
@@ -140,47 +137,47 @@ class LineString(Shape, shapes.LineString):
 class Body(pygame.sprite.Sprite):
     """Rigid body for top down physics"""
 
-    def __init__(self, pos, mass, shapes, group, pushable=False, min_speed=1):
+    def __init__(
+        self,
+        pos,
+        mass,
+        shapes,
+        group,
+        pushable=False,
+        dynamic_collision_hook=lambda body, dt: None,
+    ):
         super().__init__(group)
         self.mass = mass
         self.velocity = pygame.Vector2()
         self.shape = Poly(ops.unary_union(shapes))
         bounds = self.shape.bounds
-<<<<<<< Updated upstream
-        self.rect = pygame.Rect(*self.pos, 0, 0)
-        self.rect.bottomright = bounds[2:]
-=======
         self.pos = pygame.Vector2(pos)
         self.rect = pygame.Rect(
             bounds[0], bounds[1], bounds[2] - bounds[0] + 1, bounds[3] - bounds[1] + 1
         )
         self.rect.center = self.pos
->>>>>>> Stashed changes
         self.group = group
         self.pushable = pushable
         self.friction = 0
         self.pos = pygame.Vector2(pos)
-<<<<<<< Updated upstream
-        self.image = pygame.Surface(self.rect.size)
-        self.shape.draw((0, 0), self.image)
-=======
         self.image = pygame.Surface(self.rect.size, pygame.SRCALPHA)
         self.shape.draw((self.rect.width // 2, self.rect.height // 2), self.image)
         # util.debug_view(self.image)
         print(self.rect)
->>>>>>> Stashed changes
         self.min_speed = 1
+        self.dynamic_collision_hook = dynamic_collision_hook
+
+    def __repr__(self):
+        return f"Body ({self.pos}) in ({len(self.groups())}) groups"
 
     def update(self, dt):
+        self.handle_collisions(dt, "x")
+        self.handle_collisions(dt, "y")
         if self.velocity:
             friction = -self.velocity.copy()
             friction.scale_to_length(min(self.friction, 1))
             self.pos += self.velocity + friction * dt
-<<<<<<< Updated upstream
-        self.rect.topleft = self.pos
-=======
         self.rect.center = self.pos
->>>>>>> Stashed changes
 
     def move(self, direc):
         self.velocity += direc
@@ -188,40 +185,26 @@ class Body(pygame.sprite.Sprite):
     def stop(self):
         self.velocity = pygame.Vector2()
 
-    def handle_collisions(self):
-        for body in self.group.get_bodies():
-            # don't move away from pushables (yet)
-            if body.pushable:
+    def handle_collisions(self, dt, axis):
+        if not self.velocity:
+            return
+        for body in pygame.sprite.spritecollide(self, self.group, False):
+            # collision with self
+            if body is self:
                 continue
-            normal, depth = self.collision_data(body)
-            if normal is None:
-                continue
-            if normal.x:
-                self.velocity.x = 0
-            if normal.y:
-                self.velocity.y = 0
-            self.pos += normal * depth
-
-    def collision_data(self, other):
-        if self.rect.colliderect(other.rect):
-            intersection = self.shape.intersection(other.shape)
-            if intersection.area:
-                # get direction of "bounce"
-                if self.velocity:
-                    normal_direc = -self.velocity
-                else:
-                    normal_direc = (other.pos - self.pos).normalize()
-                # rotate collision polygon so that bounce direction becomes axis aligned
-                turn_degrees = normal_direc.angle_to(pygame.Vector2(-1, 0))
-                collision_polygon = affinity.rotate(collision_polygon, turn_degrees)
-                # get aabb of shape
-                bounds = collision_polygon.bounds
-                # get width of aabb
-                width = bounds[3] - bounds[1]
-                # create a vector with shape and direction
-                print(width * normal_direc)
-                return normal_direc, width
-        return None, 0
+            # moving objects collide
+            if body.velocity and self.velocity:
+                self.dynamic_collision_hook(body, dt)
+            # get intersection of the two shapes
+            intersection = self.shape.intersection(body.shape)
+            bounds = intersection.bounds
+            bounding_rect = pygame.Rect(
+                bounds[0], bounds[1], bounds[2] - bounds[0], bounds[3] - bounds[1]
+            )
+            if axis == "x" and bounding_rect.width > 0:
+                self.pos.x -= bounding_rect.width
+            if axis == "y" and bounding_rect.height > 0:
+                self.pos.y -= bounding_rect.height
 
 
 class BodyGroup(pygame.sprite.Group):
@@ -247,7 +230,7 @@ def test():
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
         keys = pygame.key.get_pressed()
         vec = pygame.Vector2()
         if keys[pygame.K_UP]:
@@ -260,13 +243,11 @@ def test():
             vec.x += 100
         body1.move(vec * dt / 1000)
         body_group.update(dt)
-<<<<<<< Updated upstream
-=======
         body1.stop()
->>>>>>> Stashed changes
         screen.fill((0, 0, 0))
         body_group.draw(screen)
         pygame.display.update()
         dt = clock.tick(60)
 
-    pygame.quit()
+
+test()
