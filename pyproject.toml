@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools", "wheel", "pygame", "shapely", "lupa"]
+build-backend = "setuptools.build_meta"
+
+[project]
+
+name = "Treds-Adventure"
+version = "0.9.5"
+authors = [
+    {name = "John Robinson"},
+    {name = "Zachary Matzek"},
+]
+description = "Top down game somewhat inspired by Legend of Zelda"
+dependencies = [
+    "pygame == 2.1.2",
+    "shapely == 1.8.5",
+    "lupa == 1.14.1",
+    "black >= 22.10.0",
+]
