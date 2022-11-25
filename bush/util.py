@@ -9,6 +9,23 @@ import pygame
 QUEUE_EMPTY = "QUEUE_EMPTY"
 
 
+def debug_view(img):
+    screen = pygame.display.set_mode(img.get_size())
+    clock = pygame.time.Clock()
+    running = True
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+        if not running:
+            break
+        screen.blit(img, (0, 0))
+        pygame.display.update()
+        clock.tick(60)
+    pygame.quit()
+    return img
+
+
 def rvec(vec: pygame.Vector2):
     """return a list value of a vector, with both coordinates rounded"""
     return [round(vec.x), round(vec.y)]
