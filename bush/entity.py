@@ -10,6 +10,14 @@ import pygame
 from bush import util
 
 
-class Entity(pygame.sprite.Sprite):
-    def __init__(self, rect):
-        self.rect = rect.copy()
+class Entity(int):
+    """Creates an integer of unique ID"""
+
+    id_handler = util.IDHandler()
+
+    @classmethod
+    def reset_ids(cls):
+        cls.id_handler.reset()
+
+    def __init__(self):
+        super().__init__(id_handler.get_next())
