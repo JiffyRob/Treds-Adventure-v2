@@ -10,6 +10,16 @@ import shapely.ops as ops
 
 from bush import util
 
+TYPE_STATIC = 1
+TYPE_DYNAMIC = 2
+TYPE_PUSHABLE = 3
+TYPE_FRICTION = 4
+
+
+def bounding_rect(shape):
+    minx, miny, maxx, maxy = shape.bounds
+    return pygame.Rect(round(minx), round(miny), round(maxx - minx), round(maxy - miny))
+
 
 class Shape:
     """Shape baseclass for Polygons, Circles, Points, and Lines.  Adds in-place translation"""
@@ -21,6 +31,10 @@ class Shape:
     def draw(self, origin: Sequence[float], surface: pygame.Surface):
         """Draw the shape to given surface, offset from given origin"""
         print("WARNING: This shape has no drawing primitives.  Nothing will appear")
+
+    @property
+    def bounding_rect(self):
+        return bounding_rect(self)
 
 
 class Rect(Shape, shapes.Polygon):
@@ -144,7 +158,9 @@ class Body(pygame.sprite.Sprite):
         shapes,
         group,
         pushable=False,
-        dynamic_collision_hook=lambda body, dt: None,
+        type=TYPE_STATIC,
+        friction=3,
+        dynamic_collision_hook=lambda body: None,
     ):
         super().__init__(group)
         self.mass = mass
@@ -152,13 +168,11 @@ class Body(pygame.sprite.Sprite):
         self.shape = Poly(ops.unary_union(shapes))
         bounds = self.shape.bounds
         self.pos = pygame.Vector2(pos)
-        self.rect = pygame.Rect(
-            bounds[0], bounds[1], bounds[2] - bounds[0] + 1, bounds[3] - bounds[1] + 1
-        )
+        self.rect = pygame.Rect(self.shape.bounding_rect).inflate(1, 1)
         self.rect.center = self.pos
         self.group = group
         self.pushable = pushable
-        self.friction = 0
+        self.friction = friction
         self.pos = pygame.Vector2(pos)
         self.image = pygame.Surface(self.rect.size, pygame.SRCALPHA)
         self.shape.draw((self.rect.width // 2, self.rect.height // 2), self.image)
@@ -166,45 +180,103 @@ class Body(pygame.sprite.Sprite):
         print(self.rect)
         self.min_speed = 1
         self.dynamic_collision_hook = dynamic_collision_hook
+        self.type = type
+
+    @property
+    def ws_shape(self):
+        return affinity.translate(self.shape, *self.pos)
 
     def __repr__(self):
         return f"Body ({self.pos}) in ({len(self.groups())}) groups"
 
     def update(self, dt):
-        self.handle_collisions(dt, "x")
-        self.handle_collisions(dt, "y")
-        if self.velocity:
-            friction = -self.velocity.copy()
-            friction.scale_to_length(min(self.friction, 1))
-            self.pos += self.velocity + friction * dt
+        self.move(self.velocity)
         self.rect.center = self.pos
 
     def move(self, direc):
-        self.velocity += direc
+        if not direc:
+            return
+        if self.type == TYPE_STATIC:
+            raise TypeError("Cannot move a static body")
+        self._try_moving(direc)
+
+    def _try_moving(self, direc):
+        xvec = pygame.Vector2(direc.x, 0)
+        yvec = pygame.Vector2(0, direc.y)
+        # X motion
+        if xvec.magnitude_squared():
+            xdir = direc.x / abs(direc.x)
+            self.pos += xvec
+            for body in pygame.sprite.spritecollide(self, self.group, False):
+                # collision with self
+                if body is self:
+                    continue
+                # moving objects collide
+                if body.type == TYPE_DYNAMIC:
+                    self.dynamic_collision_hook(body)
+                    continue
+
+                # friction time!
+                if body.type == TYPE_FRICTION:
+                    friction = body.friction
+                    xdist = abs(xvec.x)
+                    if abs(xdist) - friction < self.min_speed:
+                        friction = xdist - self.min_speed
+                    friction *= -xdir
+                    self.pos.x += friction
+                    continue
+
+                # all that's left is static
+                # get intersection of the two shapes
+                intersection = self.ws_shape.intersection(body.ws_shape)
+                # make sure the polygons collide
+                if not intersection.area:
+                    continue
+                print("XCOLLIDE!")
+                # get width of intersection
+                bounds = intersection.bounds
+                width = bounds[2] - bounds[0]
+                # move back
+                self.pos.x -= width * xdir
+        # Y motion
+        if yvec.magnitude_squared():
+            ydir = direc.y / abs(direc.y)
+            self.pos += yvec
+            for body in pygame.sprite.spritecollide(self, self.group, False):
+                # collision with self
+                if body is self:
+                    continue
+                # moving objects collide
+                if body.type == TYPE_DYNAMIC:
+                    self.dynamic_collision_hook(body)
+                    continue
+
+                # friction time!
+                if body.type == TYPE_FRICTION:
+                    friction = body.friction
+                    ydist = abs(yvec.y)
+                    if abs(ydist) - friction < self.min_speed:
+                        friction = ydist - self.min_speed
+                    friction *= -ydir
+                    self.pos.y += friction
+                    continue
+
+                # all that's left is static
+                # get intersection of the two shapes
+                intersection = self.ws_shape.intersection(body.ws_shape)
+                # make sure the polygons collide
+                if not intersection.area:
+                    continue
+                print("YCOLLIDE!")
+                # get height of intersection
+                bounds = intersection.bounds
+                height = bounds[3] - bounds[1]
+                print(height, bounds)
+                # move back
+                self.pos.y -= height * ydir
 
     def stop(self):
         self.velocity = pygame.Vector2()
-
-    def handle_collisions(self, dt, axis):
-        if not self.velocity:
-            return
-        for body in pygame.sprite.spritecollide(self, self.group, False):
-            # collision with self
-            if body is self:
-                continue
-            # moving objects collide
-            if body.velocity and self.velocity:
-                self.dynamic_collision_hook(body, dt)
-            # get intersection of the two shapes
-            intersection = self.shape.intersection(body.shape)
-            bounds = intersection.bounds
-            bounding_rect = pygame.Rect(
-                bounds[0], bounds[1], bounds[2] - bounds[0], bounds[3] - bounds[1]
-            )
-            if axis == "x" and bounding_rect.width > 0:
-                self.pos.x -= bounding_rect.width
-            if axis == "y" and bounding_rect.height > 0:
-                self.pos.y -= bounding_rect.height
 
 
 class BodyGroup(pygame.sprite.Group):
@@ -216,7 +288,13 @@ def test():
     screen = pygame.display.set_mode((400, 400))
     body_group = BodyGroup()
     # small arrow key controlled object
-    body1 = Body((45, 45), 10, Poly.as_circle(6, (0, 0)), body_group)
+    body1 = Body(
+        pos=(45, 45),
+        mass=10,
+        shapes=Poly.as_circle(6, (0, 0)),
+        group=body_group,
+        type=TYPE_DYNAMIC,
+    )
     # identical to body one without control
     body2 = Body((45, 100), 10, Poly.as_circle(6, (0, 0)), body_group)
     # bigger heavier one
@@ -224,6 +302,7 @@ def test():
     # static rectangle
     body4 = Body((45, 300), 3, Rect(30, 40), body_group)
     # friction rectangle
+    body5 = Body((200, 200), 0, Rect(50, 50), body_group, type=TYPE_FRICTION)
     clock = pygame.time.Clock()
     running = True
     dt = 0
@@ -234,14 +313,14 @@ def test():
         keys = pygame.key.get_pressed()
         vec = pygame.Vector2()
         if keys[pygame.K_UP]:
-            vec.y -= 100
+            vec.y -= 3
         if keys[pygame.K_LEFT]:
-            vec.x -= 100
+            vec.x -= 3
         if keys[pygame.K_DOWN]:
-            vec.y += 100
+            vec.y += 3
         if keys[pygame.K_RIGHT]:
-            vec.x += 100
-        body1.move(vec * dt / 1000)
+            vec.x += 3
+        body1.move(vec)
         body_group.update(dt)
         body1.stop()
         screen.fill((0, 0, 0))
