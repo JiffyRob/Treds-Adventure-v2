@@ -36,5 +36,12 @@ class Player(entity.Entity):
             self.velocity.scale_to_length(self.speed)
 
     def limit(self, dt):
-        self.rect.clamp_ip(self.map_rect)
-        self.pos = self.rect.center
+        difference = min(self.rect.top - self.map_rect.top, 0)
+        self.pos.y += difference
+        difference = min(self.map_rect.bottom - self.rect.bottom, 0)
+        self.pos.y += difference
+        difference = min(self.rect.left - self.map_rect.left, 0)
+        self.pos.x += difference
+        difference = min(self.map_rect.right - self.rect.right, 0)
+        self.pos.x += difference
+        self.rect.center = self.pos
