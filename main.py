@@ -4,7 +4,7 @@ Has Access to all other modules
 """
 import pygame
 
-import player
+import player, game_objects
 from bush import entity, util, level, color
 
 pygame.init()
@@ -20,14 +20,16 @@ class Game:
         self.running = False
         self.bgcolor = color.GREY
         ## game variables
-        self.player = player.Player(self.screen_size / 2, self.screen_size * 2)
+        self.player = player.Player(self.screen_size / 2, self.screen_size)
         self.entity_group = level.TopDownGroup(
             cam_size=self.screen_size,
-            map_size=self.screen_size * 2,
+            map_size=self.screen_size,
             pos=(0, 0),
             follow=self.player,
         )
+        game_objects.Block(self.screen_size * 0.75, (self.entity_group,))
         self.entity_group.add(self.player)
+        print(list(self.entity_group.sprites()))
 
     def run(self):
         self.screen = pygame.display.set_mode(util.rvec(self.screen_size))
