@@ -19,9 +19,9 @@ class CameraGroup(pygame.sprite.Group):
         if self.follow is not None:
             self.cam_rect.center = self.follow.pos
             self.limit()
-        offset = pygame.Vector2(self.cam_rect.center)
+        offset = pygame.Vector2(self.cam_rect.topleft)
         for sprite in self.sprites():
-            pos = pygame.Vector2(sprite.rect.topleft) + offset
+            pos = pygame.Vector2(sprite.rect.topleft) - offset
             surface.blit(sprite.image, pos)
 
     def limit(self):
