@@ -327,6 +327,3 @@ def test():
         body_group.draw(screen)
         pygame.display.update()
         dt = clock.tick(60)
-
-
-test()
