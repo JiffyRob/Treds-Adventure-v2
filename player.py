@@ -36,7 +36,5 @@ class Player(entity.Entity):
             self.velocity.scale_to_length(self.speed)
 
     def limit(self, dt):
-        print(self.rect)
         self.rect.clamp_ip(self.map_rect)
         self.pos = self.rect.center
-        print(self.rect)
