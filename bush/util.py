@@ -31,17 +31,17 @@ def rvec(vec: pygame.Vector2):
     return [round(vec.x), round(vec.y)]
 
 
-def circle_surf(radius, color, width):
+def circle_surf(radius, color, width=0):
     """Return a pygame surface of a circle"""
-    surface = pygame.Surface((radius * 2, radius * 2))
+    surface = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
     pygame.draw.circle(surface, color, (radius, radius), radius, width=width)
     return surface
 
 
-def rect_surf(rect, color, width):
+def rect_surf(rect, color, width=0):
     """Return a pygame surface of a rect"""
     rect = pygame.Rect(rect)
-    surface = pygame.Surface(rect.size)
+    surface = pygame.Surface(rect.size, pygame.SRCALPHA)
     pygame.draw.rect(surface, color, rect, width=width)
     return surface
 
