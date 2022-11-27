@@ -35,6 +35,7 @@ def circle_surf(radius, color, width):
     """Return a pygame surface of a circle"""
     surface = pygame.Surface((radius * 2, radius * 2))
     pygame.draw.circle(surface, color, (radius, radius), radius, width=width)
+    return surface
 
 
 def rect_surf(rect, color, width):
@@ -42,6 +43,7 @@ def rect_surf(rect, color, width):
     rect = pygame.Rect(rect)
     surface = pygame.Surface(rect.size)
     pygame.draw.rect(surface, color, rect, width=width)
+    return surface
 
 
 class IDHandler:
