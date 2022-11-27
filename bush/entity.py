@@ -30,9 +30,11 @@ class Entity(pygame.sprite.Sprite):
         self.events.put(event)
 
     def physics_update(self, dt):
-        print(self.velocity, dt)
         self.pos += self.velocity * dt
         self.rect.center = self.pos
+
+    def limit(self, dt):
+        pass
 
     def behaviour_update(self, dt):
         pass
@@ -43,5 +45,6 @@ class Entity(pygame.sprite.Sprite):
     def update(self, dt):
         self.input(dt)
         self.physics_update(dt)
+        self.limit(dt)
         self.behaviour_update(dt)
         self.render(dt)
