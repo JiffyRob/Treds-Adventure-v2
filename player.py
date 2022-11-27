@@ -29,6 +29,7 @@ class Player(entity.Entity):
             friction=3,
             dynamic_collision_hook=self.collide,
         )
+        self.physics_update = lambda dt: physics.entity_update(self, dt)
 
     def input(self, dt):
         keys = pygame.key.get_pressed()
@@ -43,13 +44,6 @@ class Player(entity.Entity):
             self.velocity.y += 1
         if self.velocity:
             self.velocity.scale_to_length(self.speed)
-
-    def physics_update(self, dt):
-        self.body.velocity = self.velocity
-        self.body.update(dt)
-        self.pos = self.body.pos
-        self.velocity = pygame.Vector2()
-        self.rect.center = self.pos
 
     def limit(self, dt):
         difference = max(self.map_rect.top - self.rect.top, 0)

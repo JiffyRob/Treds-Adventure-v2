@@ -21,6 +21,14 @@ def bounding_rect(shape):
     return pygame.Rect(round(minx), round(miny), round(maxx - minx), round(maxy - miny))
 
 
+def entity_update(self, dt):
+    """Update function for entities with physics bodies for their physics"""
+    self.body.velocity = self.velocity
+    self.body.update(dt)
+    self.pos = self.body.pos
+    self.rect.center = self.pos
+
+
 class Shape:
     """Shape baseclass for Polygons, Circles, Points, and Lines.  Adds in-place translation"""
 
