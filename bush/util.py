@@ -31,6 +31,16 @@ def rvec(vec: pygame.Vector2):
     return [round(vec.x), round(vec.y)]
 
 
+def direction(vec: pygame.Vector2):
+    """return a tuple of 1s signed to vector values - eg <-8, 7> -> (-1, 1)"""
+    return (vec.x / abs(vec.x), vec.y / abs(vec.y))
+
+
+def vec_abs(vec: pygame.Vector2):
+    """return the 'absolute value' of the vector"""
+    return pygame.Vector2(abs(vec.x).abs(vec.y))
+
+
 def circle_surf(radius, color, width=0):
     """Return a pygame surface of a circle"""
     surface = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
