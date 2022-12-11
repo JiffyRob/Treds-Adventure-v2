@@ -2,7 +2,6 @@ import csv
 import json
 import os
 import pickle
-import wave
 
 import pygame
 import pytmx
@@ -65,7 +64,7 @@ def save_csv(grid, path, delimiter=",", quotechar='"', escapechar=""):
 def load_csv_simple(path, delimiter=","):
     grid = []
     with open(os.path.join(path)) as file:
-        for item in file.read.split(delimiter):
+        for item in file.read().split(delimiter):
             grid.append(item.strip())
     return grid
 
