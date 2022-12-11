@@ -1,51 +1,66 @@
-import pygame
-import os
-import json
-import pickle
 import csv
+import json
+import os
+import pickle
 import wave
 
+import pygame
 import pytmx
 
 
 def load_image(path):
     return pygame.image.load(os.path.join(path))
 
+
 def save_image(image, path, extension=".png"):
     return pygame.image.save(image, path, extension)
+
+
 def load_audio(path):
     return pygame.mixer.Sound(os.path.join(path))
+
 
 def load_text(path):
     with open(os.path.join(path)) as file:
         return file.read()
 
+
 def save_text(text, path):
     with open(os.path.join(path), "w") as file:
         file.write(text)
+
 
 def load_json(path):
     with open(os.path.join(path)) as file:
         return json.load(file)
 
+
 def save_json(data, path):
     with open(os.path.join(path)) as file:
         json.dump(data, file)
-def load_csv(path, delimiter=",", quotechar='"', escapechar=''):
+
+
+def load_csv(path, delimiter=",", quotechar='"', escapechar=""):
     grid = []
     with open(os.path.join(path)) as file:
-        reader = csv.reader(file, delimiter=delimiter, quotechar=quotechar, escapechar=escapechar)
+        reader = csv.reader(
+            file, delimiter=delimiter, quotechar=quotechar, escapechar=escapechar
+        )
         for row in reader:
             grid.append(row)
     return grid
 
-def save_csv(grid, path, delimiter=",", quotechar='"', escapechar=''):
+
+def save_csv(grid, path, delimiter=",", quotechar='"', escapechar=""):
     with open(os.path.join(path)) as file:
-        writer = csv.writer(file, delimiter=delimiter, quotechar=quotechar, escapechar=escapechar)
+        writer = csv.writer(
+            file, delimiter=delimiter, quotechar=quotechar, escapechar=escapechar
+        )
         columns = [i for i in grid[0].keys()]
         writer.writerow(columns)
         for row in grid.values():
             writer.writerow(row)
+
 
 def load_csv_simple(path, delimiter=","):
     grid = []
@@ -54,31 +69,42 @@ def load_csv_simple(path, delimiter=","):
             grid.append(item.strip())
     return grid
 
+
 def save_csv_simple(data, path, delimiter=", "):
     string = delimiter.join(data)
     with open(os.path.join(path), "w") as file:
         file.write(string)
+
+
 def load_pickle(path):
     with open(os.path.join(path)) as file:
         return pickle.load(file)
 
+
 def save_pickle(data, path):
     with open(os.path.join(path), "w") as file:
         pickle.dump(data, file)
+
+
 def load_pickle_secure(path):
     with open(os.path.join(path)) as file:
         return json.loads(pickle.load(file))
 
+
 def save_pickle_secure(data, path):
     with open(os.path.join(path), "w") as file:
         pickle.dump(json.dumps(data), file)
+
+
 def load_map(path):
     return pytmx.load_pygame(path)
+
 
 class ResourceLoader:
     """
     A Loader of resources.  Catches things by filepath so that you don't have to load them again.
     """
+
     def __init__(self):
         self.image_cache = {}
         self.generic_cache = {}
@@ -127,8 +153,13 @@ class ResourceLoader:
 
     def load(self, filepath, cache=True):
         # get file extension
-        filetype = self.type_dict.get(filepath.split('.')[-1], "generic")
-        if filetype == "generic": print("WARNING: File extension", filetype, "not supported.  Loading as plain text.")
+        filetype = self.type_dict.get(filepath.split(".")[-1], "generic")
+        if filetype == "generic":
+            print(
+                "WARNING: File extension",
+                filetype,
+                "not supported.  Loading as plain text.",
+            )
         # see if file was cached, return that
         if filepath in self.type_dict[filetype]:
             return self.type_dict[filetype][filepath]
@@ -143,3 +174,5 @@ class ResourceLoader:
         filetype = path.split(".")[-1]
         self.save_dict.get(filetype, "generic")(data, path)
 
+
+glob_loader = ResourceLoader()
