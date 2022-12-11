@@ -1,0 +1,27 @@
+{
+    "activeFile": "master.tsx",
+    "expandedProjectPaths": [
+        "collision_templates",
+        "."
+    ],
+    "fileStates": {
+        "master.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 2
+        }
+    },
+    "last.imagePath": "/home/jack/Python Workspace/Treds-Adventure-v2/resources/tiles",
+    "last.objectTemplatePath": "/home/jack/Python Workspace/Treds-Adventure-v2/tiled/collision_templates",
+    "openFiles": [
+        "master.tsx"
+    ],
+    "project": "tav2.tiled-project",
+    "recentFiles": [
+        "master.tsx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}
