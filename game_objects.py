@@ -1,9 +1,13 @@
-from bush import entity, color, util, physics
+import pygame
+
+from bush import color, entity, physics, util
 
 
 class Block(entity.Entity):
-    def __init__(self, pos, groups, body_group):
-        surface = util.rect_surf((0, 0, 32, 32), color.BLUE)
-        super().__init__(surface, pos, groups)
-        self.body = physics.Body(pos, 10, physics.Rect(32, 32, (0, 0)), body_group)
-        self.physics_update = lambda dt: physics.entity_update(self, dt)
+    def __init__(self, pos):
+        surface = util.rect_surf((0, 0, 32, 32), color.GREEN)
+        super().__init__(surface, pos)
+        self.body = physics.StaticBody(pygame.Mask((32, 32), True), (64, 64))
+
+    def physics_update(self, dt):
+        physics.entity_update(self, dt)

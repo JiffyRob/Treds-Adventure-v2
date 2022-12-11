@@ -2,11 +2,10 @@
 physics - simple top down physics + shape primitives
 """
 from typing import Sequence, Union
-from bush import util
-import pygame
-from bush import collision
 
-from bush import util
+import pygame
+
+from bush import collision, util
 
 TYPE_STATIC = 1
 TYPE_DYNAMIC = 2
@@ -41,13 +40,16 @@ def friction_func(value: float, min_speed: float = 1):
         if sprite.velocity:
             print("before", sprite.velocity)
             veloc = -sprite.velocity
-            veloc.scale_to_length(
-                min(sprite.velocity.length() - min_speed, value)
-            )
+            veloc.scale_to_length(min(sprite.velocity.length() - min_speed, value))
             sprite.velocity += veloc
             print("after", sprite.velocity)
 
     return output
+
+
+def entity_update(entity, dt):
+    entity.body.velocity = entity.velocity
+    entity.pos = entity.body.pos
 
 
 class Body(pygame.sprite.Sprite):

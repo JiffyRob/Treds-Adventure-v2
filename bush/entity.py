@@ -3,10 +3,10 @@ entity
  - basic entity class
  - entity container group
 """
+import queue
 from typing import Iterable, Sequence, Union
 
 import pygame
-import queue
 
 from bush import util
 
@@ -14,7 +14,7 @@ from bush import util
 class Entity(pygame.sprite.Sprite):
     """Basic Entity"""
 
-    def __init__(self, surface, pos, groups):
+    def __init__(self, surface, pos, groups=()):
         super().__init__(*groups)
         self.image = surface
         self.pos = pygame.Vector2(pos)
@@ -30,10 +30,6 @@ class Entity(pygame.sprite.Sprite):
         self.events.put(event)
 
     def physics_update(self, dt):
-        self.pos += self.velocity * dt
-        self.rect.center = self.pos
-
-    def limit(self, dt):
         pass
 
     def behaviour_update(self, dt):
@@ -43,8 +39,8 @@ class Entity(pygame.sprite.Sprite):
         pass
 
     def update(self, dt):
+        self.rect.center = self.pos
         self.input(dt)
         self.physics_update(dt)
-        self.limit(dt)
         self.behaviour_update(dt)
         self.render(dt)
