@@ -2,12 +2,14 @@ import csv
 import json
 import os
 import pickle
+import gc
 
 import pygame
 import pytmx
 
 
 def load_image(path):
+    print("loading", path)
     return pygame.image.load(os.path.join(path))
 
 
@@ -16,6 +18,8 @@ def save_image(image, path, extension=".png"):
 
 
 def load_audio(path):
+    if not pygame.mixer.get_init():
+        pygame.mixer.init()
     return pygame.mixer.Sound(os.path.join(path))
 
 
@@ -104,12 +108,12 @@ class ResourceLoader:
     A Loader of resources.  Catches things by filepath so that you don't have to load them again.
     """
 
-    def __init__(self):
-        self.image_cache = {}
-        self.generic_cache = {}
-        self.sound_cache = {}
-        self.map_cache = {}
-        self.data_cache = {}
+    def __init__(self, default_directory=""):
+        image_cache = {}
+        generic_cache = {}
+        sound_cache = {}
+        map_cache = {}
+        data_cache = {}
         # file extension -> load function
         self.load_dict = {
             "png": load_image,
@@ -137,27 +141,32 @@ class ResourceLoader:
         }
         # file extension -> cache dictionary
         self.type_dict = {
-            "png": self.image_cache,
-            "jpeg": self.image_cache,
-            "bmp": self.image_cache,
-            "wav": self.sound_cache,
-            "ogg": self.sound_cache,
-            "txt": self.data_cache,
-            "json": self.data_cache,
-            "csv": self.data_cache,
-            "pkl": self.data_cache,
-            "tmx": self.map_cache,
-            "generic": self.generic_cache,
+            "png": image_cache,
+            "jpeg": image_cache,
+            "bmp": image_cache,
+            "wav": sound_cache,
+            "ogg": sound_cache,
+            "txt": data_cache,
+            "json": data_cache,
+            "csv": data_cache,
+            "pkl": data_cache,
+            "tmx": map_cache,
+            "generic": generic_cache,
         }
+        self.base = os.path.join(default_directory)
+
+    def set_home(self, path):
+        self.base = os.path.join(path)
 
     def load(self, filepath, cache=True):
+        filepath = os.path.join(self.base, filepath)
         # get file extension
-        filetype = self.type_dict.get(filepath.split(".")[-1], "generic")
+        filetype = filepath.split(".")[-1]
         if filetype == "generic":
             print(
                 "WARNING: File extension",
                 filetype,
-                "not supported.  Loading as plain text.",
+                "not known to loader.  Loading as plain text.",
             )
         # see if file was cached, return that
         if filepath in self.type_dict[filetype]:
@@ -172,6 +181,11 @@ class ResourceLoader:
     def save(self, data, path):
         filetype = path.split(".")[-1]
         self.save_dict.get(filetype, "generic")(data, path)
+
+    def empty(self):
+        for key in self.type_dict.keys():
+            self.type_dict[key] = {}
+        gc.collect()
 
 
 glob_loader = ResourceLoader()
