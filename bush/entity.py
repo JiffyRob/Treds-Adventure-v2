@@ -22,6 +22,7 @@ class Entity(pygame.sprite.Sprite):
         self.velocity = pygame.Vector2()
         self.rect = self.image.get_rect(center=self.pos)
         self.events = queue.SimpleQueue()
+        self.command_dict = {"move": self.move, "die": self.kill}
 
     def input(self, dt):
         pass
@@ -34,6 +35,10 @@ class Entity(pygame.sprite.Sprite):
 
     def behaviour_update(self, dt):
         pass
+
+    def command(self, command, *args, **kwargs):
+        callback = self.command_dict.get(command, lambda *x, **y: None)
+        callback(*args, **kwargs)
 
     def render(self, dt):
         pass
