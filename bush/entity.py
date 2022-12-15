@@ -22,7 +22,13 @@ class Entity(pygame.sprite.Sprite):
         self.velocity = pygame.Vector2()
         self.rect = self.image.get_rect(center=self.pos)
         self.events = queue.SimpleQueue()
-        self.command_dict = {"move": self.move, "die": self.kill}
+        self.command_dict = {"move": self.move, "die": self.kill, "idle": self.stop}
+
+    def move(self, veloc):
+        self.velocity += veloc
+
+    def stop(self):
+        self.velocity = pygame.Vector2()
 
     def input(self, dt):
         pass
