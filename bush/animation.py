@@ -1,5 +1,6 @@
-import pygame
 import itertools
+
+import pygame
 
 
 class Animation:
