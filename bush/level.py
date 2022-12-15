@@ -2,11 +2,7 @@
 level
  - basic mapping primitives
 """
-import os
-
 import pygame
-import pytmx
-import pytmx.util_pygame as pytmx
 
 from bush import physics
 
