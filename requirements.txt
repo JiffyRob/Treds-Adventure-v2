@@ -2,3 +2,4 @@ pygame
 shapely
 lupa
 pytmx
+pygame-menu
