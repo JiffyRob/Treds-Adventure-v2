@@ -23,6 +23,21 @@ class Entity(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=self.pos)
         self.events = queue.SimpleQueue()
         self.command_dict = {"move": self.move, "die": self.kill, "idle": self.stop}
+        self.script_acceptable_names = {
+            "pos",
+            "velocity",
+            "state",
+            "rect",
+            "events",
+            "command",
+        }
+
+    def to_scripting_dict(self):
+        scripting_dict = {}
+        for key in self.__dict__:
+            if key in self.script_acceptable_names:
+                scripting_dict[key] = self.__dict__[key]
+        return scripting_dict
 
     def move(self, veloc):
         self.velocity += veloc
