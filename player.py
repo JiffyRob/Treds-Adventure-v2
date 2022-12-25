@@ -29,7 +29,7 @@ class Player(entity.Entity):
     def physics_update(self, dt):
         physics.entity_update(self, dt)
 
-    def input(self, dt):
+    def control(self, dt):
         keys = pygame.key.get_pressed()
         self.velocity = pygame.Vector2()
         if keys[pygame.K_LEFT]:

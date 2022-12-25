@@ -11,6 +11,47 @@ def load_image(path):
     return pygame.image.load(os.path.join(path))
 
 
+def load_image_folder(path):
+    img_extensions = "png", "jpg", "jpeg", "bmp"
+    img_dict = {}
+    for entry in os.scandir(os.path.join(path)):
+        if entry.is_file():
+            *fname, extension = entry.name.split(".")
+            if extension in img_extensions:
+                img_dict[".".join(fname)] = load_image(entry.path)
+    return img_dict
+
+
+def load_spritesheet(path, frame_size, margin=(0, 0), spacing=0):
+    # load image
+    spritesheet = load_image(path)
+    # try to optimize the surface for drawing on the screen
+    try:
+        spritesheet = spritesheet.convert_alpha()
+    # will raise an error if there is no screen to optimize for
+    # ignore it
+    except pygame.error:
+        print("alpha conversion not possible")
+    # creation of variables
+    surf_list = []
+    width, height = spritesheet.get_size()
+    x = margin[0]
+    y = margin[1]
+    # surface grabbing loop
+    while True:
+        if x + frame_size[0] > width:
+            x = margin[0]
+            y += frame_size[1] + spacing
+        img_rect = pygame.Rect((x, y), frame_size)
+        try:
+            subsurf = spritesheet.subsurface(img_rect)
+        except ValueError:
+            break
+        surf_list.append(subsurf)
+        x += frame_size[0] + spacing
+    return surf_list
+
+
 def save_image(image, path, extension=".png"):
     return pygame.image.save(image, path, extension)
 

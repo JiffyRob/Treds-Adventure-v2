@@ -7,11 +7,15 @@ class Timer:
         self.start = pygame.time.get_ticks()
         self.on_finish = on_finish
         self.repeat = repeat
+        self.ran_ending = False
 
     def time_left(self):
         return max(self.wait - (pygame.time.get_ticks() - self.start), 0)
 
-    def restart(self):
+    def done(self):
+        return self.time_left() == 0
+
+    def reset(self):
         self.start = pygame.time.get_ticks()
 
     def finish(self):
@@ -19,7 +23,9 @@ class Timer:
 
     def update(self):
         now = pygame.time.get_ticks()
-        if now - self.start >= self.wait:
+        if now - self.start >= self.wait and not self.ran_ending:
             self.on_finish()
             if self.repeat:
                 self.restart()
+            else:
+                self.ran_ending = True

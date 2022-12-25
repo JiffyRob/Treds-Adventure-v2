@@ -51,6 +51,7 @@ def circle_surf(radius, color, width=0):
 def rect_surf(rect, color, width=0):
     """Return a pygame surface of a rect"""
     rect = pygame.Rect(rect)
+    rect.topleft = (0, 0)
     surface = pygame.Surface(rect.size, pygame.SRCALPHA)
     pygame.draw.rect(surface, color, rect, width=width)
     return surface

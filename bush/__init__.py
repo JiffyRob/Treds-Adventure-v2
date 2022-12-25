@@ -9,5 +9,16 @@ But mostly because why not.
 Copyright 2022 - 2023 John Robinson and Zachary Matzek
 Distributed under MIT License
 """
-from bush import animation, asset_handler, collision, color, entity, event, level, physics, timer, util, util_load
-fr
+from bush import (
+    animation,
+    asset_handler,
+    collision,
+    color,
+    entity,
+    event_binding,
+    level,
+    physics,
+    timer,
+    util,
+    util_load,
+)

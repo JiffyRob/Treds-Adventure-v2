@@ -4,7 +4,7 @@ import os
 import pygame
 import pytmx
 
-from bush.util_fileio import *
+from bush.util_load import *
 
 
 class AssetHandler:
@@ -22,6 +22,7 @@ class AssetHandler:
         self.load_dict = {
             "png": load_image,
             "jpeg": load_image,
+            "jpg": load_image,
             "bmp": load_image,
             "wav": load_audio,
             "ogg": load_audio,

@@ -3,8 +3,8 @@ level
  - basic mapping primitives
 """
 import pygame
-
-from bush import physics
+import pytmx
+from bush import physics, map_layer
 
 
 class PhysicsGroup(pygame.sprite.Group):
@@ -64,15 +64,7 @@ class CameraGroup(pygame.sprite.Group):
 
     def limit_sprites(self):
         for sprite in self.sprites():
-            difference = max(self.map_rect.top - sprite.rect.top, 0)
-            sprite.pos.y += difference
-            difference = min(self.map_rect.bottom - sprite.rect.bottom, 0)
-            sprite.pos.y += difference
-            difference = max(self.map_rect.left - sprite.rect.left, 0)
-            sprite.pos.x += difference
-            difference = min(self.map_rect.right - sprite.rect.right, 0)
-            sprite.pos.x += difference
-            sprite.rect.center = sprite.pos
+            sprite.limit(self.map_rect)
 
 
 class TopDownGroup(CameraGroup):
@@ -81,3 +73,13 @@ class TopDownGroup(CameraGroup):
             return sprite.rect.bottom
 
         return sorted(super().sprites(), key=sortkey)
+
+
+class Map(pygame.sprite.LayeredUpdates):
+    def __init__(self, pytmx_map):
+        creation_callbacks = {
+            pytmx.TiledTileLayer: map_layer.TileLayer,
+            pytmx.TiledImageLayer: map_layer.Image_layer,
+        }
+        for layer in pytmx_map.visible_layers():
+            creation_callbacks[type(layer)](layer)
