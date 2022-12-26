@@ -31,6 +31,7 @@ class Entity(pygame.sprite.Sprite):
             "events",
             "command",
         }
+        self._layer = 1
 
     def move(self, veloc):
         self.velocity += veloc
@@ -99,11 +100,13 @@ class Entity(pygame.sprite.Sprite):
         self.rect.center = self.pos
         return moved
 
+
 class EntityLite(pygame.sprite.Sprite):
     def __init__(self, surface, pos):
         self.pos = pos
         self.image = surface
         self.rect = self.image.get_rect(center=self.pos)
+        self._layer = 1
         super().__init__()
 
     def update(self):
