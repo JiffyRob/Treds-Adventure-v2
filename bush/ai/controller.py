@@ -3,6 +3,7 @@ import pygame
 
 from bush import util_load, timer
 from bush.ai import command
+
 try:
     from bush import event_binding
 except ImportError:
@@ -19,6 +20,7 @@ class Controller:
 
     def event(self, event):
         pass
+
 
 class InputController(Controller):
     def __init__(self, bindings={}):
@@ -44,7 +46,6 @@ class InputController(Controller):
         string_key = event_binding.event_to_string(event)
         callback = self.bindings.get(string_key, lambda x: None)
         self.command_queue.add(command.Command(callback))
-
 
     def generate_commands(self):
         commands = self.command_queue
