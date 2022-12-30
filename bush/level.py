@@ -9,7 +9,7 @@ try:
 except ImportError:
     pytmx = NotImplemented
     print("WARNING: pytmx not found.  Tiled map primitives not available")
-from bush import physics, color, entity, animation
+from bush import animation, color, entity, physics
 
 
 class PhysicsGroup(pygame.sprite.Group):

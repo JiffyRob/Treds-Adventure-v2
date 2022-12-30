@@ -1,0 +1,20 @@
+[
+  ["attack", 23, "metal"],
+  {"action":  "attack", "damage":  23, "element":  "metal"},
+  ["give", ["$100", "bomb", "bomb", "bomb"]],
+  ["take", ["$50"]],
+  {"action": "ask", ":VAR":  "answer", "answers":  ["Awesome!", "Meh.", "Terrible."]},
+  {":IF": ["eq", "answer", "Terrible."],
+    "do":
+    [
+      ["say", "Sounds like you need a HUG!"],
+      ["give-hug"],
+      ["say", "And a KIIISSSSS!!!!!"],
+      {"action": "smootch", "drool":  true, "wetness":  10000},
+      ["say", "Don't you feel SOO much better?"]
+    ],
+    "else": [
+      ["say", "I guess you're just fine then."]
+    ]
+  }
+]
