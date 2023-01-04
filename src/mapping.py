@@ -1,6 +1,9 @@
-from bush import animation, asset_handler, level
-import player, static_objects, motion_objects
 import pygame
+
+import motion_objects
+import player
+import static_objects
+from bush import animation, asset_handler, level
 
 asset_loader = asset_handler.glob_loader
 helper_data = asset_loader.load("data/map_objects.json")

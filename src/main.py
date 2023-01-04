@@ -4,8 +4,9 @@ Has Access to all other modules
 """
 # normal imports
 import pygame
-from bush import color, util
+
 import mapping
+from bush import color, util
 
 pygame.init()
 
