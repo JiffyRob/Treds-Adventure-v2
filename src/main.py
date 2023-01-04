@@ -41,9 +41,6 @@ class Game:
             if event.type == pygame.QUIT:
                 self.quit()
 
-    def quit(self):
-        self.running = False
-
     def run(self):
         self.screen = pygame.display.set_mode(util.rvec(self.screen_size))
         self.screen.fill(self.bgcolor)

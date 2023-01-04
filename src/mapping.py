@@ -1,9 +1,11 @@
 from bush import animation, asset_handler, level
 import player, static_objects, motion_objects
 import pygame
+
 asset_loader = asset_handler.glob_loader
 helper_data = asset_loader.load("data/map_objects.json")
 object_layers = helper_data["layers"]
+
 
 def load_map(path, screen_size, current_player=None):
     tmx_map = asset_loader.load(path)
@@ -13,7 +15,8 @@ def load_map(path, screen_size, current_player=None):
         "player": pygame.sprite.GroupSingle(),
     }
     instantiators = {
-        "player": lambda *args, **kwargs: current_player or player.Player(*args, **kwargs),
+        "player": lambda *args, **kwargs: current_player
+        or player.Player(*args, **kwargs),
     }
     tile_width, tile_height = (16, 16)
 
@@ -22,7 +25,11 @@ def load_map(path, screen_size, current_player=None):
         if name in {"Ground", "Decor", "Ground Decor", "Collision Decor"}:
             for x, y, tile in layer.tiles():
                 pos = pygame.Vector2(x * tile_width, y * tile_height)
-                main_group.add(level.AnimatedTile(animation.Animation([tile], 1), pos, object_layers[name]))
+                main_group.add(
+                    level.AnimatedTile(
+                        animation.Animation([tile], 1), pos, object_layers[name]
+                    )
+                )
         if name in {"Objects", "Flying Objects"}:
             for obj in layer:
                 kwargs = {
