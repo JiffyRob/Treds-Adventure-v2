@@ -1,4 +1,8 @@
 {
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
     "activeFile": "master.tsx",
     "expandedProjectPaths": [
         "collision_templates",
@@ -12,6 +16,11 @@
     },
     "last.imagePath": "/home/jack/Python Workspace/Treds-Adventure-v2/resources/tiles",
     "last.objectTemplatePath": "/home/jack/Python Workspace/Treds-Adventure-v2/tiled/collision_templates",
+    "map.height": 32,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 32,
     "openFiles": [
         "master.tsx"
     ],
