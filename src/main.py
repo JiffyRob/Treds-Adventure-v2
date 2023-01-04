@@ -2,16 +2,9 @@
 Main - runs game and holds game loop.
 Has Access to all other modules
 """
-# make sure root loader has proper load path
-import os
-from bush import asset_handler
-if "src" in os.getcwd():
-    asset_handler.glob_loader.set_home("..")
-    print(os.path.abspath(asset_handler.glob_loader.base))
-
 # normal imports
 import pygame
-from bush import color, entity, level, physics, util
+from bush import color, util
 import mapping
 
 pygame.init()
