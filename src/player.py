@@ -20,7 +20,7 @@ class Player(entity.Entity):
         super().__init__(util.circle_surf(6, color.RED, 1), pos, ())
         self.speed = 64
         rect = pygame.Rect(0, 0, 32, 32)
-        rect.center = (0, 0)
+        rect.center = pos
         self.body = physics.DynamicBody(rect)
         self.image = self.body.image
         self.rect = rect
