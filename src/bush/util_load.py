@@ -4,7 +4,7 @@ import os
 import pickle
 
 import pygame
-
+import pytmx
 
 def load_image(path):
     print("loading", path)

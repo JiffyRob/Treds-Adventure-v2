@@ -8,7 +8,6 @@ class Animation:
         self.lengths = length
         if isinstance(length, int):
             self.lengths = [length for _ in images]
-            print(self.lengths)
         self.images = list(images)
         self.index = 0
         self.last_start_time = 0

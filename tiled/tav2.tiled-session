@@ -15,7 +15,7 @@
         }
     },
     "last.imagePath": "/home/jack/Python Workspace/Treds-Adventure-v2/resources/tiles",
-    "last.objectTemplatePath": "/home/jack/Python Workspace/Treds-Adventure-v2/tiled/collision_templates",
+    "last.objectTemplatePath": "/home/jack/Python Workspace/Treds-Adventure-v2/tiled",
     "map.height": 32,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,

@@ -2,11 +2,17 @@
 Main - runs game and holds game loop.
 Has Access to all other modules
 """
-import pygame
+# make sure root loader has proper load path
+import os
+from bush import asset_handler
+if "src" in os.getcwd():
+    asset_handler.glob_loader.set_home("..")
+    print(os.path.abspath(asset_handler.glob_loader.base))
 
-import game_objects
-import player
+# normal imports
+import pygame
 from bush import color, entity, level, physics, util
+import mapping
 
 pygame.init()
 
@@ -17,51 +23,48 @@ class Game:
         self.screen_size = pygame.Vector2(640, 480)
         self.screen = None
         self.clock = pygame.time.Clock()
-        self.fps = 500
+        self.fps = 30
         self.running = False
         self.bgcolor = color.GREY
         self.screen = pygame.display.set_mode(util.rvec(self.screen_size))
-        # game variables
-        # sprites
-        self.player = player.Player(self.screen_size / 2)
-        block = game_objects.Block(self.screen_size * 0.75)
-        # groups
-        self.entity_group = level.TopDownGroup(
-            cam_size=self.screen_size,
-            map_size=self.screen_size,
-            pos=(0, 0),
-            follow=self.player,
-        )
-        self.entity_group.add(self.player, block)
-        self.physics_group = level.PhysicsGroup(self.player, block)
-        print(list(self.entity_group.sprites()))
-        pygame.quit()
+        # initial map load
+        self.groups = None
+        self.main_group = None
+        self.load_map("tiled/test_map.tmx")
+
+    def load_map(self, path):
+        self.groups = mapping.load_map(path, self.screen_size)
+        self.main_group = self.groups["main"]
+
+    def update_sprites(self, dt):
+        for sprite in self.main_group.sprites():
+            sprite.update(dt)
+
+    def draw_sprites(self):
+        self.main_group.draw(self.screen)
+
+    def handle_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.quit()
+
+    def quit(self):
+        self.running = False
 
     def run(self):
         self.screen = pygame.display.set_mode(util.rvec(self.screen_size))
+        self.screen.fill(self.bgcolor)
+
         self.running = True
         dt = 0
-        # initial screen setup
-        self.screen.fill(self.bgcolor)
-        running = True
-        while True:
-            if not running:
-                break
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+        while self.running:
+            self.handle_events()
             self.screen.fill(self.bgcolor)
-            self.physics_group.update(dt / 1000)
-            self.entity_group.update(dt / 1000)
-            self.entity_group.draw(self.screen)
-            for sprite in self.entity_group.sprites():
-                self.screen.set_at(util.rvec(sprite.pos), color.RED)
-                pygame.draw.rect(self.screen, color.RED, sprite.rect, width=1)
+            self.update_sprites(dt)
+            self.draw_sprites()
             pygame.display.flip()
-            dt = self.clock.tick(60)
+            dt = self.clock.tick(self.fps)
 
-        # after the game loop
-        # reset things
         pygame.quit()
         self.screen = None
 

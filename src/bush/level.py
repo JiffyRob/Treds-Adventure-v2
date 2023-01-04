@@ -82,12 +82,13 @@ class TopDownGroup(CameraGroup):
 
 class AnimatedTile(entity.EntityLite):
     def __init__(self, anim, pos, layer):
-        super().__init__(anim.image, pos)
+        super().__init__(anim.image(), pos)
         self._layer = layer
+        self.anim = anim
 
     def update(self, dt):
         super().update()
-        self.image = self.anim.image
+        self.image = self.anim.image()
 
 
 def generate_map_sprites(

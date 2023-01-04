@@ -1,0 +1,15 @@
+{
+  "default groups": ["main"],
+  "layers": {
+        "Ground": 0,
+        "Ground Decor": 0.5,
+        "Decor": 1,
+        "Collision Decor": 1,
+        "Objects": 1,
+        "Flying Objects": 2
+  },
+  "player.tx": {
+    "type": "player",
+    "groups": ["player", "main"]
+  }
+}
