@@ -16,18 +16,18 @@ class Player(entity.Entity):
         id: player's integer id
     """
 
-    def __init__(self, pos: Union[pygame.Vector2, list, tuple]):
+    def __init__(self, pos: Union[pygame.Vector2, list, tuple], collision_group):
         super().__init__(util.circle_surf(6, color.RED, 1), pos, ())
         self.speed = 64
         rect = pygame.Rect(0, 0, 32, 32)
         rect.center = pos
-        self.body = physics.DynamicBody(rect)
-        self.image = self.body.image
+        self.physics_data = physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group)
+        self.image = util.rect_surf(rect, color.BLUE)
         self.rect = rect
         self.rect.center = self.pos
 
     def physics_update(self, dt):
-        physics.entity_update(self, dt)
+        physics.dynamic_update(self, dt)
 
     def control(self, dt):
         keys = pygame.key.get_pressed()
