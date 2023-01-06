@@ -31,8 +31,7 @@ class Game:
         self.main_group = self.groups["main"]
 
     def update_sprites(self, dt):
-        for sprite in self.main_group.sprites():
-            sprite.update(dt)
+        self.main_group.update(dt)
 
     def draw_sprites(self):
         self.main_group.draw(self.screen)
@@ -54,7 +53,7 @@ class Game:
             self.update_sprites(dt)
             self.draw_sprites()
             pygame.display.flip()
-            dt = self.clock.tick(self.fps)
+            dt = self.clock.tick(self.fps) / 1000
 
         pygame.quit()
         self.screen = None
