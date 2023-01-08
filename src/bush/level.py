@@ -11,31 +11,6 @@ except ImportError:
     print("WARNING: pytmx not found.  Tiled map primitives not available")
 from bush import animation, color, entity, physics
 
-
-class PhysicsGroup(pygame.sprite.Group):
-    """Group of entities that have physics bodies"""
-
-    def __init__(self, *sprites):
-        self.body_group = physics.BodyGroup()
-        super().__init__(*sprites)
-
-    def get_bodies(self, sprites=None):
-        sprites = sprites or self.body_group.sprites()
-        for sprite in sprites:
-            yield sprite.body
-
-    def add(self, *sprites):
-        super().add(*sprites)
-        self.body_group.add(*self.get_bodies(sprites))
-
-    def remove(self, *sprites):
-        super().remove(*sprites)
-        self.body_group.remove(*self.get_bodies(sprites))
-
-    def update(self, dt):
-        self.body_group.update(dt)
-
-
 class CameraGroup(pygame.sprite.LayeredUpdates):
     def __init__(self, cam_size, map_size, pos, follow=None, *sprites):
         super().__init__(*sprites)
