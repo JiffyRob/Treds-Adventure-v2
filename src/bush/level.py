@@ -11,6 +11,7 @@ except ImportError:
     print("WARNING: pytmx not found.  Tiled map primitives not available")
 from bush import animation, color, entity, physics
 
+
 class CameraGroup(pygame.sprite.LayeredUpdates):
     def __init__(self, cam_size, map_size, pos, follow=None, *sprites):
         super().__init__(*sprites)

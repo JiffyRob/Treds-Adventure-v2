@@ -15,7 +15,8 @@ PhysicsData = namedtuple("PhysicsData", ("type", "collision_group"))
 
 def dynamic_update(self, dt):
     for ind, axis in enumerate(("x", "y")):
-        if not self.velocity[ind]: continue
+        if not self.velocity[ind]:
+            continue
         self.pos[ind] += self.velocity[ind] * dt
         callbacks = (
             static_collision,
@@ -26,12 +27,14 @@ def dynamic_update(self, dt):
         for sprite in self.physics_data.collision_group:
             callbacks[sprite.physics_data.type](self, sprite, ind)
 
+
 def rect_mask_collide(rect, mask):
     rect_mask = pygame.Mask(rect.size, True)
     value = mask.overlap(rect_mask, rect.topleft) is not None
     if value:
         print("bang!")
     return value
+
 
 def static_collision(dynamic, static, axis):
     # get direction of velocity on given axis
@@ -42,7 +45,7 @@ def static_collision(dynamic, static, axis):
     walk_directions = (
         pygame.Vector2(direction),
         pygame.Vector2(-direction.y, direction.x),
-        pygame.Vector2(direction.y, -direction.x)
+        pygame.Vector2(direction.y, -direction.x),
     )
     # start position of entity
     start_pos = pygame.Vector2(dynamic.pos)
@@ -59,12 +62,11 @@ def static_collision(dynamic, static, axis):
     while rect_mask_collide(check_rect, static.mask):
         walk_direction = walk_directions[direction_index]
         check_pos = start_pos + (walk_direction * distance)
-        distance += .25
+        distance += 0.25
         direction_index = (direction_index + 1) % 3
         check_rect.center = check_pos
     dynamic.rect = check_rect
     dynamic.pos = pygame.Vector2(check_rect.center)
-
 
 
 def dynamic_collision(dynamic1, dynamic2, dt):

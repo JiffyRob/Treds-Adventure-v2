@@ -3,7 +3,7 @@ import pygame
 import motion_objects
 import player
 import static_objects
-from bush import animation, asset_handler, level, entity, physics, util
+from bush import animation, asset_handler, entity, level, physics, util
 
 asset_loader = asset_handler.glob_loader
 helper_data = asset_loader.load("data/map_objects.json")
@@ -14,7 +14,9 @@ def load_map(path, screen_size, current_player=None):
     tmx_map = asset_loader.load(path)
     tile_width, tile_height = tile_size = pygame.Vector2(16, 16)
     map_width, map_height = tmx_map.width, tmx_map.height
-    main_group = level.TopDownGroup(screen_size, (tile_width * map_width, tile_height * map_height), (0, 0))
+    main_group = level.TopDownGroup(
+        screen_size, (tile_width * map_width, tile_height * map_height), (0, 0)
+    )
     groups = {
         "main": main_group,
         "player": pygame.sprite.GroupSingle(),
@@ -31,21 +33,29 @@ def load_map(path, screen_size, current_player=None):
             for x, y, tile in layer.tiles():
                 pos = pygame.Vector2(x * tile_width, y * tile_height)
                 tile = level.AnimatedTile(
-                    animation.Animation([tile], 1), pos + tile_size / 2, object_layers[name]
+                    animation.Animation([tile], 1),
+                    pos + tile_size / 2,
+                    object_layers[name],
                 )
                 main_group.add(tile)
         if name == "Collision Decor":
-            layer_surface = pygame.Surface((tile_width * map_width, tile_height * map_height), pygame.SRCALPHA)
+            layer_surface = pygame.Surface(
+                (tile_width * map_width, tile_height * map_height), pygame.SRCALPHA
+            )
             for x, y, tile in layer.tiles():
                 pos = pygame.Vector2(x * tile_width, y * tile_height)
                 layer_surface.blit(tile, pos)
                 tile = level.AnimatedTile(
-                    animation.Animation([tile], 1), pos + tile_size / 2, object_layers[name]
+                    animation.Animation([tile], 1),
+                    pos + tile_size / 2,
+                    object_layers[name],
                 )
                 main_group.add(tile)
             collision_sprite = entity.EntityLite(layer_surface, (0, 0))
             collision_sprite.mask = pygame.mask.from_surface(layer_surface)
-            collision_sprite.physics_data = physics.PhysicsData(physics.TYPE_STATIC, groups["collision"])
+            collision_sprite.physics_data = physics.PhysicsData(
+                physics.TYPE_STATIC, groups["collision"]
+            )
             groups["collision"].add(collision_sprite)
 
         if name in {"Objects", "Flying Objects"}:
