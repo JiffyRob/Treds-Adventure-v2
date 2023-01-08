@@ -111,3 +111,6 @@ class EntityLite(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.center = self.pos
+
+    def limit(self, *args, **kwargs):
+        pass
