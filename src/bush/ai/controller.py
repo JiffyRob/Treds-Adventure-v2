@@ -30,6 +30,7 @@ class InputController(Controller):
     @classmethod
     def from_json(cls, path, callbacks):
         bindings = util_load.load_json(path)
+        bindings.pop("#")  # <- Comment symbol
         for key in tuple(bindings.keys()):
             bindings[key] = callbacks[key]
         return cls(bindings)

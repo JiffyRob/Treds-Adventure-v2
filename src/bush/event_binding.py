@@ -6,11 +6,8 @@ BOUND_EVENT = pygame.event.custom_type()
 
 
 def event_to_string(event):
-    # all pygame events from pygame 2.1.2 (SDL 2.0.16)
     if event.type in (pygame.KEYDOWN, pygame.KEYUP):
-        if event.mod != pygame.KMOD_NONE:
-            return f"{pygame.event.event_name(event.type)} {event.mod}"
-        return f"{pygame.event.event_name(event.type)} {pygame.key.name(event.key)}"
+        return f"{pygame.event.event_name(event.type)}-{pygame.key.name(event.key)}"
     return pygame.event.event_name(event.type)
 
 

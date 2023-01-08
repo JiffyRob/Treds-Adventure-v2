@@ -7,6 +7,7 @@ import pygame
 
 import mapping
 from bush import color, util
+from bush.ai import controller
 
 pygame.init()
 
@@ -21,6 +22,9 @@ class Game:
         self.running = False
         self.bgcolor = color.GREY
         self.screen = pygame.display.set_mode(util.rvec(self.screen_size))
+        # game control state
+        self.state = "map"
+        self.controller = controller.InputController({""})
         # initial map load
         self.groups = None
         self.main_group = None

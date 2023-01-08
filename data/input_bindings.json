@@ -1,0 +1,11 @@
+{
+  "//": "Player motion",
+  "KeyDown-left": "walk left",
+  "KeyUp-left": "stop left",
+  "KeyDown-right": "walk right",
+  "KeyUp-right": "stop right",
+  "KeyDown-up": "walk up",
+  "KeyUp-up": "stop up",
+  "KeyDown-down": "walk down",
+  "KeyUp-down": "stop down",
+}
