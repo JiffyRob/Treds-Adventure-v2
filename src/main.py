@@ -24,7 +24,7 @@ class Game:
         self.screen = pygame.display.set_mode(util.rvec(self.screen_size))
         # game control state
         self.state = "map"
-        self.controller = controller.InputController({""})
+        self.controller = None
         # initial map load
         self.groups = None
         self.main_group = None

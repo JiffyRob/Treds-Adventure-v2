@@ -3,24 +3,24 @@ entity
  - basic entity class
  - entity container group
 """
-import queue
-from typing import Iterable, Sequence, Union
-
+from copy import deepcopy
 import pygame
-
-from bush import util
 
 
 class Entity(pygame.sprite.Sprite):
     """Basic Entity"""
 
-    def __init__(self, surface, pos, groups=()):
+    def __init__(self, surface, pos, groups=(), id=None):
         super().__init__(*groups)
         self.image = surface
         self.pos = pygame.Vector2(pos)
         self.velocity = pygame.Vector2()
         self.rect = self.image.get_rect(center=self.pos)
         self._layer = 1
+        self._id = id
+
+    def get_id(self):
+        return deepcopy(self._id)
 
     def move(self, veloc):
         self.velocity += veloc

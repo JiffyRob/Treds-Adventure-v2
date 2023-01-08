@@ -17,6 +17,7 @@ class EventHandler:
 
     def load_bindings(self, path):
         self.bindings = util_load.load_json(path)
+        self.bindings.pop("#", None)  # Remove comment symbol
 
     def save_bindings(self, path):
         util_load.save_json(self.bindings, path)
@@ -35,9 +36,10 @@ class EventHandler:
         event_id = self.bindings.get(as_string, None)
         if event_id is None:
             return
-        new_event = pygame.event.Event(
-            BOUND_EVENT, id=self.bindings[as_string], original_event=event
-        )
+        self.post_event(name=self.bindings[as_string], original_event=event)
+
+    def post_event(self, name, **kwargs):
+        new_event = pygame.event.Event(BOUND_EVENT, type=name, **kwargs)
         pygame.event.post(new_event)
 
 

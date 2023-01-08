@@ -63,6 +63,7 @@ def load_map(path, screen_size, current_player=None):
                 kwargs = {
                     "pos": pygame.Vector2(obj.x, obj.y),
                     "collision_group": groups["collision"],
+                    "id": obj.id,
                 }
                 obj_data = helper_data[obj.template]
                 sprite = instantiators[obj_data["type"]](**kwargs)

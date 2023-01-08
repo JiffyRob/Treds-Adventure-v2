@@ -16,7 +16,9 @@ class Player(entity.Entity):
         id: player's integer id
     """
 
-    def __init__(self, pos: Union[pygame.Vector2, list, tuple], collision_group):
+    def __init__(
+        self, pos: Union[pygame.Vector2, list, tuple], collision_group, id="Player"
+    ):
         super().__init__(util.circle_surf(6, color.RED, 1), pos, ())
         self.speed = 64
         rect = pygame.Rect(0, 0, 32, 32)
@@ -32,7 +34,7 @@ class Player(entity.Entity):
     def control(self, dt):
         self.input()
 
-    def input(self, dt):
+    def input(self):
         keys = pygame.key.get_pressed()
         self.velocity = pygame.Vector2()
         if keys[pygame.K_LEFT]:

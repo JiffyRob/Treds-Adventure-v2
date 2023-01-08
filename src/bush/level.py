@@ -4,12 +4,43 @@ level
 """
 import pygame
 
+DUPLICATE_REMOVE = 1
+DUPLICATE_OVERWRITE = 2
+DUPLICATE_VALUE_ERROR = 3
+
 try:
     import pytmx
 except ImportError:
     pytmx = NotImplemented
     print("WARNING: pytmx not found.  Tiled map primitives not available")
 from bush import animation, color, entity, physics
+
+
+class EntityGroup(pygame.sprite.Group):
+    def __init__(
+        self,
+        *sprites,
+        on_duplicate=lambda old_sprite, new_sprite, group: group.remove(old_sprite)
+    ):
+        super().__init__()
+        self.ids = {}
+        self.on_duplicate = on_duplicate
+        self.add(*sprites)
+
+    def add(self, *sprites, on_duplicate=None):
+        for spr in sprites:
+            if spr.__dict__.get("_id", None) is not None:
+                spr_id = spr._id
+                if spr_id in self.ids:
+                    self.on_duplicate(spr, self.ids[spr_id], self)
+                self.ids[spr_id] = spr
+        super().add(*sprites)
+
+    def remove(self, *sprites):
+        super().remove(*sprites)
+        for spr in sprites:
+            if spr.__dict__.get("_id", None) is not None:
+                self.ids.pop(spr._id)
 
 
 class CameraGroup(pygame.sprite.LayeredUpdates):

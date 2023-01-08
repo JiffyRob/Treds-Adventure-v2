@@ -5,8 +5,8 @@ from bush import timer, util_load
 try:
     from bush import event_binding
 except ImportError:
-    print("WARNING: event bindings not found.")
-    event_binding = NotImplemented
+    print("WARNING: event bindings not found.  InputController object set to None")
+    event_binding = None
 
 
 class Controller:
@@ -18,38 +18,6 @@ class Controller:
 
     def event(self, event):
         pass
-
-
-class InputController(Controller):
-    def __init__(self, bindings={}):
-        super().__init__()
-        self.bindings = bindings
-        self.accepts_events = True
-        self.command_queue = []
-
-    @classmethod
-    def from_json(cls, path, callbacks):
-        bindings = util_load.load_json(path)
-        bindings.pop("#")  # <- Comment symbol
-        for key in tuple(bindings.keys()):
-            bindings[key] = callbacks[key]
-        return cls(bindings)
-
-    def to_json(self, path, string_keys):
-        data = {}
-        for key, value in self.bindings.items():
-            data[key] = string_keys[value]
-        util_load.save_json(data, path)
-
-    def event(self, event):
-        string_key = event_binding.event_to_string(event)
-        command = self.bindings.get(string_key, lambda x: None)
-        self.command_queue.add(command)
-
-    def generate_commands(self):
-        commands = self.command_queue
-        self.command_queue = []
-        return commands
 
 
 class TimedController(Controller):
