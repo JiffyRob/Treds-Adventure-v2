@@ -21,6 +21,7 @@ def load_map(path, screen_size, current_player=None):
         "main": main_group,
         "player": pygame.sprite.GroupSingle(),
         "collision": pygame.sprite.Group(),
+        "event": level.EntityGroup(),
     }
     instantiators = {
         "player": lambda *args, **kwargs: current_player

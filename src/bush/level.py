@@ -42,6 +42,9 @@ class EntityGroup(pygame.sprite.Group):
             if spr.__dict__.get("_id", None) is not None:
                 self.ids.pop(spr._id)
 
+    def get_by_id(self, id):
+        return self.ids.get(id, None)
+
 
 class CameraGroup(pygame.sprite.LayeredUpdates):
     def __init__(self, cam_size, map_size, pos, follow=None, *sprites):

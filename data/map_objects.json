@@ -1,5 +1,5 @@
 {
-  "default groups": ["main"],
+  "default groups": ["main", "event"],
   "layers": {
         "Ground": 0,
         "Ground Decor": 0.5,

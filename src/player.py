@@ -19,7 +19,7 @@ class Player(entity.Entity):
     def __init__(
         self, pos: Union[pygame.Vector2, list, tuple], collision_group, id="Player"
     ):
-        super().__init__(util.circle_surf(6, color.RED, 1), pos, ())
+        super().__init__(util.circle_surf(6, color.RED, 1), pos, (), id)
         self.speed = 64
         rect = pygame.Rect(0, 0, 32, 32)
         rect.center = pos
