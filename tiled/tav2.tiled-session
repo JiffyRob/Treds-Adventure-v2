@@ -11,7 +11,15 @@
     "fileStates": {
         "master.tsx": {
             "scaleInDock": 1,
-            "scaleInEditor": 2
+            "scaleInEditor": 0.33
+        },
+        "test_map.tmx": {
+            "scale": 2,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 535.75,
+                "y": 191.75
+            }
         }
     },
     "last.imagePath": "/home/jack/Python Workspace/Treds-Adventure-v2/resources/tiles",
@@ -26,6 +34,7 @@
     ],
     "project": "tav2.tiled-project",
     "recentFiles": [
+        "test_map.tmx",
         "master.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
