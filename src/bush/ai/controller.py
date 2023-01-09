@@ -1,6 +1,4 @@
-import json
-
-from bush import timer, util_load
+from bush import timer
 
 try:
     from bush import event_binding
@@ -36,26 +34,27 @@ class TimedController(Controller):
         return lambda *args: None
 
 
-class EJECSAI:
-    "EJECS JSON EVENT COORDINATION SYSTEM"
+class EJECSController:
+    """EJECS JSON EVENT COORDINATION SYSTEM"""
 
-    def __init__(self, data_string, command_callbacks):
-        self.script = json.loads(data_string)
+    def __init__(self, script, command_callbacks):
+        self.script = script
         self.current_index = 0
         self.special_names = (":IF", ":VAR")
         self.command_callbacks = {
-            "eq": lambda x, y: x == y,
-            "neq": lambda x, y: x != y,
-            "or": lambda x, y: x or y,
-            "and": lambda x, y: x and y,
-            ">": lambda x, y: x > y,
-            ">=": lambda x, y: x >= y,
-            "<": lambda x, y: x < y,
-            "<=": lambda x, y: x <= y,
-            "max": max,
-            "min": min,
-            "sum": sum,
-            "diff": lambda x, y: x - y,
+            "eq": (lambda x, y: x == y, True),
+            "neq": (lambda x, y: x != y, True),
+            "or": (lambda x, y: x or y, True),
+            "and": (lambda x, y: x and y, True),
+            ">": (lambda x, y: x > y, True),
+            ">=": (lambda x, y: x >= y, True),
+            "<": (lambda x, y: x < y, True),
+            "<=": (lambda x, y: x <= y, True),
+            "max": (max, True),
+            "min": (min, True),
+            "sum": (sum, True),
+            "diff": (lambda x, y: x - y, True),
+            "print": (print, True),
             **command_callbacks,
         }
         self.namespace = {
@@ -63,7 +62,16 @@ class EJECSAI:
             "false": False,
         }
         self.current_command = None
+        self.wait = False
         super().__init__()
+
+    def return_value(self, value):
+        if self.wait:
+            if self.wait is not True:
+                self.add_to_namespace(self.wait, value)
+                self.wait = False
+                return True
+        return False
 
     def add_to_namespace(self, name, value):
         if value is None:
@@ -81,20 +89,29 @@ class EJECSAI:
         self.command_callbacks[action](*args, **kwargs)
 
     def generate_commmand(self):
-        if self.current_command is not None:
-            if not self.current_command.done():
-                return
+        if self.wait:
+            return None
         command_data = self.script[self.current_index]
         args = ()
         kwargs = {}
         var_name = None
+        # command is 'name' 'arg1' 'arg2' ... 'argn' list
         if isinstance(command_data, list):
             next_command, *args = command_data
+        # command is {"action": 'name', "kwarg": 'kwarg', [":IF": 'statement', ":VAR": 'var name']} dict
         else:
-            next_command = command_data["action"]
+            next_command = command_data.pop(["action"])
             if_clause = command_data.pop(":IF", "true")
             if not self.evaluate_if(if_clause):
-                return
+                self.current_index += 1
+                return self.generate_commmand()
             var_name = command_data.pop(":VAR", None)
-        command = self.get_command(next_command, *args, **kwargs)
-        return command
+        self.add_to_namespace(
+            var_name,
+        )
+        callback, wait = self.command_callbacks[next_command]
+        if wait:
+            self.wait = var_name
+        else:
+            self.wait = False
+        return callback

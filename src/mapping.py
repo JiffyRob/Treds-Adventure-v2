@@ -72,4 +72,4 @@ def load_map(path, screen_size, current_player=None):
                     print("adding to", key)
                     groups[key].add(sprite)
     main_group.follow = groups["player"].sprite
-    return groups
+    return groups, None
