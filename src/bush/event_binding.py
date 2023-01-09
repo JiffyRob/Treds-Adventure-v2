@@ -39,7 +39,7 @@ class EventHandler:
         self.post_event(name=self.bindings[as_string], original_event=event)
 
     def post_event(self, name, **kwargs):
-        new_event = pygame.event.Event(BOUND_EVENT, type=name, **kwargs)
+        new_event = pygame.event.Event(BOUND_EVENT, name=name, **kwargs)
         pygame.event.post(new_event)
 
 

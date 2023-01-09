@@ -6,7 +6,9 @@ Has Access to all other modules
 import pygame
 
 import mapping
-from bush import color, util
+from bush import color, util, event_binding, asset_handler
+
+loader = asset_handler.glob_loader
 from bush.ai import controller
 
 pygame.init()
@@ -24,15 +26,18 @@ class Game:
         self.screen = pygame.display.set_mode(util.rvec(self.screen_size))
         # game control state
         self.state = "map"
-        self.controller = None
+        self.controller = event_binding.EventHandler({})
+        self.controller.update_bindings(loader.load("data/input_bindings.json"))
         # initial map load
         self.groups = None
         self.main_group = None
+        self.player = None
         self.load_map("tiled/test_map.tmx")
 
     def load_map(self, path):
         self.groups = mapping.load_map(path, self.screen_size)
         self.main_group = self.groups["main"]
+        self.player = self.groups["player"].sprite
 
     def update_sprites(self, dt):
         self.main_group.update(dt)
@@ -44,6 +49,8 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit()
+            self.controller.process_event(event)
+            self.player.event(event)
 
     def run(self):
         self.screen = pygame.display.set_mode(util.rvec(self.screen_size))
