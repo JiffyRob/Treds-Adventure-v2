@@ -4,6 +4,10 @@ level
 """
 import pygame
 
+DUPLICATE_REMOVE = 1
+DUPLICATE_OVERWRITE = 2
+DUPLICATE_VALUE_ERROR = 3
+
 try:
     import pytmx
 except ImportError:
@@ -12,28 +16,34 @@ except ImportError:
 from bush import animation, color, entity, physics
 
 
-class PhysicsGroup(pygame.sprite.Group):
-    """Group of entities that have physics bodies"""
+class EntityGroup(pygame.sprite.Group):
+    def __init__(
+        self,
+        *sprites,
+        on_duplicate=lambda old_sprite, new_sprite, group: group.remove(old_sprite)
+    ):
+        super().__init__()
+        self.ids = {}
+        self.on_duplicate = on_duplicate
+        self.add(*sprites)
 
-    def __init__(self, *sprites):
-        self.body_group = physics.BodyGroup()
-        super().__init__(*sprites)
-
-    def get_bodies(self, sprites=None):
-        sprites = sprites or self.body_group.sprites()
-        for sprite in sprites:
-            yield sprite.body
-
-    def add(self, *sprites):
+    def add(self, *sprites, on_duplicate=None):
+        for spr in sprites:
+            if spr.__dict__.get("_id", None) is not None:
+                spr_id = spr._id
+                if spr_id in self.ids:
+                    self.on_duplicate(spr, self.ids[spr_id], self)
+                self.ids[spr_id] = spr
         super().add(*sprites)
-        self.body_group.add(*self.get_bodies(sprites))
 
     def remove(self, *sprites):
         super().remove(*sprites)
-        self.body_group.remove(*self.get_bodies(sprites))
+        for spr in sprites:
+            if spr.__dict__.get("_id", None) is not None:
+                self.ids.pop(spr._id)
 
-    def update(self, dt):
-        self.body_group.update(dt)
+    def get_by_id(self, id):
+        return self.ids.get(id, None)
 
 
 class CameraGroup(pygame.sprite.LayeredUpdates):

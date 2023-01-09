@@ -32,8 +32,8 @@ def rvec(vec: pygame.Vector2):
 
 
 def direction(vec: pygame.Vector2):
-    """return a tuple of 1s signed to vector values - eg <-8, 7> -> (-1, 1)"""
-    return (vec.x / abs(vec.x), vec.y / abs(vec.y))
+    """return a tuple of 1s signed to vector values - eg < -8, 7 > -> (-1, 1)"""
+    return vec.x / abs(vec.x), vec.y / abs(vec.y)
 
 
 def vec_abs(vec: pygame.Vector2):

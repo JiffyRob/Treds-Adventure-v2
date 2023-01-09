@@ -6,11 +6,8 @@ BOUND_EVENT = pygame.event.custom_type()
 
 
 def event_to_string(event):
-    # all pygame events from pygame 2.1.2 (SDL 2.0.16)
     if event.type in (pygame.KEYDOWN, pygame.KEYUP):
-        if event.mod != pygame.KMOD_NONE:
-            return f"{pygame.event.event_name(event.type)} {event.mod}"
-        return f"{pygame.event.event_name(event.type)} {pygame.key.name(event.key)}"
+        return f"{pygame.event.event_name(event.type)}-{pygame.key.name(event.key)}"
     return pygame.event.event_name(event.type)
 
 
@@ -20,6 +17,7 @@ class EventHandler:
 
     def load_bindings(self, path):
         self.bindings = util_load.load_json(path)
+        self.bindings.pop("#", None)  # Remove comment symbol
 
     def save_bindings(self, path):
         util_load.save_json(self.bindings, path)
@@ -38,9 +36,10 @@ class EventHandler:
         event_id = self.bindings.get(as_string, None)
         if event_id is None:
             return
-        new_event = pygame.event.Event(
-            BOUND_EVENT, id=self.bindings[as_string], original_event=event
-        )
+        self.post_event(name=self.bindings[as_string], original_event=event)
+
+    def post_event(self, name, **kwargs):
+        new_event = pygame.event.Event(BOUND_EVENT, name=name, **kwargs)
         pygame.event.post(new_event)
 
 
