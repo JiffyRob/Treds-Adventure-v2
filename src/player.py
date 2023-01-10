@@ -30,44 +30,29 @@ class Player(entity.Entity):
 
     def event(self, event):
         if event.type == event_binding.BOUND_EVENT:
-            words = event.name.split(" ")
-            if words[0] == "walk":
-                directions = {
-                    "up": (self.velocity.x, -self.speed),
-                    "down": (self.velocity.x, self.speed),
-                    "left": (-self.speed, self.velocity.y),
-                    "right": (self.speed, self.velocity.y),
-                }
-                self.velocity = pygame.Vector2(directions[words[1]])
-                print(self.velocity)
-            if words[0] == "stop":
-                directions = {
-                    "up": (self.velocity.x, 0),
-                    "down": (self.velocity.x, 0),
-                    "left": (0, self.velocity.y),
-                    "right": (0, self.velocity.y),
-                }
-                self.velocity = pygame.Vector2(directions[words[1]])
-            if self.velocity:
-                self.velocity.scale_to_length(self.speed)
+            self.command(event.name)
+
+    def command(self, command_name):
+        words = command_name.split(" ")
+        if words[0] == "walk":
+            directions = {
+                "up": (self.velocity.x, -self.speed),
+                "down": (self.velocity.x, self.speed),
+                "left": (-self.speed, self.velocity.y),
+                "right": (self.speed, self.velocity.y),
+            }
+            self.velocity = pygame.Vector2(directions[words[1]])
+            print(self.velocity)
+        if words[0] == "stop":
+            directions = {
+                "up": (self.velocity.x, 0),
+                "down": (self.velocity.x, 0),
+                "left": (0, self.velocity.y),
+                "right": (0, self.velocity.y),
+            }
+            self.velocity = pygame.Vector2(directions[words[1]])
+        if self.velocity:
+            self.velocity.scale_to_length(self.speed)
 
     def physics_update(self, dt):
         physics.dynamic_update(self, dt)
-
-    def control(self, dt):
-        # self.input()
-        pass
-
-    def input(self):
-        keys = pygame.key.get_pressed()
-        self.velocity = pygame.Vector2()
-        if keys[pygame.K_LEFT]:
-            self.velocity.x -= 1
-        if keys[pygame.K_RIGHT]:
-            self.velocity.x += 1
-        if keys[pygame.K_UP]:
-            self.velocity.y -= 1
-        if keys[pygame.K_DOWN]:
-            self.velocity.y += 1
-        if self.velocity:
-            self.velocity.scale_to_length(self.speed)

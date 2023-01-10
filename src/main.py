@@ -30,26 +30,28 @@ class Game:
         self.bgcolor = color.GREY
         self.screen = pygame.display.set_mode(util.rvec(self.screen_size))
         # game control state
+        self.groups = None
+        self.main_group = None
+        self.player = None
         self.stack = state.StateStack()
         self.stack.push(STATE_GAMEPLAY)
         self.input_handler = event_binding.EventHandler({})
         self.input_handler.update_bindings(loader.load("data/input_bindings.json"))
         self.controller = None
-        self.controller_api = {
-            "get-entity": (self.groups["event"].get_by_id, True),
-            "say": (self.say, False),
-            "event": (self.input_handler.post_event, True),
-            "wait": (..., False),
-        }
+        self.controller_api = {"command-player": self.player_command}
         # initial map load
-        self.groups = None
-        self.main_group = None
-        self.player = None
         self.load_map("tiled/test_map.tmx")
+        # test script load
+        self.load_script("scripts/test_ejecs.json")
 
-    def game_event(self, script_path):
+    @controller.ejecs_command
+    def player_command(self, command):
+        return self.player.command(command)
+
+    def load_script(self, script_path):
         script = loader.load(script_path)
         self.controller = controller.EJECSController(script, self.controller_api)
+        self.stack.push(STATE_EVENT)
 
     def load_map(self, path, replace=False):
         self.groups, event_script = mapping.load_map(path, self.screen_size)
@@ -69,6 +71,12 @@ class Game:
     def draw_sprites(self):
         self.main_group.draw(self.screen)
 
+    def handle_state(self):
+        if self.stack.get_current() == STATE_EVENT:
+            self.controller.run()
+            if self.controller.finished():
+                self.stack.pop()
+
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -86,6 +94,7 @@ class Game:
         while self.running:
             self.handle_events()
             self.screen.fill(self.bgcolor)
+            self.handle_state()
             self.update_sprites(dt)
             self.draw_sprites()
             pygame.display.flip()

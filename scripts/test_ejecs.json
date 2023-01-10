@@ -1,0 +1,5 @@
+[
+  ["command-player", "walk up"],
+  ["wait", 200],
+  {"action":  "print", "value": "hello", ":IF":  ["eq", 1, 1]}
+]
