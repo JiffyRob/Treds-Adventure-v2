@@ -43,9 +43,9 @@ def static_collision(dynamic, static, axis):
     direction = -velocity
     # directions to try going
     walk_directions = (
-        pygame.Vector2(direction),
         pygame.Vector2(-direction.y, direction.x),
         pygame.Vector2(direction.y, -direction.x),
+        pygame.Vector2(direction),
     )
     # start position of entity
     start_pos = pygame.Vector2(dynamic.pos)
