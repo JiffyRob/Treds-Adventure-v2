@@ -1,4 +1,5 @@
 from bush import timer
+import traceback, sys
 import pygame
 
 try:
@@ -21,51 +22,6 @@ def ejecs_command(function):
     return command_callback
 
 
-class Controller:
-    def __init__(self):
-        self.accepts_events = False
-
-    def generate_commmands(self):
-        pass
-
-    def event(self, event):
-        pass
-
-
-class TimedController(Controller):
-    def __init__(self, delay=1000):
-        self.timer = timer.Timer(delay)
-        self.timer.finish()
-        super().__init__()
-
-    def generate_command(self):
-        if self.timer.done():
-            self.timer.reset()
-            return self.get_command()
-        return None
-
-    def get_command(self):
-        return lambda *args: None
-
-
-class ExececutionState:
-    def __init__(
-        self,
-    ):
-        self.index = 0
-        self.current_command = None
-        self.return_name = None
-
-    def increment(self):
-        self.index += 1
-
-    def get_command_output(self):
-        try:
-            return next(self.current_command)
-        except (StopIteration, TypeError):
-            return PROCESS_UNFINISHED
-
-
 class EJECSController:
     """EJECS JSON EVENT COORDINATION SYSTEM"""
 
@@ -85,7 +41,9 @@ class EJECSController:
         def delay(milliseconds):
             start = pygame.time.get_ticks()
             while pygame.time.get_ticks() - start < milliseconds:
+                print("waiting...")
                 yield PROCESS_UNFINISHED
+            print("waiting done!")
             yield True
 
         self.command_callbacks = {
@@ -104,7 +62,7 @@ class EJECSController:
             "print": ejecs_command(
                 lambda value, *args, **kwargs: print(value, *args, **kwargs)
             ),
-            "wait": ejecs_command(delay),
+            "wait": delay,
             **extra_commands,
         }
         print(self.command_callbacks)
@@ -128,6 +86,7 @@ class EJECSController:
             name, *args = command
             if return_value:
                 return next(self.command_callbacks[name](*args))
+            print("running", name)
             self.state.current_command = self.command_callbacks[name](*args)
         if isinstance(command, dict):
             name = command.pop("action")
@@ -136,17 +95,22 @@ class EJECSController:
             if not self.evaluate(command.pop(":IF", "true")):
                 return IF_UNMET
             if return_value:
-                return next(self.command_callbacks[name](*args))
-            self.state.current_command = self.command_callbacks[name](*args)
+                print("running with kwwargs", command)
+                return next(self.command_callbacks[name](*args, **command))
+            self.state.current_command = self.command_callbacks[name](*args, **command)
 
     def finished(self):
         return self.state.index >= len(self.script)
 
     def run(self):
-        output = self.state.get_command_output()
         if self.state.index >= len(self.script):
             return False
-        while not output != PROCESS_UNFINISHED:
+        output = self.state.get_command_output()
+        if self.state.index < 0:
+            output = "Begin!"
+        print(output)
+        while output != PROCESS_UNFINISHED:
+            print("next!")
             # add result of last command to namespace (if needed)
             if self.state.return_name is not None:
                 self.namespace[self.state.return_name] = output

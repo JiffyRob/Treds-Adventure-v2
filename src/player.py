@@ -42,7 +42,6 @@ class Player(entity.Entity):
                 "right": (self.speed, self.velocity.y),
             }
             self.velocity = pygame.Vector2(directions[words[1]])
-            print(self.velocity)
         if words[0] == "stop":
             directions = {
                 "up": (self.velocity.x, 0),
