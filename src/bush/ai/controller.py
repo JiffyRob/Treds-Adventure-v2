@@ -1,3 +1,8 @@
+import sys
+import traceback
+
+import pygame
+
 from bush import timer
 
 try:
@@ -7,111 +12,119 @@ except ImportError:
     event_binding = None
 
 
-class Controller:
-    def __init__(self):
-        self.accepts_events = False
-
-    def generate_commmands(self):
-        pass
-
-    def event(self, event):
-        pass
+PROCESS_UNFINISHED = ":PROCESS_UNFINISHED"
+IF_UNMET = ":IF_UNMET"
 
 
-class TimedController(Controller):
-    def __init__(self, delay=1000):
-        self.timer = timer.Timer(delay)
-        self.timer.finish()
-        super().__init__()
+def ejecs_command(function):
+    """Decorator that takes a callback and turns it into a command (yields value instead of returns it)"""
 
-    def generate_command(self):
-        if self.timer.done():
-            self.timer.reset()
-            return self.get_command()
-        return None
+    def command_callback(*args, **kwargs):
+        yield function(*args, **kwargs)
 
-    def get_command(self):
-        return lambda *args: None
+    return command_callback
 
 
 class EJECSController:
     """EJECS JSON EVENT COORDINATION SYSTEM"""
 
-    def __init__(self, script, command_callbacks):
-        self.script = script
-        self.current_index = 0
+    def __init__(self, script, extra_commands):
+        self.script = []
+        for line in script:
+            if isinstance(line, (list, tuple)):
+                if line[0] != "#":
+                    self.script.append(line)
+            else:
+                self.script.append(line)
+        self.current_index = -1
+        self.current_process = iter((0,))
+        self.return_name = None
         self.special_names = (":IF", ":VAR")
-        self.command_callbacks = {
-            "eq": (lambda x, y: x == y, True),
-            "neq": (lambda x, y: x != y, True),
-            "or": (lambda x, y: x or y, True),
-            "and": (lambda x, y: x and y, True),
-            ">": (lambda x, y: x > y, True),
-            ">=": (lambda x, y: x >= y, True),
-            "<": (lambda x, y: x < y, True),
-            "<=": (lambda x, y: x <= y, True),
-            "max": (max, True),
-            "min": (min, True),
-            "sum": (sum, True),
-            "diff": (lambda x, y: x - y, True),
-            "print": (print, True),
-            **command_callbacks,
-        }
+        self.command_callbacks = None
+        self.reset_commands(extra_commands)
         self.namespace = {
             "true": True,
             "false": False,
         }
-        self.current_command = None
-        self.wait = False
         super().__init__()
 
-    def return_value(self, value):
-        if self.wait:
-            if self.wait is not True:
-                self.add_to_namespace(self.wait, value)
-                self.wait = False
-                return True
-        return False
+    def reset_commands(self, extra_commands):
+        def delay(milliseconds):
+            start = pygame.time.get_ticks()
+            while pygame.time.get_ticks() - start < milliseconds:
+                yield PROCESS_UNFINISHED
+            yield True
 
-    def add_to_namespace(self, name, value):
-        if value is None:
-            return
-        self.namespace[name] = value
+        self.command_callbacks = {
+            "eq": ejecs_command(lambda x, y: x == y),
+            "neq": ejecs_command(lambda x, y: x != y),
+            "or": ejecs_command(lambda x, y: x or y),
+            "and": ejecs_command(lambda x, y: x and y),
+            ">": ejecs_command(lambda x, y: x > y),
+            ">=": ejecs_command(lambda x, y: x >= y),
+            "<": ejecs_command(lambda x, y: x < y),
+            "<=": ejecs_command(lambda x, y: x <= y),
+            "max": ejecs_command(max),
+            "min": ejecs_command(min),
+            "sum": ejecs_command(sum),
+            "diff": ejecs_command(lambda x, y: x - y),
+            "print": ejecs_command(
+                lambda value, *args, **kwargs: print(
+                    "EJECS Script:", value, *args, **kwargs
+                )
+            ),
+            "wait": delay,
+            **extra_commands,
+        }
 
-    def evaluate_if(self, clause):
-        if isinstance(clause, list):
-            evaluator, *args = clause
-            return self.execute(evaluator, *args)
-        else:
-            return self.namespace[clause]
-
-    def execute(self, action, *args, **kwargs):
-        self.command_callbacks[action](*args, **kwargs)
-
-    def generate_commmand(self):
-        if self.wait:
-            return None
-        command_data = self.script[self.current_index]
-        args = ()
-        kwargs = {}
-        var_name = None
-        # command is 'name' 'arg1' 'arg2' ... 'argn' list
-        if isinstance(command_data, list):
-            next_command, *args = command_data
-        # command is {"action": 'name', "kwarg": 'kwarg', [":IF": 'statement', ":VAR": 'var name']} dict
-        else:
-            next_command = command_data.pop(["action"])
-            if_clause = command_data.pop(":IF", "true")
-            if not self.evaluate_if(if_clause):
-                self.current_index += 1
-                return self.generate_commmand()
-            var_name = command_data.pop(":VAR", None)
-        self.add_to_namespace(
-            var_name,
+    def evaluate(self, exp):
+        if isinstance(exp, (list, tuple, dict)):
+            return self.execute(exp, True)
+        if exp in self.namespace:
+            return self.namespace[exp]
+        for creator in (int, float, str):
+            try:
+                return creator(exp)
+            except (TypeError, ValueError):
+                continue
+        raise ValueError(
+            f"Given expression {exp} is not an action, variable, integer, float, or string"
         )
-        callback, wait = self.command_callbacks[next_command]
-        if wait:
-            self.wait = var_name
-        else:
-            self.wait = False
-        return callback
+
+    def execute(self, command, return_value=False):
+        if isinstance(command, (list, tuple)):
+            name, *args = command
+            if return_value:
+                return next(self.command_callbacks[name](*args))
+            self.current_process = self.command_callbacks[name](*args)
+        if isinstance(command, dict):
+            name = command.pop("action")
+            args = command.pop("args", ())
+            self.return_name = command.pop(":VAR", None)
+            if not self.evaluate(command.pop(":IF", "true")):
+                return IF_UNMET
+            if return_value:
+                return next(self.command_callbacks[name](*args, **command))
+            self.current_process = self.command_callbacks[name](*args, **command)
+
+    def finished(self):
+        return self.current_index >= len(self.script)
+
+    def run(self):
+        if self.current_index >= len(self.script):
+            print("Script complete")
+            return False
+        output = next(self.current_process)
+        if self.current_index < 0:
+            output = "Begin!"
+        while output != PROCESS_UNFINISHED:
+            # add result of last command to namespace (if needed)
+            if self.return_name is not None:
+                self.namespace[self.return_name] = output
+            # new command
+            self.current_index += 1
+            if self.current_index >= len(self.script):
+                return False
+            self.execute(self.script[self.current_index])
+            output = next(self.current_process)
+        return True
