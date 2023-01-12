@@ -22,16 +22,7 @@ class Entity(pygame.sprite.Sprite):
     def get_id(self):
         return deepcopy(self._id)
 
-    def move(self, veloc):
-        self.velocity += veloc
-
-    def stop(self):
-        self.velocity = pygame.Vector2()
-
     def control(self, dt):
-        pass
-
-    def event(self, event):
         pass
 
     def physics_update(self, dt):
