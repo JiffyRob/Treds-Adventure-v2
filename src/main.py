@@ -91,6 +91,7 @@ class Game:
 
         self.running = True
         dt = 0
+        self.clock.tick()  # keeps first frame from jumping
         while self.running:
             self.handle_events()
             self.screen.fill(self.bgcolor)
