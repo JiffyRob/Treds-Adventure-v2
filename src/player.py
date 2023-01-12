@@ -5,7 +5,7 @@ from typing import Union
 
 import pygame
 
-from bush import color, entity, physics, util, event_binding
+from bush import color, entity, event_binding, physics, util
 
 
 class Player(entity.Entity):

@@ -6,9 +6,8 @@ Has Access to all other modules
 import pygame
 
 import mapping
-from bush import color, util, event_binding, asset_handler
-
-from bush.ai import state, controller
+from bush import asset_handler, color, event_binding, util
+from bush.ai import controller, state
 
 pygame.init()
 loader = asset_handler.glob_loader
