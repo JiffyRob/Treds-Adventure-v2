@@ -1,9 +1,4 @@
-import sys
-import traceback
-
 import pygame
-
-from bush import timer
 
 try:
     from bush import event_binding

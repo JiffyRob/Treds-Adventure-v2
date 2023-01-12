@@ -7,7 +7,7 @@ import pygame
 
 import mapping
 from bush import asset_handler, color, event_binding, util
-from bush.ai import controller, state
+from bush.ai import scripting, state
 
 pygame.init()
 loader = asset_handler.glob_loader
