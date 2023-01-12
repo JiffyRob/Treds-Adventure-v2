@@ -1,4 +1,5 @@
 [
+  ["#", "Player walks down for 2000 milliseconds"],
   ["command-player", "walk down"],
   ["wait", 2000],
   {"action":  "command-player", "command":  "stop down"},

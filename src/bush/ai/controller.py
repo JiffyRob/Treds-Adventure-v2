@@ -26,8 +26,16 @@ class EJECSController:
     """EJECS JSON EVENT COORDINATION SYSTEM"""
 
     def __init__(self, script, extra_commands):
-        self.script = script
-        self.state = ExececutionState()
+        self.script = []
+        for line in script:
+            if isinstance(line, (list, tuple)):
+                if line[0] != "#":
+                    self.script.append(line)
+            else:
+                self.script.append(line)
+        self.current_index = -1
+        self.current_process = iter((0,))
+        self.return_name = None
         self.special_names = (":IF", ":VAR")
         self.command_callbacks = None
         self.reset_commands(extra_commands)
@@ -87,37 +95,39 @@ class EJECSController:
             if return_value:
                 return next(self.command_callbacks[name](*args))
             print("running", name)
-            self.state.current_command = self.command_callbacks[name](*args)
+            self.current_process = self.command_callbacks[name](*args)
         if isinstance(command, dict):
             name = command.pop("action")
             args = command.pop("args", ())
-            self.state.return_name = command.pop(":VAR", None)
+            self.return_name = command.pop(":VAR", None)
             if not self.evaluate(command.pop(":IF", "true")):
                 return IF_UNMET
             if return_value:
                 print("running with kwwargs", command)
                 return next(self.command_callbacks[name](*args, **command))
-            self.state.current_command = self.command_callbacks[name](*args, **command)
+            self.current_process = self.command_callbacks[name](*args, **command)
 
     def finished(self):
-        return self.state.index >= len(self.script)
+        return self.current_index >= len(self.script)
 
     def run(self):
-        if self.state.index >= len(self.script):
+        if self.current_index >= len(self.script):
+            print("Script complete")
             return False
-        output = self.state.get_command_output()
-        if self.state.index < 0:
+        output = next(self.current_process)
+        if self.current_index < 0:
             output = "Begin!"
         print(output)
         while output != PROCESS_UNFINISHED:
             print("next!")
             # add result of last command to namespace (if needed)
-            if self.state.return_name is not None:
-                self.namespace[self.state.return_name] = output
+            if self.return_name is not None:
+                self.namespace[self.return_name] = output
             # new command
-            self.state.index += 1
-            if self.state.index >= len(self.script):
+            self.current_index += 1
+            if self.current_index >= len(self.script):
+                print("Script complete.")
                 return False
-            self.execute(self.script[self.state.index])
-            output = self.state.get_command_output()
+            self.execute(self.script[self.current_index])
+            output = next(self.current_process)
         return True
