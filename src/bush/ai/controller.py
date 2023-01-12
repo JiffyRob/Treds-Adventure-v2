@@ -49,9 +49,7 @@ class EJECSController:
         def delay(milliseconds):
             start = pygame.time.get_ticks()
             while pygame.time.get_ticks() - start < milliseconds:
-                print("waiting...")
                 yield PROCESS_UNFINISHED
-            print("waiting done!")
             yield True
 
         self.command_callbacks = {
@@ -68,12 +66,13 @@ class EJECSController:
             "sum": ejecs_command(sum),
             "diff": ejecs_command(lambda x, y: x - y),
             "print": ejecs_command(
-                lambda value, *args, **kwargs: print(value, *args, **kwargs)
+                lambda value, *args, **kwargs: print(
+                    "EJECS Script:", value, *args, **kwargs
+                )
             ),
             "wait": delay,
             **extra_commands,
         }
-        print(self.command_callbacks)
 
     def evaluate(self, exp):
         if isinstance(exp, (list, tuple, dict)):
@@ -94,7 +93,6 @@ class EJECSController:
             name, *args = command
             if return_value:
                 return next(self.command_callbacks[name](*args))
-            print("running", name)
             self.current_process = self.command_callbacks[name](*args)
         if isinstance(command, dict):
             name = command.pop("action")
@@ -103,7 +101,6 @@ class EJECSController:
             if not self.evaluate(command.pop(":IF", "true")):
                 return IF_UNMET
             if return_value:
-                print("running with kwwargs", command)
                 return next(self.command_callbacks[name](*args, **command))
             self.current_process = self.command_callbacks[name](*args, **command)
 
@@ -117,16 +114,13 @@ class EJECSController:
         output = next(self.current_process)
         if self.current_index < 0:
             output = "Begin!"
-        print(output)
         while output != PROCESS_UNFINISHED:
-            print("next!")
             # add result of last command to namespace (if needed)
             if self.return_name is not None:
                 self.namespace[self.return_name] = output
             # new command
             self.current_index += 1
             if self.current_index >= len(self.script):
-                print("Script complete.")
                 return False
             self.execute(self.script[self.current_index])
             output = next(self.current_process)
