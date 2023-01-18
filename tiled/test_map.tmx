@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="3">
+<map version="1.9" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="5">
  <tileset firstgid="1" source="master.tsx"/>
+ <tileset firstgid="4097" source="trees.tsx"/>
  <layer id="1" name="Ground" width="64" height="64">
   <data encoding="csv">
 784,783,784,784,781,783,783,784,782,783,780,784,783,782,782,782,783,780,784,783,784,782,782,782,784,781,781,782,783,782,783,780,783,780,781,782,784,784,782,780,782,780,784,783,781,783,783,782,783,781,781,781,783,780,781,784,784,780,781,782,784,782,784,780,
@@ -207,5 +208,6 @@
  </layer>
  <objectgroup id="4" name="Objects">
   <object id="1" template="player.tx" x="82.9918" y="111.99"/>
+  <object id="4" template="tree.tx" x="192" y="144"/>
  </objectgroup>
 </map>
