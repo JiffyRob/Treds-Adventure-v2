@@ -90,14 +90,14 @@ class TopDownGroup(CameraGroup):
         return sorted(super().sprites(), key=sortkey)
 
 
-class AnimatedTile(entity.EntityLite):
+class AnimatedTile(entity.Entity):
     def __init__(self, anim, pos, layer):
-        super().__init__(anim.image(), pos)
+        super().__init__(pos, anim.image())
         self._layer = layer
         self.anim = anim
 
     def update(self, dt):
-        super().update()
+        super().update(dt)
         self.image = self.anim.image()
 
 

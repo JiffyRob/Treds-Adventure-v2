@@ -52,7 +52,7 @@ def load_map(path, screen_size, current_player=None):
                     object_layers[name],
                 )
                 main_group.add(tile)
-            collision_sprite = entity.EntityLite(layer_surface, (0, 0))
+            collision_sprite = entity.Entity((0, 0), layer_surface)
             collision_sprite.mask = pygame.mask.from_surface(layer_surface)
             collision_sprite.physics_data = physics.PhysicsData(
                 physics.TYPE_STATIC, groups["collision"]
@@ -66,7 +66,9 @@ def load_map(path, screen_size, current_player=None):
                     "collision_group": groups["collision"],
                     "id": obj.id,
                 }
-                obj_data = helper_data[obj.template]
+                obj_data = helper_data.get(obj.template, None)
+                if obj_data is None:
+                    continue
                 sprite = instantiators[obj_data["type"]](**kwargs)
                 for key in obj_data.get("groups", helper_data["default groups"]):
                     print("adding to", key)

@@ -11,11 +11,12 @@ import pygame
 class Entity(pygame.sprite.Sprite):
     """Basic Entity"""
 
-    def __init__(self, surface, pos, groups=(), id=None):
+    def __init__(self, pos, surface=None, groups=(), id=None):
         super().__init__(*groups)
         self.image = surface
+        if surface is None:
+            self.image = pygame.Surface((0, 0))
         self.pos = pygame.Vector2(pos)
-        self.velocity = pygame.Vector2()
         self.rect = self.image.get_rect(center=self.pos)
         self._layer = 1
         self._id = id
@@ -23,24 +24,21 @@ class Entity(pygame.sprite.Sprite):
     def get_id(self):
         return deepcopy(self._id)
 
-    def control(self, dt):
-        pass
-
-    def physics_update(self, dt):
-        pass
-
-    def behaviour_update(self, dt):
-        pass
-
-    def render(self, dt):
-        pass
+    def limit(self, map_rect):
+        pass  # Static Entities don't move
 
     def update(self, dt):
         self.rect.center = self.pos
-        self.control(dt)
-        self.physics_update(dt)
-        self.behaviour_update(dt)
-        self.render(dt)
+
+
+class Actor(Entity):
+    def __init__(self, pos, surface=None, groups=(), id=None):
+        super().__init__(pos, surface, groups, id)
+        self.velocity = pygame.Vector2()
+
+    def update(self, dt):
+        self.pos += self.velocity * dt
+        self.rect.center = self.pos
 
     def limit(self, map_rect):
         moved = False
@@ -58,18 +56,3 @@ class Entity(pygame.sprite.Sprite):
         moved |= difference
         self.rect.center = self.pos
         return moved
-
-
-class EntityLite(pygame.sprite.Sprite):
-    def __init__(self, surface, pos):
-        self.pos = pos
-        self.image = surface
-        self.rect = self.image.get_rect(center=self.pos)
-        self._layer = 1
-        super().__init__()
-
-    def update(self):
-        self.rect.center = self.pos
-
-    def limit(self, *args, **kwargs):
-        pass

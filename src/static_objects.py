@@ -7,7 +7,7 @@ class Decor(level.AnimatedTile):
     pass
 
 
-class Tree(entity.EntityLite):
+class Tree(entity.Entity):
     pass
 
 
@@ -15,5 +15,5 @@ class Bush(entity.Entity):
     pass
 
 
-class Sign(entity.EntityLite):
+class Sign(entity.Entity):
     pass

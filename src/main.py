@@ -36,20 +36,20 @@ class Game:
         self.stack.push(STATE_GAMEPLAY)
         self.input_handler = event_binding.EventHandler({})
         self.input_handler.update_bindings(loader.load("data/input_bindings.json"))
-        self.controller = None
-        self.controller_api = {"command-player": self.player_command}
+        self.scripting = None
+        self.scripting_api = {"command-player": self.player_command}
         # initial map load
         self.load_map("tiled/test_map.tmx")
         # test script load
         self.load_script("scripts/test_ejecs.json")
 
-    @controller.ejecs_command
+    @scripting.ejecs_command
     def player_command(self, command):
         return self.player.command(command)
 
     def load_script(self, script_path):
         script = loader.load(script_path)
-        self.controller = controller.EJECSController(script, self.controller_api)
+        self.scripting = scripting.EJECSController(script, self.scripting_api)
         self.stack.push(STATE_EVENT)
 
     def load_map(self, path, replace=False):
@@ -72,8 +72,8 @@ class Game:
 
     def handle_state(self):
         if self.stack.get_current() == STATE_EVENT:
-            self.controller.run()
-            if self.controller.finished():
+            self.scripting.run()
+            if self.scripting.finished():
                 self.stack.pop()
 
     def handle_events(self):
