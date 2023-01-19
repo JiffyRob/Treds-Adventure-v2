@@ -59,7 +59,9 @@ def static_collision(dynamic, static, axis):
     check_rect = dynamic.rect.copy()
     check_rect.center = check_pos
     # walk in all directions
-    while rect_mask_collide(check_rect, static.mask):
+    while rect_mask_collide(
+        check_rect.move(-pygame.Vector2(static.rect.topleft)), static.mask
+    ):
         walk_direction = walk_directions[direction_index]
         check_pos = start_pos + (walk_direction * distance)
         distance += 0.25
