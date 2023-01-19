@@ -11,5 +11,9 @@
   "player.tx": {
     "type": "player",
     "groups": ["player", "main"]
+  },
+  "tree.tx": {
+    "type": "tree",
+    "groups": ["main", "collision"]
   }
 }

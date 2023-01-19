@@ -26,6 +26,7 @@ def load_map(path, screen_size, current_player=None):
     instantiators = {
         "player": lambda *args, **kwargs: current_player
         or player.Player(*args, **kwargs),
+        "tree": static_objects.Tree,
     }
 
     for layer in tmx_map.layers:
@@ -66,6 +67,9 @@ def load_map(path, screen_size, current_player=None):
                     "collision_group": groups["collision"],
                     "id": obj.id,
                 }
+                if obj.gid:
+                    print("gid!")
+                    kwargs["image"] = tmx_map.get_tile_image_by_gid(obj.gid)
                 obj_data = helper_data.get(obj.template, None)
                 if obj_data is None:
                     continue
@@ -73,6 +77,7 @@ def load_map(path, screen_size, current_player=None):
                 for key in obj_data.get("groups", helper_data["default groups"]):
                     print("adding to", key)
                     groups[key].add(sprite)
+                    print(groups[key])
     main_group.follow = groups["player"].sprite
 
     return groups, None
