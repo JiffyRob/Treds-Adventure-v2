@@ -40,8 +40,6 @@ class Game:
         self.scripting_api = {"command-player": self.player_command}
         # initial map load
         self.load_map("tiled/test_map.tmx")
-        # test script load
-        self.load_script("scripts/test_ejecs.json")
 
     @scripting.ejecs_command
     def player_command(self, command):
