@@ -14,9 +14,8 @@ def load_map(path, screen_size, current_player=None):
     tmx_map = asset_loader.load(path)
     tile_width, tile_height = tile_size = pygame.Vector2(16, 16)
     map_width, map_height = tmx_map.width, tmx_map.height
-    main_group = level.TopDownGroup(
-        screen_size, (tile_width * map_width, tile_height * map_height), (0, 0)
-    )
+    map_rect = pygame.Rect(0, 0, map_width * tile_width, map_height * tile_height)
+    main_group = level.TopDownGroup(screen_size, map_rect.size, (0, 0))
     groups = {
         "main": main_group,
         "player": pygame.sprite.GroupSingle(),
@@ -53,7 +52,7 @@ def load_map(path, screen_size, current_player=None):
                     object_layers[name],
                 )
                 main_group.add(tile)
-            collision_sprite = entity.Entity((0, 0), layer_surface)
+            collision_sprite = entity.Entity(map_rect.center, layer_surface)
             collision_sprite.mask = pygame.mask.from_surface(layer_surface)
             collision_sprite.physics_data = physics.PhysicsData(
                 physics.TYPE_STATIC, groups["collision"]
@@ -68,16 +67,13 @@ def load_map(path, screen_size, current_player=None):
                     "id": obj.id,
                 }
                 if obj.gid:
-                    print("gid!")
                     kwargs["image"] = tmx_map.get_tile_image_by_gid(obj.gid)
                 obj_data = helper_data.get(obj.template, None)
                 if obj_data is None:
                     continue
                 sprite = instantiators[obj_data["type"]](**kwargs)
                 for key in obj_data.get("groups", helper_data["default groups"]):
-                    print("adding to", key)
                     groups[key].add(sprite)
-                    print(groups[key])
     main_group.follow = groups["player"].sprite
 
     return groups, None
