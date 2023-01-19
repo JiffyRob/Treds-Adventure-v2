@@ -63,7 +63,7 @@ class AssetHandler:
     def set_home(self, path):
         self.base = os.path.join(path)
 
-    def load(self, filepath, cache=True):
+    def load(self, filepath, cache=True, loader=None, **kwargs):
         filepath = os.path.join(self.base, filepath)
         # get file extension
         filetype = filepath.split(".")[-1]
@@ -77,7 +77,8 @@ class AssetHandler:
         if filepath in self.type_dict[filetype]:
             return self.type_dict[filetype][filepath]
         # load file
-        result = self.load_dict[filetype](filepath)
+        loader = loader or self.load_dict[filetype]
+        result = loader(filepath, **kwargs)
         # add to cache if needed
         if cache:
             self.type_dict[filetype][filepath] = result
