@@ -208,7 +208,7 @@
  </layer>
  <objectgroup id="4" name="Objects">
   <object id="1" template="player.tx" x="82.9918" y="111.99"/>
-  <object id="14" template="tree.tx" gid="4098" x="176" y="208" width="32" height="64"/>
+  <object id="14" template="tree.tx" gid="4098" x="176" y="224" width="32" height="64"/>
   <object id="15" template="tree.tx" gid="4098" x="160" y="192" width="32" height="64"/>
   <object id="16" template="tree.tx" gid="4098" x="144" y="224" width="32" height="64"/>
   <object id="17" template="tree.tx" gid="4098" x="96" y="208" width="32" height="64"/>

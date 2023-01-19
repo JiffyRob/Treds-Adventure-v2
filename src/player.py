@@ -19,12 +19,11 @@ class Player(entity.Actor):
     def __init__(
         self, pos: Union[pygame.Vector2, list, tuple], collision_group, id="Player"
     ):
-        super().__init__(pos, util.circle_surf(6, color.RED, 1), (), id)
-        self.speed = 96
-        rect = pygame.Rect(0, 0, 32, 32)
+        rect = pygame.Rect(0, 0, 14, 24)
         rect.center = pos
+        super().__init__(pos, util.rect_surf(rect, color.BLUE), (), id)
+        self.speed = 96
         self.physics_data = physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group)
-        self.image = util.rect_surf(rect, color.BLUE)
         self.rect = rect
         self.rect.center = self.pos
 
