@@ -2,10 +2,11 @@
 Main - runs game and holds game loop.
 Has Access to all other modules
 """
-# normal imports
 import pygame
+import pygame_menu
 
 import mapping
+import menu_theme
 from bush import asset_handler, color, event_binding, util
 from bush.ai import scripting, state
 
@@ -22,6 +23,7 @@ class Game:
     def __init__(self):
         # Basic Pygame Boilerplate Variables (BPBV)
         self.screen_size = pygame.Vector2(640, 480)
+        self.caption = "Tred's Adventure"
         self.screen = None
         self.clock = pygame.time.Clock()
         self.fps = 30
@@ -38,6 +40,16 @@ class Game:
         self.input_handler.update_bindings(loader.load("data/input_bindings.json"))
         self.scripting = None
         self.scripting_api = {"command-player": self.player_command}
+        # menus
+        self.pausemenu = pygame_menu.Menu(
+            "Paused",
+            self.screen_size.x * 0.7,
+            self.screen_size.y - 64,
+            theme=menu_theme.menu_theme,
+        )
+        self.pausemenu.add.button("Resume", self.exit_pausemenu)
+        self.pausemenu.add.button("Quit", self.quit)
+        self.pausemenu.set_onclose(self.exit_pausemenu)
         # initial map load
         self.load_map("tiled/test_map.tmx")
 
@@ -63,10 +75,16 @@ class Game:
             self.stack.push(STATE_EVENT)
 
     def update_sprites(self, dt):
-        self.main_group.update(dt)
+        if self.stack.get_current() == STATE_GAMEPLAY:
+            self.main_group.update(dt)
 
     def draw_sprites(self):
-        self.main_group.draw(self.screen)
+        if self.stack.get_current() == STATE_GAMEPLAY:
+            self.screen.fill(self.bgcolor)
+            self.main_group.draw(self.screen)
+        if self.stack.get_current() == STATE_PAUSEMENU:
+            self.pausemenu.draw(self.screen)
+            self.player.velocity = pygame.Vector2()
 
     def handle_state(self):
         if self.stack.get_current() == STATE_EVENT:
@@ -75,23 +93,41 @@ class Game:
                 self.stack.pop()
 
     def handle_events(self):
+        events = []
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_F11:
+                    pygame.display.toggle_fullscreen()
+                if event.key == pygame.K_ESCAPE:
+                    if self.stack.get_current() in {STATE_GAMEPLAY, STATE_MAINMENU}:
+                        self.quit()
+                    else:
+                        pass  # self.stack.pop()
+                if event.key == pygame.K_p:
+                    self.stack.push(STATE_PAUSEMENU)
+                    self.pausemenu.enable()
+
             if self.stack.get_current() == STATE_GAMEPLAY:
                 self.input_handler.process_event(event)
                 self.player.event(event)
+            events.append(event)
+        if self.stack.get_current() == STATE_PAUSEMENU:
+            self.pausemenu.update(events)
 
     def run(self):
-        self.screen = pygame.display.set_mode(util.rvec(self.screen_size))
-        self.screen.fill(self.bgcolor)
+        self.screen = pygame.display.set_mode(
+            util.rvec(self.screen_size), pygame.SCALED, vsync=True
+        )
+        pygame.display.set_caption(self.caption)
+        pygame.mouse.set_visible(False)
 
         self.running = True
         dt = 0
         self.clock.tick()  # keeps first frame from jumping
         while self.running:
             self.handle_events()
-            self.screen.fill(self.bgcolor)
             self.handle_state()
             self.update_sprites(dt)
             self.draw_sprites()
@@ -100,6 +136,10 @@ class Game:
 
         pygame.quit()
         self.screen = None
+
+    def exit_pausemenu(self):
+        self.stack.pop()
+        pygame.display.set_caption(self.caption)
 
     def quit(self):
         self.running = False
