@@ -46,6 +46,7 @@ class Game:
             self.screen_size.x * 0.7,
             self.screen_size.y - 64,
             theme=menu_theme.menu_theme,
+            mouse_visible=False,
         )
         self.pausemenu.add.button("Resume", self.exit_pausemenu)
         self.pausemenu.add.button("Quit", self.quit)
