@@ -76,8 +76,7 @@ class Game:
             self.stack.push(STATE_EVENT)
 
     def update_sprites(self, dt):
-        if self.stack.get_current() == STATE_GAMEPLAY:
-            self.main_group.update(dt)
+        self.main_group.update(dt)
 
     def draw_sprites(self):
         if self.stack.get_current() == STATE_GAMEPLAY:
@@ -93,29 +92,38 @@ class Game:
             if self.scripting.finished():
                 self.stack.pop()
 
+    def pause(self):
+        if not self.pausemenu.is_enabled():
+            self.pausemenu.enable()
+        if self.stack.get_current() != STATE_PAUSEMENU:
+            self.stack.push(STATE_PAUSEMENU)
+
+    def unpause(self):
+        if self.pausemenu.is_enabled():
+            self.pausemenu.disable()
+        if self.stack.get_current() == STATE_PAUSEMENU:
+            self.stack.pop()
+        pygame.display.set_caption(self.caption)
+
     def handle_events(self):
-        events = []
         for event in pygame.event.get():
+            self.input_handler.process_event(event)
             if event.type == pygame.QUIT:
                 self.quit()
             if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    if self.pausemenu.is_enabled():
+                        self.unpause()
+                    else:
+                        self.quit()
+                if event.key == pygame.K_p:
+                    self.pause()
                 if event.key == pygame.K_F11:
                     pygame.display.toggle_fullscreen()
-                if event.key == pygame.K_ESCAPE:
-                    if self.stack.get_current() in {STATE_GAMEPLAY, STATE_MAINMENU}:
-                        self.quit()
-                    else:
-                        pass  # self.stack.pop()
-                if event.key == pygame.K_p:
-                    self.stack.push(STATE_PAUSEMENU)
-                    self.pausemenu.enable()
-
             if self.stack.get_current() == STATE_GAMEPLAY:
-                self.input_handler.process_event(event)
                 self.player.event(event)
-            events.append(event)
-        if self.stack.get_current() == STATE_PAUSEMENU:
-            self.pausemenu.update(events)
+            if self.stack.get_current() == STATE_PAUSEMENU:
+                self.pausemenu.update([event])
 
     def run(self):
         self.screen = pygame.display.set_mode(
@@ -129,9 +137,16 @@ class Game:
         self.clock.tick()  # keeps first frame from jumping
         while self.running:
             self.handle_events()
+            if self.stack.get_current() in {STATE_GAMEPLAY, STATE_EVENT}:
+                self.handle_state()
+                self.update_sprites(dt)
+                self.draw_sprites()
+                pygame.display.flip()
+            if self.stack.get_current() == STATE_PAUSEMENU:
+                self.pausemenu.draw(self.screen)
+            if self.stack.get_current() == STATE_MAINMENU:
+                ...
             self.handle_state()
-            self.update_sprites(dt)
-            self.draw_sprites()
             pygame.display.flip()
             dt = self.clock.tick(self.fps) / 1000
 
