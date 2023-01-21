@@ -5,6 +5,11 @@
   <properties>
    <property name="groups" value="ground"/>
   </properties>
+  <animation>
+   <frame tileid="1698" duration="100"/>
+   <frame tileid="1699" duration="100"/>
+   <frame tileid="1700" duration="100"/>
+  </animation>
  </tile>
  <tile id="1">
   <properties>
@@ -3936,6 +3941,13 @@
    <property name="groups" value="ground"/>
   </properties>
  </tile>
+ <tile id="1570">
+  <animation>
+   <frame tileid="1570" duration="100"/>
+   <frame tileid="1571" duration="100"/>
+   <frame tileid="1572" duration="100"/>
+  </animation>
+ </tile>
  <tile id="1600">
   <properties>
    <property name="groups" value="ground"/>
@@ -4046,6 +4058,24 @@
    <property name="groups" value="ground"/>
   </properties>
  </tile>
+ <tile id="1634">
+  <animation>
+   <frame tileid="1634" duration="100"/>
+   <frame tileid="1635" duration="100"/>
+   <frame tileid="1636" duration="100"/>
+   <frame tileid="1637" duration="100"/>
+   <frame tileid="1638" duration="100"/>
+  </animation>
+ </tile>
+ <tile id="1636">
+  <animation>
+   <frame tileid="1636" duration="100"/>
+   <frame tileid="1637" duration="100"/>
+   <frame tileid="1638" duration="100"/>
+   <frame tileid="1634" duration="100"/>
+   <frame tileid="1635" duration="100"/>
+  </animation>
+ </tile>
  <tile id="1664">
   <properties>
    <property name="groups" value="ground"/>
@@ -4100,6 +4130,13 @@
   <properties>
    <property name="groups" value="ground"/>
   </properties>
+ </tile>
+ <tile id="1698">
+  <animation>
+   <frame tileid="1698" duration="100"/>
+   <frame tileid="1699" duration="100"/>
+   <frame tileid="1700" duration="100"/>
+  </animation>
  </tile>
  <tile id="1728">
   <properties>

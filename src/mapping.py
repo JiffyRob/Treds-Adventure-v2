@@ -10,6 +10,19 @@ helper_data = asset_loader.load("data/map_objects.json")
 object_layers = helper_data["layers"]
 
 
+def get_anim(x, y, tile, layer_index, tmx_map):
+    props = tmx_map.get_tile_properties(x, y, layer_index)
+    anim = animation.Animation([tile], 1)
+    if props is not None and props["frames"]:
+        frames = []
+        durations = []
+        for frame in props["frames"]:
+            frames.append(tmx_map.get_tile_image_by_gid(frame.gid))
+            durations.append(frame.duration)
+        anim = animation.Animation(frames, durations)
+    return anim
+
+
 def load_map(path, screen_size, current_player=None):
     tmx_map = asset_loader.load(path)
     tile_width, tile_height = tile_size = pygame.Vector2(16, 16)
@@ -28,13 +41,13 @@ def load_map(path, screen_size, current_player=None):
         "tree": static_objects.Tree,
     }
 
-    for layer in tmx_map.layers:
+    for layer_index, layer in enumerate(tmx_map.layers):
         name = layer.name
         if name in {"Ground", "Decor", "Ground Decor"}:
             for x, y, tile in layer.tiles():
                 pos = pygame.Vector2(x * tile_width, y * tile_height)
                 tile = level.AnimatedTile(
-                    animation.Animation([tile], 1),
+                    get_anim(x, y, tile, layer_index, tmx_map),
                     pos + tile_size / 2,
                     object_layers[name],
                 )
@@ -47,7 +60,7 @@ def load_map(path, screen_size, current_player=None):
                 pos = pygame.Vector2(x * tile_width, y * tile_height)
                 layer_surface.blit(tile, pos)
                 tile = level.AnimatedTile(
-                    animation.Animation([tile], 1),
+                    get_anim(x, y, tile, layer_index, tmx_map),
                     pos + tile_size / 2,
                     object_layers[name],
                 )
