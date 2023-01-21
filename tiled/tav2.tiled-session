@@ -1,15 +1,35 @@
 {
-    "activeFile": "",
+    "activeFile": "test_map.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "fileStates": {
+        "master.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "test_map.tmx": {
+            "scale": 4,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 572.875,
+                "y": 185.125
+            }
+        },
+        "trees.tsx": {
+            "scaleInDock": 1
+        }
     },
     "last.imagePath": "/home/jack/Python Workspace/Treds-Adventure-v2/resources/tiles",
     "last.objectTemplatePath": "/home/jack/Python Workspace/Treds-Adventure-v2/tiled",
     "openFiles": [
+        "test_map.tmx",
+        "master.tsx"
     ],
     "project": "tav2.tiled-project",
     "recentFiles": [
+        "master.tsx",
+        "test_map.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
