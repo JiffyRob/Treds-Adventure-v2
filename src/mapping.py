@@ -9,7 +9,7 @@ asset_loader = asset_handler.glob_loader
 DEFAULT_GROUPS = "main"
 
 
-def get_anim(x, y, tile, layer_index, tmx_map):
+def get_anim(x, y, layer_index, tmx_map):
     props = tmx_map.get_tile_properties(x, y, layer_index)
     anim = None
     if props is not None and props["frames"]:
@@ -50,7 +50,7 @@ def load_map(path, screen_size, current_player=None):
             )
             for x, y, tile in layer.tiles():
                 pos = pygame.Vector2(x * tile_width, y * tile_height)
-                anim = get_anim(x, y, tile, layer_index, tmx_map)
+                anim = get_anim(x, y, layer_index, tmx_map)
                 if anim:
                     tile = level.AnimatedTile(
                         anim,
