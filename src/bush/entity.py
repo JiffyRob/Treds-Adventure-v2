@@ -11,7 +11,7 @@ import pygame
 class Entity(pygame.sprite.Sprite):
     """Basic Entity"""
 
-    def __init__(self, pos, surface=None, groups=(), id=None):
+    def __init__(self, pos, surface=None, groups=(), id=None, layer=None):
         super().__init__(*groups)
         self.image = surface
         if surface is None:
@@ -19,6 +19,8 @@ class Entity(pygame.sprite.Sprite):
         self.pos = pygame.Vector2(pos)
         self.rect = self.image.get_rect(center=self.pos)
         self._layer = 1
+        if layer is not None:
+            self._layer = layer
         self._id = id
 
     def get_id(self):
@@ -32,8 +34,8 @@ class Entity(pygame.sprite.Sprite):
 
 
 class Actor(Entity):
-    def __init__(self, pos, surface=None, groups=(), id=None):
-        super().__init__(pos, surface, groups, id)
+    def __init__(self, pos, surface=None, groups=(), id=None, layer=None):
+        super().__init__(pos, surface, groups, id, layer)
         self.velocity = pygame.Vector2()
 
     def update(self, dt):
