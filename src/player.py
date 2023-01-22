@@ -17,11 +17,15 @@ class Player(entity.Actor):
     """
 
     def __init__(
-        self, pos: Union[pygame.Vector2, list, tuple], collision_group, id="Player"
+        self,
+        pos: Union[pygame.Vector2, list, tuple],
+        collision_group,
+        layer,
+        id="Player",
     ):
         rect = pygame.Rect(0, 0, 14, 14)
         rect.center = pos
-        super().__init__(pos, util.rect_surf(rect, color.BLUE), (), id)
+        super().__init__(pos, util.rect_surf(rect, color.BLUE), (), id, layer)
         self.speed = 96
         self.physics_data = physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group)
         self.rect = rect

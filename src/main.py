@@ -127,7 +127,7 @@ class Game:
 
     def run(self):
         self.screen = pygame.display.set_mode(
-            util.rvec(self.screen_size), pygame.SCALED, vsync=True
+            util.rvec(self.screen_size), 0, vsync=True
         )
         pygame.display.set_caption(self.caption)
         pygame.mouse.set_visible(False)

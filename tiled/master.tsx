@@ -5,11 +5,6 @@
   <properties>
    <property name="groups" value="ground"/>
   </properties>
-  <animation>
-   <frame tileid="1698" duration="100"/>
-   <frame tileid="1699" duration="100"/>
-   <frame tileid="1700" duration="100"/>
-  </animation>
  </tile>
  <tile id="1">
   <properties>

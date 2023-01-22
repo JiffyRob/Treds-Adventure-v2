@@ -27,6 +27,7 @@
         "master.tsx"
     ],
     "project": "tav2.tiled-project",
+    "property.type": "string",
     "recentFiles": [
         "master.tsx",
         "test_map.tmx"

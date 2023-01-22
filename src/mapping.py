@@ -12,7 +12,7 @@ object_layers = helper_data["layers"]
 
 def get_anim(x, y, tile, layer_index, tmx_map):
     props = tmx_map.get_tile_properties(x, y, layer_index)
-    anim = animation.Animation([tile], 1)
+    anim = None
     if props is not None and props["frames"]:
         frames = []
         durations = []
@@ -43,41 +43,48 @@ def load_map(path, screen_size, current_player=None):
 
     for layer_index, layer in enumerate(tmx_map.layers):
         name = layer.name
-        if name in {"Ground", "Decor", "Ground Decor"}:
-            for x, y, tile in layer.tiles():
-                pos = pygame.Vector2(x * tile_width, y * tile_height)
-                tile = level.AnimatedTile(
-                    get_anim(x, y, tile, layer_index, tmx_map),
-                    pos + tile_size / 2,
-                    object_layers[name],
-                )
-                main_group.add(tile)
-        if name == "Collision Decor":
+        sprite_layer = layer_index
+        sprite_layer *= 3  # 3 sub layers in between each map layer (below, main above)
+        sprite_layer += 1  # defaults to main layer
+        if name in {"Collision Decor", "Decor", "Ground", "Ground Decor"}:
             layer_surface = pygame.Surface(
                 (tile_width * map_width, tile_height * map_height), pygame.SRCALPHA
             )
             for x, y, tile in layer.tiles():
                 pos = pygame.Vector2(x * tile_width, y * tile_height)
-                layer_surface.blit(tile, pos)
-                tile = level.AnimatedTile(
-                    get_anim(x, y, tile, layer_index, tmx_map),
-                    pos + tile_size / 2,
-                    object_layers[name],
-                )
-                main_group.add(tile)
-            collision_sprite = entity.Entity(map_rect.center, layer_surface)
-            collision_sprite.mask = pygame.mask.from_surface(layer_surface)
-            collision_sprite.physics_data = physics.PhysicsData(
-                physics.TYPE_STATIC, groups["collision"]
+                anim = get_anim(x, y, tile, layer_index, tmx_map)
+                if anim:
+                    tile = level.AnimatedTile(
+                        anim,
+                        pos + tile_size / 2,
+                        layer=sprite_layer,
+                    )
+                    main_group.add(tile)
+                else:
+                    layer_surface.blit(tile, pos)
+            print(layer.properties)
+            layer_sprite = entity.Entity(
+                map_rect.center, layer_surface, layer=sprite_layer
             )
-            groups["collision"].add(collision_sprite)
-
+            main_group.add(layer_sprite)
+            for group in layer.properties.get("groups", "").split(", "):
+                if group not in groups:
+                    continue
+                layer_sprite = entity.Entity(
+                    map_rect.center, layer_surface
+                )  # duplicate sprite
+                layer_sprite.mask = pygame.mask.from_surface(layer_surface)
+                layer_sprite.physics_data = physics.PhysicsData(
+                    physics.TYPE_STATIC, groups[group]
+                )
+                groups[group].add(layer_sprite)
         if name in {"Objects", "Flying Objects"}:
             for obj in layer:
                 kwargs = {
                     "pos": pygame.Vector2(obj.x, obj.y),
                     "collision_group": groups["collision"],
                     "id": obj.id,
+                    "layer": sprite_layer,
                 }
                 if obj.gid:
                     kwargs["image"] = tmx_map.get_tile_image_by_gid(obj.gid)
