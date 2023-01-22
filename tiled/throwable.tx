@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+ <tileset firstgid="1" source="master.tsx"/>
+ <object type="throwable" gid="2693" width="16" height="16">
+  <properties>
+   <property name="groups" value="main, collision, throwable"/>
+   <property name="weight" value="1"/>
+  </properties>
+ </object>
+</template>

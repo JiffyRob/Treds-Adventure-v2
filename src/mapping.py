@@ -38,6 +38,7 @@ def load_map(path, screen_size, current_player=None):
         "player": lambda *args, **kwargs: current_player
         or player.Player(*args, **kwargs),
         "tree": static_objects.Tree,
+        "throwable": static_objects.Throwable,
     }
 
     for layer_index, layer in enumerate(tmx_map.layers):

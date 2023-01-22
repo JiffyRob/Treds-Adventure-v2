@@ -15,8 +15,14 @@ class Tree(entity.Entity):
         super().__init__(pos, image, layer=layer)
 
 
-class Bush(entity.Entity):
-    pass
+class Throwable(entity.Entity):
+    def __init__(self, pos, image, collision_group=None, *_, layer=5, **__):
+        self.physics_data = physics.PhysicsData(physics.TYPE_STATIC, collision_group)
+        super().__init__(
+            pos, image, layer=layer - 1
+        )  # below player, but above layer below player
+        print(self.image.get_bounding_rect().size)
+        self.mask = pygame.mask.from_surface(self.image)
 
 
 class Sign(entity.Entity):
