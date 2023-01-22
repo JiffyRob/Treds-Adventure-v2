@@ -1,6 +1,6 @@
 import pygame
 
-from bush import asset_handler, entity, level, physics, util
+from bush import entity, level, asset_handler, physics, util
 
 loader = asset_handler.glob_loader
 TREE_MASK = pygame.mask.from_surface(

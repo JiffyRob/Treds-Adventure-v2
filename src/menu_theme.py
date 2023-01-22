@@ -1,4 +1,4 @@
-from pygame_menu import font, themes, widgets
+from pygame_menu import themes, font, widgets
 
 menu_theme = themes.Theme(
     # all colors match the NinjaAdventure palette
