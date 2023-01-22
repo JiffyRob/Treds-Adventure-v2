@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <template>
  <tileset firstgid="1" source="trees.tsx"/>
- <object type="tree" gid="1" width="32" height="64"/>
+ <object type="tree" gid="1" width="32" height="64">
+  <properties>
+   <property name="groups" value="main, collision"/>
+  </properties>
+ </object>
 </template>
