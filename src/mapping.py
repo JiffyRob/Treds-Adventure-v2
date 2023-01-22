@@ -1,7 +1,6 @@
 import pygame
 import pytmx
 
-import motion_objects
 import player
 import static_objects
 from bush import animation, asset_handler, entity, level, physics, util
