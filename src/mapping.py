@@ -52,15 +52,14 @@ def load_map(path, screen_size, current_player=None):
             for x, y, tile in layer.tiles():
                 pos = pygame.Vector2(x * tile_width, y * tile_height)
                 anim = get_anim(x, y, layer_index, tmx_map)
+                layer_surface.blit(tile, pos)
                 if anim:
                     tile = level.AnimatedTile(
                         anim,
                         pos + tile_size / 2,
-                        layer=sprite_layer,
+                        layer=sprite_layer + 1,
                     )
                     main_group.add(tile)
-                else:
-                    layer_surface.blit(tile, pos)
             layer_sprite = entity.Entity(
                 map_rect.center, layer_surface, layer=sprite_layer
             )
