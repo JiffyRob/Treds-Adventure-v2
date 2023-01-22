@@ -31,8 +31,6 @@ def dynamic_update(self, dt):
 def rect_mask_collide(rect, mask):
     rect_mask = pygame.Mask(rect.size, True)
     value = mask.overlap(rect_mask, rect.topleft) is not None
-    if value:
-        print("bang!")
     return value
 
 
