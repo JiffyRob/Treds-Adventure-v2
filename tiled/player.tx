@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <template>
- <object>
+ <object type="player">
+  <properties>
+   <property name="groups" value="player, collision, event"/>
+  </properties>
   <point/>
  </object>
 </template>

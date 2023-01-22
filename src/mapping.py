@@ -1,4 +1,5 @@
 import pygame
+import pytmx
 
 import motion_objects
 import player
@@ -6,8 +7,7 @@ import static_objects
 from bush import animation, asset_handler, entity, level, physics, util
 
 asset_loader = asset_handler.glob_loader
-helper_data = asset_loader.load("data/map_objects.json")
-object_layers = helper_data["layers"]
+DEFAULT_GROUPS = "main"
 
 
 def get_anim(x, y, tile, layer_index, tmx_map):
@@ -42,11 +42,10 @@ def load_map(path, screen_size, current_player=None):
     }
 
     for layer_index, layer in enumerate(tmx_map.layers):
-        name = layer.name
         sprite_layer = layer_index
         sprite_layer *= 3  # 3 sub layers in between each map layer (below, main above)
         sprite_layer += 1  # defaults to main layer
-        if name in {"Collision Decor", "Decor", "Ground", "Ground Decor"}:
+        if isinstance(layer, pytmx.TiledTileLayer):
             layer_surface = pygame.Surface(
                 (tile_width * map_width, tile_height * map_height), pygame.SRCALPHA
             )
@@ -62,7 +61,6 @@ def load_map(path, screen_size, current_player=None):
                     main_group.add(tile)
                 else:
                     layer_surface.blit(tile, pos)
-            print(layer.properties)
             layer_sprite = entity.Entity(
                 map_rect.center, layer_surface, layer=sprite_layer
             )
@@ -78,7 +76,7 @@ def load_map(path, screen_size, current_player=None):
                     physics.TYPE_STATIC, groups[group]
                 )
                 groups[group].add(layer_sprite)
-        if name in {"Objects", "Flying Objects"}:
+        elif isinstance(layer, pytmx.TiledObjectGroup):
             for obj in layer:
                 kwargs = {
                     "pos": pygame.Vector2(obj.x, obj.y),
@@ -88,11 +86,10 @@ def load_map(path, screen_size, current_player=None):
                 }
                 if obj.gid:
                     kwargs["image"] = tmx_map.get_tile_image_by_gid(obj.gid)
-                obj_data = helper_data.get(obj.template, None)
-                if obj_data is None:
-                    continue
-                sprite = instantiators[obj_data["type"]](**kwargs)
-                for key in obj_data.get("groups", helper_data["default groups"]):
+                sprite = instantiators[obj.type](**kwargs)
+                for key in obj.properties.get("groups", DEFAULT_GROUPS).split(", "):
+                    if key not in groups:
+                        continue
                     groups[key].add(sprite)
     main_group.follow = groups["player"].sprite
 
