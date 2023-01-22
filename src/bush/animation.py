@@ -12,6 +12,9 @@ class Animation:
         self.index = 0
         self.last_start_time = 0
 
+    def __len__(self):
+        return len(self.images)
+
     def increment(self):
         self.index += 1
         self.index %= len(self.images)
