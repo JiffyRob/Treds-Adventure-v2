@@ -22,6 +22,7 @@ class Player(entity.Actor):
         collision_group,
         layer,
         id="Player",
+        **__
     ):
         rect = pygame.Rect(0, 0, 14, 14)
         rect.center = pos

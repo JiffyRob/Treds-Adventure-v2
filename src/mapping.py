@@ -28,17 +28,23 @@ def load_map(path, screen_size, current_player=None):
     map_width, map_height = tmx_map.width, tmx_map.height
     map_rect = pygame.Rect(0, 0, map_width * tile_width, map_height * tile_height)
     main_group = level.TopDownGroup(screen_size, map_rect.size, (0, 0))
+
     groups = {
         "main": main_group,
         "player": pygame.sprite.GroupSingle(),
         "collision": pygame.sprite.Group(),
         "event": level.EntityGroup(),
+        "farmplants_green": pygame.sprite.Group(),
+        "farmplants_orange": pygame.sprite.Group(),
+        "farmplants": pygame.sprite.Group(),
     }
     instantiators = {
         "player": lambda *args, **kwargs: current_player
         or player.Player(*args, **kwargs),
         "tree": static_objects.Tree,
         "throwable": static_objects.Throwable,
+        "farmplant_green": static_objects.green_farmplant,
+        "farmplant_orange": static_objects.orange_farmplant,
     }
 
     for layer_index, layer in enumerate(tmx_map.layers):
@@ -78,11 +84,13 @@ def load_map(path, screen_size, current_player=None):
         elif isinstance(layer, pytmx.TiledObjectGroup):
             for obj in layer:
                 kwargs = {
-                    "pos": pygame.Vector2(obj.x, obj.y),
-                    "collision_group": groups["collision"],
-                    "id": obj.id,
+                    # y coordinates seem to be one height unit off.  Why?
+                    "pos": pygame.Vector2(obj.x, obj.y + obj.height),
+                    "id": obj.name or obj.id,
                     "layer": sprite_layer,
                 }
+                for key, value in groups.items():
+                    kwargs[key + "_group"] = value
                 if obj.gid:
                     kwargs["image"] = tmx_map.get_tile_image_by_gid(obj.gid)
                 sprite = instantiators[obj.type](**kwargs)
