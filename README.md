@@ -20,5 +20,22 @@ Tred's Adventure is a top-down game with the goals being:
  - Believable, somewhat farcicial, somewhat serious plot
  - Environment should appear as 3d as possible without being truly 3d
 
-## List of Mechanics
-TODO
+## List of Mechanics (Current-ish)
+ - Advanced Map Loading (Animated tiles, flexible layers, etc.)
+ - Player motion
+ - basic collision
+ - simple pause memu
+ - fullscreen toggle-able
+ - high level scripting (eg JSON script that can do literally anything that I allow in the API.  Will be used for complex story progressions later)
+ 
+## List of future Mechanics
+ - many terrains that affect the player in different ways
+ - enemies + combat
+ - day/night
+ - throwable objects
+ - npcs
+ - lucite crystal components (a magical crystal a little like Minecraft's redstone, but 2d and less powerful)
+ - particle effects
+ - map changing based on tiled worlds
+ - usable items + item menu
+ - health, HUD
