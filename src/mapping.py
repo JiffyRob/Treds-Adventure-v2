@@ -22,8 +22,11 @@ def get_anim(x, y, layer_index, tmx_map):
     return anim
 
 
-def load_map(path, screen_size, current_player=None):
-    tmx_map = asset_loader.load(path)
+def load_map(tmx_map, engine):
+    if isinstance(tmx_map, str):
+        tmx_map = asset_loader.load(tmx_map)
+    current_player = engine.player
+    screen_size = engine.screen_size
     tile_width, tile_height = tile_size = pygame.Vector2(16, 16)
     map_width, map_height = tmx_map.width, tmx_map.height
     map_rect = pygame.Rect(0, 0, map_width * tile_width, map_height * tile_height)
@@ -88,6 +91,7 @@ def load_map(path, screen_size, current_player=None):
                     "pos": pygame.Vector2(obj.x, obj.y + obj.height),
                     "id": obj.name or obj.id,
                     "layer": sprite_layer,
+                    "engine": engine,
                 }
                 for key, value in groups.items():
                     kwargs[key + "_group"] = value

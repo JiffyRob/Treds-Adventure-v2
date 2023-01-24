@@ -325,50 +325,5 @@
     <property name="groups" value="main, collision"/>
    </properties>
   </object>
-  <object id="91" type="farmplant_green" gid="4109" x="32" y="48" width="16" height="16">
-   <properties>
-    <property name="groups" value="main, collision, attackable, farmplants, farmplants_green"/>
-   </properties>
-  </object>
-  <object id="93" type="farmplant_green" gid="4109" x="48" y="48" width="16" height="16">
-   <properties>
-    <property name="groups" value="main, collision, attackable, farmplants, farmplants_green"/>
-   </properties>
-  </object>
-  <object id="94" type="farmplant_green" gid="4109" x="32" y="64" width="16" height="16">
-   <properties>
-    <property name="groups" value="main, collision, attackable, farmplants, farmplants_green"/>
-   </properties>
-  </object>
-  <object id="95" type="farmplant_green" gid="4109" x="32" y="80" width="16" height="16">
-   <properties>
-    <property name="groups" value="main, collision, attackable, farmplants, farmplants_green"/>
-   </properties>
-  </object>
-  <object id="96" type="farmplant_green" gid="4109" x="16" y="80" width="16" height="16">
-   <properties>
-    <property name="groups" value="main, collision, attackable, farmplants, farmplants_green"/>
-   </properties>
-  </object>
-  <object id="97" type="farmplant_green" gid="4109" x="48" y="64" width="16" height="16">
-   <properties>
-    <property name="groups" value="main, collision, attackable, farmplants, farmplants_green"/>
-   </properties>
-  </object>
-  <object id="98" type="farmplant_green" gid="4109" x="64" y="48" width="16" height="16">
-   <properties>
-    <property name="groups" value="main, collision, attackable, farmplants, farmplants_green"/>
-   </properties>
-  </object>
-  <object id="99" type="farmplant_green" gid="4109" x="64" y="32" width="16" height="16">
-   <properties>
-    <property name="groups" value="main, collision, attackable, farmplants, farmplants_green"/>
-   </properties>
-  </object>
-  <object id="100" type="farmplant_green" gid="4109" x="16" y="32" width="16" height="16">
-   <properties>
-    <property name="groups" value="main, collision, attackable, farmplants, farmplants_green"/>
-   </properties>
-  </object>
  </objectgroup>
 </map>

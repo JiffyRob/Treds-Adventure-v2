@@ -1,8 +1,4 @@
 import gc
-import os
-
-import pygame
-import pytmx
 
 from bush.util_load import *
 
@@ -17,6 +13,7 @@ class AssetHandler:
         generic_cache = {}
         sound_cache = {}
         map_cache = {}
+        world_cache = {}
         data_cache = {}
         # file extension -> load function
         self.load_dict = {
@@ -31,6 +28,7 @@ class AssetHandler:
             "csv": load_csv,
             "pkl": load_pickle,
             "tmx": load_map,
+            "world": load_world,
             "generic": load_text,
         }
         # file extension -> save function
@@ -56,6 +54,7 @@ class AssetHandler:
             "csv": data_cache,
             "pkl": data_cache,
             "tmx": map_cache,
+            "world": world_cache,
             "generic": generic_cache,
         }
         self.base = os.path.join(default_directory)

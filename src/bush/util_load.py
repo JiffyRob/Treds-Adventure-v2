@@ -141,3 +141,21 @@ def save_pickle_secure(data, path):
 
 def load_map(path):
     return pytmx.load_pygame(path)
+
+
+def load_world(path):
+    with open(os.path.join(path)) as file:
+        world_data = json.loads(file.read())
+    maps = world_data["maps"]
+    export_data = {}
+    for map_data in maps:
+        map_path = os.path.join(os.path.dirname(path), map_data["fileName"])
+        tmx_map = load_map(map_path)
+        rect = (
+            map_data["x"],
+            map_data["y"],
+            tmx_map.width * tmx_map.tilewidth,
+            tmx_map.height * tmx_map.tileheight,
+        )
+        export_data[rect] = tmx_map
+    return export_data

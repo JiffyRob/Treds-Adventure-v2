@@ -51,8 +51,10 @@ class Game:
         self.pausemenu.add.button("Resume", self.exit_pausemenu)
         self.pausemenu.add.button("Quit", self.quit)
         self.pausemenu.set_onclose(self.exit_pausemenu)
-        # initial map load
-        self.load_map("tiled/test_map.tmx")
+        # initial world load
+        self.current_world = None
+        self.load_world("tiled/everything.world")
+        # self.load_map("tiled/test_map.tmx")
 
     @scripting.ejecs_command
     def player_command(self, command):
@@ -63,16 +65,23 @@ class Game:
         self.scripting = scripting.EJECSController(script, self.scripting_api)
         self.stack.push(STATE_EVENT)
 
-    def load_map(self, path, replace=False):
-        self.groups, event_script = mapping.load_map(path, self.screen_size)
+    def load_world(self, path):
+        world = loader.load(path)
+        self.current_world = {
+            key: mapping.load_map(value, self) for key, value in world.items()
+        }
+        for groups, script in self.current_world.values():
+            if groups["player"]:
+                self.load_map(groups, script)
+
+    def load_map(self, groups, script, force_push=False):
+        self.groups, event_script = groups, script
         self.main_group = self.groups["main"]
         self.player = self.groups["player"].sprite
-        if replace:
-            self.stack.replace(STATE_GAMEPLAY)
-        else:
+        if self.stack.get_current() != STATE_GAMEPLAY or force_push:
             self.stack.push(STATE_GAMEPLAY)
         if event_script:
-            self.game_event(event_script)
+            self.load_script(event_script)
             self.stack.push(STATE_EVENT)
 
     def update_sprites(self, dt):
