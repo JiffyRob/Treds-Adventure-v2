@@ -18,6 +18,7 @@ STATE_GAMEPLAY = 0
 STATE_EVENT = 1
 STATE_MAINMENU = 2
 STATE_PAUSEMENU = 3
+STATE_TRANSITION = 4
 
 START_SPOTS = loader.load("data/player_start_positions.json")
 
@@ -133,6 +134,24 @@ class Game:
         print(self.player.pos)
         # unset dt
         self.kill_dt = True
+
+        # transition animation
+        darkness = 1
+        adder = 6
+        original = self.screen.copy()
+        while darkness > 0:
+            screen_surf = original.copy()
+            darken_surf = pygame.Surface(screen_surf.get_size())
+            overlay_color = (darkness, darkness, darkness)
+            darken_surf.fill(overlay_color)
+            screen_surf.blit(darken_surf, (0, 0), None, pygame.BLEND_RGB_SUB)
+            self.screen.blit(screen_surf, (0, 0))
+            darkness += adder
+            if darkness >= 250:
+                adder *= -1
+                darkness += adder
+            pygame.display.flip()
+            self.clock.tick(30)
         return True
 
     def update_sprites(self, dt):

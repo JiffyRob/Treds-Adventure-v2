@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="101">
+<map version="1.8" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="102">
  <tileset firstgid="1" source="master.tsx"/>
  <tileset firstgid="4097" source="trees.tsx"/>
  <tileset firstgid="4109" source="farmplant_green.tsx"/>
@@ -315,6 +315,11 @@
    </properties>
   </object>
   <object id="63" type="tree" gid="4098" x="144" y="0" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+   </properties>
+  </object>
+  <object id="101" type="tree" gid="4098" x="304" y="0" width="32" height="64">
    <properties>
     <property name="groups" value="main, collision"/>
    </properties>
