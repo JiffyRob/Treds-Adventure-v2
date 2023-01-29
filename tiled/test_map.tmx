@@ -211,12 +211,6 @@
 </data>
  </layer>
  <objectgroup id="4" name="Objects">
-  <object id="1" type="player" x="82.9918" y="111.99">
-   <properties>
-    <property name="groups" value="player, collision, event, main"/>
-   </properties>
-   <point/>
-  </object>
   <object id="14" type="tree" gid="4098" x="176" y="224" width="32" height="64">
    <properties>
     <property name="groups" value="main, collision"/>

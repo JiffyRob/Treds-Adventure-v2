@@ -7,6 +7,7 @@ import pygame_menu
 
 import mapping
 import menu_theme
+import player
 from bush import asset_handler, color, event_binding, util
 from bush.ai import scripting, state
 
@@ -17,6 +18,8 @@ STATE_GAMEPLAY = 0
 STATE_EVENT = 1
 STATE_MAINMENU = 2
 STATE_PAUSEMENU = 3
+
+START_SPOTS = loader.load("data/player_start_positions.json")
 
 
 class Game:
@@ -52,8 +55,11 @@ class Game:
         self.pausemenu.add.button("Quit", self.quit)
         self.pausemenu.set_onclose(self.exit_pausemenu)
         # initial world load
+        self.player = player.Player(pygame.Vector2(), None, 8, "player", self)
         self.current_world = None
+        self.current_map_rect = None
         self.load_world("tiled/everything.world")
+        self.kill_dt = False
         # self.load_map("tiled/test_map.tmx")
 
     @scripting.ejecs_command
@@ -65,24 +71,69 @@ class Game:
         self.scripting = scripting.EJECSController(script, self.scripting_api)
         self.stack.push(STATE_EVENT)
 
-    def load_world(self, path):
-        world = loader.load(path)
-        self.current_world = {
-            key: mapping.load_map(value, self) for key, value in world.items()
-        }
-        for groups, script in self.current_world.values():
-            if groups["player"]:
-                self.load_map(groups, script)
+    def load_world(self, path, player_pos=START_SPOTS["default"]["pos"]):
+        self.current_world = loader.load(path)
+        for key, value in self.current_world.items():
+            rect = pygame.Rect(key)
+            if rect.collidepoint(player_pos):
+                self.current_map_rect = rect
+                self.load_map(self.current_world[key], player_pos)
 
-    def load_map(self, groups, script, force_push=False):
-        self.groups, event_script = groups, script
-        self.main_group = self.groups["main"]
-        self.player = self.groups["player"].sprite
+    def load_map(self, tmx_data, player_pos, force_push=False):
+        groups, event_script = mapping.load_map(tmx_data, self, player_pos)
+        self.groups = groups
+        self.main_group = groups["main"]
         if self.stack.get_current() != STATE_GAMEPLAY or force_push:
             self.stack.push(STATE_GAMEPLAY)
         if event_script:
             self.load_script(event_script)
             self.stack.push(STATE_EVENT)
+
+    def map_to_world_space(self, pos):
+        return pygame.Vector2(self.current_map_rect.topleft) + pos
+
+    def world_to_map_space(self, pos):
+        return -pygame.Vector2(self.current_map_rect.topleft) + pos
+
+    def change_map(self):
+        print("map change")
+        # move player to world space
+        player_rect = self.player.rect.copy()
+        print("map -> world space")
+        print(player_rect.center)
+        player_rect.center = self.map_to_world_space(player_rect.center)
+        print(player_rect.center)
+        # get map which the player collides with
+        map_key = None
+        for key, tmx_data in self.current_world.items():
+            map_rect = pygame.Rect(key)
+            if map_rect != self.current_map_rect:
+                if player_rect.colliderect(map_rect):
+                    map_key = key
+                    break
+        if map_key is None:
+            return False
+        self.current_map_rect = pygame.Rect(map_key)
+        # remove player from current sprite groups
+        self.player.kill()
+        # calculate player pos in terms of the new map
+        print("world -> new map space")
+        print(player_rect.center)
+        player_rect.center = self.world_to_map_space(player_rect.center)
+        print(player_rect.center)
+        # load new map with player at calculated pos
+        self.player.kill()
+        map_rect = self.current_map_rect.copy()
+        map_rect.topleft = (0, 0)
+        self.load_map(self.current_world[map_key], player_rect.center)
+        # make sure player is inside the borders of the new map
+        print("player limiting")
+        print(player_rect.center)
+        self.player.limit(self.main_group.map_rect, force=True)
+        print(self.player.pos)
+        # unset dt
+        self.kill_dt = True
+        return True
 
     def update_sprites(self, dt):
         self.main_group.update(dt)
@@ -158,6 +209,9 @@ class Game:
             self.handle_state()
             pygame.display.flip()
             dt = self.clock.tick(self.fps) / 1000
+            if self.kill_dt:
+                dt = 0
+            self.kill_dt = False
 
         pygame.quit()
         self.screen = None

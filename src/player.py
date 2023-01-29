@@ -22,6 +22,7 @@ class Player(entity.Actor):
         collision_group,
         layer,
         id="Player",
+        engine=None,
         **__
     ):
         rect = pygame.Rect(0, 0, 14, 14)
@@ -31,6 +32,7 @@ class Player(entity.Actor):
         self.physics_data = physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group)
         self.rect = rect
         self.rect.center = self.pos
+        self.engine = engine
 
     def event(self, event):
         if event.type == event_binding.BOUND_EVENT:
@@ -59,3 +61,17 @@ class Player(entity.Actor):
 
     def update(self, dt):
         physics.dynamic_update(self, dt)
+
+    def change_collision_group(self, collision_group):
+        self.physics_data = physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group)
+
+    def change_layer(self, layer):
+        self._layer = layer
+
+    def limit(self, map_rect, force=False):
+        new_pos = self.pos_after_limiting(map_rect)
+        if new_pos != self.pos:
+            if force or not self.engine.change_map():
+                self.pos = self.rect.center = new_pos
+            return True
+        return False

@@ -21,3 +21,6 @@ class StateStack:
 
     def get_current(self):
         return self.stack[-1]
+
+    def __repr__(self):
+        return f"StateStack {self.stack}"

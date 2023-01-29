@@ -41,7 +41,6 @@ class Throwable(entity.Entity):
         super().__init__(
             pos, image, layer=layer - 1
         )  # below player, but above layer below player
-        print(self.image.get_bounding_rect().size)
         self.mask = pygame.mask.from_surface(self.image)
 
 

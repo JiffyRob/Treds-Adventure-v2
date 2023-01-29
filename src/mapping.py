@@ -6,7 +6,16 @@ import static_objects
 from bush import animation, asset_handler, entity, level, physics, util
 
 asset_loader = asset_handler.glob_loader
-DEFAULT_GROUPS = "main"
+
+instantiators = {
+    "tree": static_objects.Tree,
+    "throwable": static_objects.Throwable,
+    "farmplant_green": static_objects.green_farmplant,
+    "farmplant_orange": static_objects.orange_farmplant,
+}
+
+DEFAULT_GROUPS = ("main",)
+PLAYER_GROUPS = ("main", "player", "collision", "event")
 
 
 def get_anim(x, y, layer_index, tmx_map):
@@ -22,7 +31,7 @@ def get_anim(x, y, layer_index, tmx_map):
     return anim
 
 
-def load_map(tmx_map, engine):
+def load_map(tmx_map, engine, player_pos):
     if isinstance(tmx_map, str):
         tmx_map = asset_loader.load(tmx_map)
     current_player = engine.player
@@ -31,7 +40,7 @@ def load_map(tmx_map, engine):
     map_width, map_height = tmx_map.width, tmx_map.height
     map_rect = pygame.Rect(0, 0, map_width * tile_width, map_height * tile_height)
     main_group = level.TopDownGroup(screen_size, map_rect.size, (0, 0))
-
+    player_layer = 0
     groups = {
         "main": main_group,
         "player": pygame.sprite.GroupSingle(),
@@ -40,14 +49,6 @@ def load_map(tmx_map, engine):
         "farmplants_green": pygame.sprite.Group(),
         "farmplants_orange": pygame.sprite.Group(),
         "farmplants": pygame.sprite.Group(),
-    }
-    instantiators = {
-        "player": lambda *args, **kwargs: current_player
-        or player.Player(*args, **kwargs),
-        "tree": static_objects.Tree,
-        "throwable": static_objects.Throwable,
-        "farmplant_green": static_objects.green_farmplant,
-        "farmplant_orange": static_objects.orange_farmplant,
     }
 
     for layer_index, layer in enumerate(tmx_map.layers):
@@ -85,6 +86,7 @@ def load_map(tmx_map, engine):
                 )
                 groups[group].add(layer_sprite)
         elif isinstance(layer, pytmx.TiledObjectGroup):
+            player_layer = player_layer or layer_index
             for obj in layer:
                 kwargs = {
                     # y coordinates seem to be one height unit off.  Why?
@@ -102,5 +104,13 @@ def load_map(tmx_map, engine):
                     if key not in groups:
                         continue
                     groups[key].add(sprite)
-    main_group.follow = groups["player"].sprite
+
+    player_layer = tmx_map.properties.get("player_layer", player_layer * 3)
+    current_player.kill()
+    for key in PLAYER_GROUPS:
+        groups[key].add(current_player)
+    current_player.change_layer(player_layer)
+    current_player.change_collision_group(groups["collision"])
+    current_player.rect.center = current_player.pos = pygame.Vector2(player_pos)
+    main_group.follow = current_player
     return groups, None
