@@ -43,4 +43,24 @@ class EventHandler:
         pygame.event.post(new_event)
 
 
+def interactive_id_printer():
+    import sys
+
+    pygame.init()
+    pygame.font.init()
+    clock = pygame.time.Clock()
+    font = pygame.font.SysFont(None, 40)
+    surface = font.render(
+        "Events will be printed to console as strings", True, "black", "white"
+    )
+    screen = pygame.display.set_mode(surface.get_size())
+    screen.blit(surface, (0, 0))
+    while 1:
+        for event in pygame.event.get():
+            print(event_to_string(event))
+            if event.type == pygame.QUIT:
+                sys.exit()
+        clock.tick(60)
+
+
 glob_event = EventHandler()
