@@ -32,8 +32,28 @@ def rvec(vec: pygame.Vector2):
 
 
 def direction(vec: pygame.Vector2):
-    """return a tuple of 1s signed to vector values - eg < -8, 7 > -> (-1, 1)"""
-    return vec.x / abs(vec.x), vec.y / abs(vec.y)
+    """return a tuple of 1s or 0s signed to vector values - eg < -8, 7> -> (-1, 1) or <0, 3> -> (0, 1)"""
+    x = 0
+    if vec.x:
+        x = vec.x / abs(vec.x)
+    y = 0
+    if vec.y:
+        y = vec.y / abs(vec.y)
+    return x, y
+
+
+def string_direction(vec: pygame.Vector2):
+    """return a string representing direction eg <1, 3> -> 'right_down' or <0, 0> -> 'still' or <0, 1> -> 'right'"""
+    direction_string = ""
+    if vec.x >= 0:
+        direction_string += "right_"
+    elif vec.x:
+        direction_string += "left_"
+    if vec.y >= 0:
+        direction_string += "down"
+    elif vec.y:
+        direction_string += "up"
+    return direction_string
 
 
 def vec_abs(vec: pygame.Vector2):
