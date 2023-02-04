@@ -8,6 +8,7 @@ import pygame_menu
 import mapping
 import menu_theme
 import player
+import sky
 from bush import asset_handler, color, event_binding, util
 from bush.ai import scripting, state
 
@@ -55,6 +56,8 @@ class Game:
         self.pausemenu.add.button("Resume", self.exit_pausemenu)
         self.pausemenu.add.button("Quit", self.quit)
         self.pausemenu.set_onclose(self.exit_pausemenu)
+        # day/night
+        self.sky = sky.Sky(self.screen_size)
         # initial world load
         self.player = player.Player(pygame.Vector2(), None, 8, "player", self)
         self.current_world = None
@@ -155,12 +158,14 @@ class Game:
         return True
 
     def update_sprites(self, dt):
+        self.sky.update(dt)
         self.main_group.update(dt)
 
     def draw_sprites(self):
         if self.stack.get_current() == STATE_GAMEPLAY:
             self.screen.fill(self.bgcolor)
             self.main_group.draw(self.screen)
+            self.sky.render(self.screen)
         if self.stack.get_current() == STATE_PAUSEMENU:
             self.pausemenu.draw(self.screen)
             self.player.velocity = pygame.Vector2()
