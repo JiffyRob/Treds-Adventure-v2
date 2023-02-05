@@ -46,22 +46,3 @@ class EnvironmentSprite(entity.Actor):
         else:
             self.velocity = self.desired_velocity
         collision_data = physics.dynamic_update(self, dt)
-
-
-"""
-if self.direction or True:
-        self.slip_velocity += self.direction / 10
-        #self.slip_velocity *= 0.9
-    if self.slip_velocity.length_squared() > 16:
-        self.slip_velocity.scale_to_length(4)
-    self.direction = self.slip_velocity
-    kwargs.pop("normalize", None)
-    self.slipping = False  # will be set to True again next frame if on ice, etc.
-    xcollided, ycollided = super().update(*args, **kwargs, normalize=False)
-    if (xcollided or ycollided) and (self.slip_velocity.length_squared() >= 12):
-        self.lose_health(1)
-    if xcollided:
-        self.slip_velocity.x = 0
-    if ycollided:
-        self.slip_velocity.y = 0
-"""
