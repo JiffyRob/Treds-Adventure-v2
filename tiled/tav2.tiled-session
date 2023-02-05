@@ -12,6 +12,14 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "interior_tes.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 184,
+                "y": 367.99999999999994
+            }
+        },
         "master.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -20,22 +28,22 @@
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 0.75,
-            "selectedLayer": 1,
+            "scale": 0.5,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 380.66666666666663,
-                "y": 409.99999999999994
+                "x": 454,
+                "y": 234
             }
         },
         "test_map.tmx": {
             "expandedObjectLayers": [
                 4
             ],
-            "scale": 0.75,
+            "scale": 0.25,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 380.66666666666663,
-                "y": -70
+                "x": 896,
+                "y": -320
             }
         },
         "trees.tsx": {
@@ -47,7 +55,6 @@
     "last.objectTemplatePath": "/home/jack/Python Workspace/Treds-Adventure-v2/tiled",
     "last.worldFilePath": "/home/jack/Python Workspace/Treds-Adventure-v2/tiled",
     "loadedWorlds": [
-        "/home/jack/Python Workspace/Treds-Adventure-v2/tiled/everything.world"
     ],
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
@@ -57,10 +64,12 @@
         "test_map.tmx"
     ],
     "project": "tav2.tiled-project",
-    "property.type": "bool",
+    "property.type": "file",
     "recentFiles": [
         "trees.tsx",
         "test_map.tmx",
+        "test2.tmx",
+        "interior_tes.tmx",
         "farmplant_green.tsx",
         "master.tsx"
     ],
