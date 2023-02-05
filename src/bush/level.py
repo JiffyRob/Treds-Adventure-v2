@@ -47,22 +47,58 @@ class EntityGroup(pygame.sprite.Group):
 
 
 class CameraGroup(pygame.sprite.LayeredUpdates):
-    def __init__(self, cam_size, map_size, pos, follow=None, *sprites):
+    def __init__(
+        self,
+        cam_size,
+        map_size,
+        pos,
+        follow=None,
+        only_upate_visible_sprites=True,
+        border_overshoot=0,
+        *sprites
+    ):
         super().__init__(*sprites)
         self.cam_rect = pygame.Rect(0, 0, *cam_size)
         self.map_rect = pygame.Rect(0, 0, *map_size)
         self.cam_rect.center = pos
         self.follow = follow
+        self.update_all = not only_upate_visible_sprites
+        self.border_overshoot = border_overshoot
+        self.visible_rect = self.cam_rect.inflate(
+            self.border_overshoot * 2, self.border_overshoot * 2
+        )
+
+    def is_visible(self, sprite):
+        if sprite in self:
+            return sprite.rect.colliderect(self.visible_rect)
+        return False
+
+    def update(self, *args, **kwargs):
+        self.visible_rect = self.cam_rect.inflate(
+            self.border_overshoot * 2, self.border_overshoot * 2
+        )
+        if self.update_all:
+            return super().update(*args, **kwargs)
+        updated = []
+        for sprite in self.sprites():
+            if self.is_visible(sprite):
+                sprite.update(*args, **kwargs)
+                updated.append(sprite)
+        return updated
 
     def draw(self, surface):
+        self.visible_rect = self.cam_rect.inflate(
+            self.border_overshoot * 2, self.border_overshoot * 2
+        )
         if self.follow is not None:
             self.cam_rect.center = self.follow.pos
             self.limit()
             self.limit_sprites()
         offset = pygame.Vector2(self.cam_rect.topleft)
         for sprite in self.sprites():
-            pos = pygame.Vector2(sprite.rect.topleft) - offset
-            surface.blit(sprite.image, pos)
+            if self.is_visible(sprite) or self.update_all:
+                pos = pygame.Vector2(sprite.rect.topleft) - offset
+                surface.blit(sprite.image, pos)
 
     def limit(self):
         if self.cam_rect.height < self.map_rect.height:

@@ -32,13 +32,10 @@ class Game:
         self.stack = state.StateStack()
         # day/night
         self.sky = sky.Sky(self.screen_size)
-        # initial world load
+        # initial map load
         self.player = player.Player(pygame.Vector2(), None, 8, "player", self)
-        self.current_world = None
-        self.current_map_rect = None
-        self.load_world("tiled/everything.world")
         self.kill_dt = False
-        # self.load_map("tiled/test_map.tmx")
+        self.load_map("tiled/test_map.tmx", START_SPOTS["default"]["pos"])
 
     @scripting.ejecs_command
     def player_command(self, command):
@@ -54,47 +51,12 @@ class Game:
 
     def load_map(self, tmx_data, player_pos, push=False):
         groups, event_script = mapping.load_map(tmx_data, self, player_pos)
+        if not push:
+            self.stack.pop()
         self.stack.push(game_state.MapState("game map", groups, self))
 
-    def map_to_world_space(self, pos):
-        return pygame.Vector2(self.current_map_rect.topleft) + pos
-
-    def world_to_map_space(self, pos):
-        return -pygame.Vector2(self.current_map_rect.topleft) + pos
-
-    def change_map(self):
-        # move player to world space
-        player_rect = self.player.rect.copy()
-        player_rect.center = self.map_to_world_space(player_rect.center)
-        # get map which the player collides with
-        map_key = None
-        for key, tmx_data in self.current_world.items():
-            map_rect = pygame.Rect(key)
-            if map_rect != self.current_map_rect:
-                if player_rect.colliderect(map_rect):
-                    map_key = key
-                    break
-        if map_key is None:
-            return False
-        self.current_map_rect = pygame.Rect(map_key)
-        # remove player from current sprite groups
-        self.player.kill()
-        # calculate player pos in terms of the new map
-        print(player_rect.center)
-        player_rect.center = self.world_to_map_space(player_rect.center)
-        print(player_rect.center)
-        # load new map with player at calculated pos
-        self.player.kill()
-        map_rect = self.current_map_rect.copy()
-        map_rect.topleft = (0, 0)
-        self.load_map(self.current_world[map_key], player_rect.center)
-        # make sure player is inside the borders of the new map
-        print(player_rect.center)
-        self.player.limit(self.stack.get_current().main_group.map_rect, force=True)
-        print(self.player.pos)
-        # unset dt
-        self.kill_dt = True
-        return True
+    def toggle_fullscreen(self):
+        pygame.display.toggle_fullscreen()
 
     def run(self):
         self.screen = pygame.display.set_mode(

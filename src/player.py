@@ -67,11 +67,3 @@ class Player(entity.Actor):
 
     def change_layer(self, layer):
         self._layer = layer
-
-    def limit(self, map_rect, force=False):
-        new_pos = self.pos_after_limiting(map_rect)
-        if new_pos != self.pos:
-            if force or not self.engine.change_map():
-                self.pos = self.rect.center = new_pos
-            return True
-        return False
