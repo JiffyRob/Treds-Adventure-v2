@@ -5,10 +5,11 @@ from typing import Union
 
 import pygame
 
-from bush import color, entity, event_binding, physics, util
+import environment
+from bush import color, event_binding, physics, util
 
 
-class Player(entity.Actor):
+class Player(environment.EnvironmentSprite):
     """main player of the game
 
     Args:
@@ -27,9 +28,15 @@ class Player(entity.Actor):
     ):
         rect = pygame.Rect(0, 0, 14, 14)
         rect.center = pos
-        super().__init__(pos, util.rect_surf(rect, color.BLUE), (), id, layer)
+        super().__init__(
+            pos,
+            util.rect_surf(rect, color.BLUE),
+            None,
+            physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group),
+            id=id,
+            layer=layer,
+        )
         self.speed = 96
-        self.physics_data = physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group)
         self.rect = rect
         self.rect.center = self.pos
         self.engine = engine
@@ -58,9 +65,6 @@ class Player(entity.Actor):
             self.velocity = pygame.Vector2(directions[words[1]])
         if self.velocity:
             self.velocity.scale_to_length(self.speed)
-
-    def update(self, dt):
-        physics.dynamic_update(self, dt)
 
     def change_collision_group(self, collision_group):
         self.physics_data = physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group)

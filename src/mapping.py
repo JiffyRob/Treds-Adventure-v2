@@ -4,7 +4,7 @@ import pygame
 import pytmx
 
 import static_objects
-from bush import animation, asset_handler, entity, level, physics, util
+from bush import animation, asset_handler, entity, level, physics
 
 tiled_loader = asset_handler.AssetHandler(
     os.path.join(asset_handler.glob_loader.base, "tiled")
