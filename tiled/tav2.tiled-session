@@ -21,8 +21,8 @@
             }
         },
         "master.tsx": {
-            "scaleInDock": 1,
-            "scaleInEditor": 1
+            "scaleInDock": 0.75,
+            "scaleInEditor": 0.75
         },
         "test2.tmx": {
             "expandedObjectLayers": [
@@ -39,11 +39,11 @@
             "expandedObjectLayers": [
                 4
             ],
-            "scale": 0.25,
+            "scale": 0.33,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 896,
-                "y": -320
+                "x": -518.1818181818182,
+                "y": 554.5454545454545
             }
         },
         "trees.tsx": {
@@ -61,17 +61,18 @@
     "map.tileWidth": 16,
     "openFiles": [
         "trees.tsx",
-        "test_map.tmx"
+        "test_map.tmx",
+        "master.tsx"
     ],
     "project": "tav2.tiled-project",
     "property.type": "file",
     "recentFiles": [
         "trees.tsx",
+        "master.tsx",
         "test_map.tmx",
         "test2.tmx",
         "interior_tes.tmx",
-        "farmplant_green.tsx",
-        "master.tsx"
+        "farmplant_green.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

@@ -57,5 +57,8 @@ class Actor(Entity):
     def limit(self, map_rect):
         old_pos = self.pos.copy()
         new_pos = self.pos_after_limiting(map_rect)
+        for i in range(1):
+            if old_pos[i] != new_pos[i]:
+                self.velocity[i] = 0
         self.rect.center = self.pos = new_pos
         return new_pos == old_pos

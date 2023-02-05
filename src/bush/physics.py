@@ -25,6 +25,8 @@ def dynamic_update(self, dt):
             trigger_collision,
         )
         for sprite in self.physics_data.collision_group:
+            if not self.velocity[ind]:
+                continue
             callbacks[sprite.physics_data.type](self, sprite, ind)
 
 
@@ -56,10 +58,13 @@ def static_collision(dynamic, static, axis):
     # rect to check collision from
     check_rect = dynamic.rect.copy()
     check_rect.center = check_pos
+    # return value
+    collided = False
     # walk in all directions
     while rect_mask_collide(
         check_rect.move(-pygame.Vector2(static.rect.topleft)), static.mask
     ):
+        collided = True
         walk_direction = walk_directions[direction_index]
         check_pos = start_pos + (walk_direction * distance)
         distance += 0.25
@@ -67,6 +72,9 @@ def static_collision(dynamic, static, axis):
         check_rect.center = check_pos
     dynamic.rect = check_rect
     dynamic.pos = pygame.Vector2(check_rect.center)
+    if collided:
+        dynamic.velocity[axis] = 0
+    return collided
 
 
 def dynamic_collision(dynamic1, dynamic2, dt):

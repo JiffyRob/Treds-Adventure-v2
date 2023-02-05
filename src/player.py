@@ -49,22 +49,22 @@ class Player(environment.EnvironmentSprite):
         words = command_name.split(" ")
         if words[0] == "walk":
             directions = {
-                "up": (self.velocity.x, -self.speed),
-                "down": (self.velocity.x, self.speed),
-                "left": (-self.speed, self.velocity.y),
-                "right": (self.speed, self.velocity.y),
+                "up": (self.desired_velocity.x, -self.speed),
+                "down": (self.desired_velocity.x, self.speed),
+                "left": (-self.speed, self.desired_velocity.y),
+                "right": (self.speed, self.desired_velocity.y),
             }
-            self.velocity = pygame.Vector2(directions[words[1]])
+            self.desired_velocity = pygame.Vector2(directions[words[1]])
         if words[0] == "stop":
             directions = {
-                "up": (self.velocity.x, 0),
-                "down": (self.velocity.x, 0),
-                "left": (0, self.velocity.y),
-                "right": (0, self.velocity.y),
+                "up": (self.desired_velocity.x, 0),
+                "down": (self.desired_velocity.x, 0),
+                "left": (0, self.desired_velocity.y),
+                "right": (0, self.desired_velocity.y),
             }
-            self.velocity = pygame.Vector2(directions[words[1]])
-        if self.velocity:
-            self.velocity.scale_to_length(self.speed)
+            self.desired_velocity = pygame.Vector2(directions[words[1]])
+        if self.desired_velocity:
+            self.desired_velocity.scale_to_length(self.speed)
 
     def change_collision_group(self, collision_group):
         self.physics_data = physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group)
