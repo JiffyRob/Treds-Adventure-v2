@@ -35,25 +35,21 @@ class Game:
         # initial map load
         self.player = player.Player(pygame.Vector2(), None, 8, "player", self)
         self.kill_dt = False
-        self.load_map("tiled/test_map.tmx", START_SPOTS["default"]["pos"])
+        self.load_map("test_map.tmx", START_SPOTS["default"]["pos"])
 
     @scripting.ejecs_command
     def player_command(self, command):
         return self.player.command(command)
-
-    def load_world(self, path, player_pos=START_SPOTS["default"]["pos"]):
-        self.current_world = loader.load(path)
-        for key, value in self.current_world.items():
-            rect = pygame.Rect(key)
-            if rect.collidepoint(player_pos):
-                self.current_map_rect = rect
-                self.load_map(self.current_world[key], player_pos, True)
 
     def load_map(self, tmx_data, player_pos, push=False):
         groups, event_script = mapping.load_map(tmx_data, self, player_pos)
         if not push:
             self.stack.pop()
         self.stack.push(game_state.MapState("game map", groups, self))
+        if event_script:
+            self.stack.push(
+                game_state.ScriptedMapState("game map", groups, self, event_script)
+            )
 
     def toggle_fullscreen(self):
         pygame.display.toggle_fullscreen()

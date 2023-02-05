@@ -1,11 +1,15 @@
+import os
+
 import pygame
 import pytmx
 
-import player
 import static_objects
 from bush import animation, asset_handler, entity, level, physics, util
 
-asset_loader = asset_handler.glob_loader
+tiled_loader = asset_handler.AssetHandler(
+    os.path.join(asset_handler.glob_loader.base, "tiled")
+)
+
 
 instantiators = {
     "tree": static_objects.Tree,
@@ -33,7 +37,10 @@ def get_anim(x, y, layer_index, tmx_map):
 
 def load_map(tmx_map, engine, player_pos):
     if isinstance(tmx_map, str):
-        tmx_map = asset_loader.load(tmx_map)
+        tmx_map = tiled_loader.load(tmx_map)
+    event_script = tmx_map.properties.get("script", None)
+    if event_script is not None:
+        event_script = tiled_loader.load(event_script)
     current_player = engine.player
     screen_size = engine.screen_size
     tile_width, tile_height = tile_size = pygame.Vector2(16, 16)
@@ -113,4 +120,4 @@ def load_map(tmx_map, engine, player_pos):
     current_player.change_collision_group(groups["collision"])
     current_player.rect.center = current_player.pos = pygame.Vector2(player_pos)
     main_group.follow = current_player
-    return groups, None
+    return groups, event_script

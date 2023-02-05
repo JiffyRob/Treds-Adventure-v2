@@ -102,24 +102,26 @@ class MapState(GameState):
 
 
 class ScriptedMapState(GameState):
-    def __init__(self, map_name, groups, engine, script, state_once_finished=None):
+    def __init__(self, map_name, groups, engine, script):
         self.groups = groups
-        self.sky = self.engine.sky
+        self.sky = engine.sky
         self.main_group = groups["main"]
         self.player = groups["player"].sprite
-        self.state_once_finished = state_once_finished
         scripting_api = {"command-player": engine.player_command}
         self.interpreter = scripting.EJECSController(script, scripting_api)
-        super().__init__(map_name, engine, lambda: None)
+        super().__init__(map_name, engine)
 
     def update(self, dt=0.03):
         self.interpreter.run()
-        self.main_group.update()
-        self.sky.update()
+        self.main_group.update(dt)
+        self.sky.update(dt)
         if self.interpreter.finished():
             self.pop()
-            if self.state_once_finished:
-                self._stack.push(self.state_once_finished)
+
+    def handle_event(self, event):
+        if event.type == event_binding.BOUND_EVENT and event.name == "pop state":
+            return
+        super().handle_event(event)
 
     def draw(self, surface):
         self.main_group.draw(surface)
