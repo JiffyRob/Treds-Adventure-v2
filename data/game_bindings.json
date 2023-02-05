@@ -1,10 +1,6 @@
 {
-  "KeyDown-left": "walk left",
-  "KeyUp-left": "stop left",
-  "KeyDown-right": "walk right",
-  "KeyUp-right": "stop right",
-  "KeyDown-up": "walk up",
-  "KeyUp-up": "stop up",
-  "KeyDown-down": "walk down",
-  "KeyUp-down": "stop down",
+  "KeyDown-escape": "pop state",
+  "KeyDown-p": "pause",
+  "KeyDown-f11": "toggle fullscreen",
+  "Quit": "quit"
 }
