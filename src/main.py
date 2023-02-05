@@ -54,6 +54,13 @@ class Game:
     def toggle_fullscreen(self):
         pygame.display.toggle_fullscreen()
 
+    def tick(self):
+        dt = self.clock.tick(self.fps) / 1000
+        if self.kill_dt:
+            dt = 0
+        self.kill_dt = False
+        return dt
+
     def run(self):
         self.screen = pygame.display.set_mode(
             util.rvec(self.screen_size), 0, vsync=True
@@ -63,7 +70,7 @@ class Game:
 
         self.running = True
         dt = 0
-        self.clock.tick()  # keeps first frame from jumping
+        self.tick()  # prevents large dt on first frame
         while self.running:
             current_state = self.stack.get_current()
             if current_state is None:
@@ -73,10 +80,7 @@ class Game:
             current_state.draw(self.screen)
             current_state.handle_events()
             pygame.display.flip()
-            dt = self.clock.tick(self.fps) / 1000
-            if self.kill_dt:
-                dt = 0
-            self.kill_dt = False
+            dt = self.tick()
 
         pygame.quit()
         self.screen = None
