@@ -13,7 +13,7 @@ TYPE_TRIGGER = 3
 PhysicsData = namedtuple("PhysicsData", ("type", "collision_group"))
 
 
-def dynamic_update(self, dt):
+def dynamic_update(self, dt, stop_on_collision=False):
     for ind, axis in enumerate(("x", "y")):
         if not self.velocity[ind]:
             continue
@@ -27,7 +27,7 @@ def dynamic_update(self, dt):
         for sprite in self.physics_data.collision_group:
             if not self.velocity[ind]:
                 continue
-            callbacks[sprite.physics_data.type](self, sprite, ind)
+            callbacks[sprite.physics_data.type](self, sprite, ind, stop_on_collision)
 
 
 def rect_mask_collide(rect, mask):
@@ -36,7 +36,7 @@ def rect_mask_collide(rect, mask):
     return value
 
 
-def static_collision(dynamic, static, axis):
+def static_collision(dynamic, static, axis, stop_on_collision):
     # get direction of velocity on given axis
     velocity = pygame.Vector2()
     velocity[axis] = dynamic.velocity[axis] / abs(dynamic.velocity[axis])
@@ -72,21 +72,21 @@ def static_collision(dynamic, static, axis):
         check_rect.center = check_pos
     dynamic.rect = check_rect
     dynamic.pos = pygame.Vector2(check_rect.center)
-    if collided:
+    if collided and stop_on_collision:
         dynamic.velocity[axis] = 0
     return collided
 
 
-def dynamic_collision(dynamic1, dynamic2, dt):
+def dynamic_collision(dynamic1, dynamic2, dt, _):
     # TODO
     pass
 
 
-def friction_collision(dynamic, friction, dt):
+def friction_collision(dynamic, friction, dt, _):
     # TODO
     pass
 
 
-def trigger_collision(dynamic, trigger, dt):
+def trigger_collision(dynamic, trigger, dt, _):
     # TODO
     pass

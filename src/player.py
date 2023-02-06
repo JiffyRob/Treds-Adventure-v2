@@ -30,13 +30,14 @@ class Player(environment.EnvironmentSprite):
         rect.center = pos
         super().__init__(
             pos,
-            util.rect_surf(rect, color.BLUE),
-            None,
+            util.rect_surf(rect, "blue"),
+            engine,
+            environment.EnvironmentHandler({}),
             physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group),
+            speed=96,
             id=id,
             layer=layer,
         )
-        self.speed = 96
         self.rect = rect
         self.rect.center = self.pos
         self.engine = engine

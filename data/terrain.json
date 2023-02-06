@@ -3,13 +3,14 @@
   "default": {
     "speed": 1,
     "moves": ["walk", "walk fast", "attack", "interact", "carry", "face"],
-    "walk move": "walk",
+    "move_state": "walk",
+    "idle_state": "idle",
     "needs": null,
-    "min weight": null,
+    "min_exempt_weight": null,
     "consequence": "collision",
     "pitfall": "basic",
     "sound": null,
-    "grip": 1
+    "traction": 1
   },
   "path": {
     "speed": 1.2
@@ -25,16 +26,18 @@
     "speed": 0.5,
     "traction": 0.8,
     "moves": ["wade", "wade fast", "attack", "interact","face"],
-    "walk move": "wade"
+    "move_state": "wade",
+    "idle_state": "idle wading"
   },
   "ice": {
-    "grip": 0.2,
+    "traction": 0.2,
     "moves": ["skate", "attack", "carry", "interact", "face"]
   },
   "thin ice": {
     "needs": "balloon hat",
+    "min_exempt_weight": 11,
     "pitfall": "ice",
     "moves": ["skate", "attack", "carry", "interact", "face"],
-    "grip": 0.5
+    "traction": 0.5
   }
 }
