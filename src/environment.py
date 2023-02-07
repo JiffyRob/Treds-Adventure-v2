@@ -17,7 +17,6 @@ EnvironmentData = namedtuple(
         "consequence",
         "pitfall",
         "sound",
-        "grip",
         "traction",
     ),
 )
@@ -25,17 +24,32 @@ TERRAIN_DATA = loader.load("data/terrain.json")
 DEFAULT_DATA = TERRAIN_DATA["default"]
 TERRAIN_ORDER = TERRAIN_DATA.pop("order")
 for key, value in TERRAIN_DATA.items():
-    TERRAIN_DATA[key] = EnvironmentData(**{**value, **DEFAULT_DATA})
+    TERRAIN_DATA[key] = EnvironmentData(**{**DEFAULT_DATA, **value})
 
 
 class EnvironmentHandler:
-    def __init__(self, tiles, tile_size=(16, 16)):
-        self.tiles = tiles
+    def __init__(self, tiles=(), tile_size=(16, 16)):
+        self.tiles = {
+            (*pygame.Vector2(pos) * 16, *tile_size): value
+            for pos, value in dict(tiles).items()
+        }
         self.tile_size = tile_size
 
     def get_environment_at(self, rect):
-        # TODO
+        def sort_key(data):
+            return TERRAIN_ORDER.index(data[1])
+
+        collided = rect.collidedictall(self.tiles)
+        if collided:
+            collided.sort(key=sort_key)
+            return collided[0][1]
         return "default"
+
+    def add(self, pos, terrain):
+        self.tiles[(*pygame.Vector2(pos) * 16, *self.tile_size)] = terrain
+
+    def remove(self, pos):
+        self.tiles.pop(pos, None)
 
     def environment_data(self, environment):
         return TERRAIN_DATA.get(environment, "default")
@@ -91,6 +105,7 @@ class EnvironmentSprite(entity.Actor):
             self.desired_velocity.scale_to_length(
                 self.speed * self.current_terrain.speed
             )
+        print(self.desired_velocity)
         # slippety-slide!
         if self.current_terrain.traction != 1:
             sliding = True
@@ -102,4 +117,6 @@ class EnvironmentSprite(entity.Actor):
         physics.dynamic_update(self, dt, sliding)
         # update state
         self.update_state()
-        print(self.velocity, self.desired_velocity)
+
+    def change_environment(self, new_env):
+        self.environment = new_env

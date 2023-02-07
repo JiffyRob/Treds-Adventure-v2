@@ -65,7 +65,7 @@
         "master.tsx"
     ],
     "project": "tav2.tiled-project",
-    "property.type": "file",
+    "property.type": "Terrain",
     "recentFiles": [
         "trees.tsx",
         "master.tsx",

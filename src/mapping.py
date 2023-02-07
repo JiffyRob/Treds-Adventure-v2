@@ -3,6 +3,7 @@ import os
 import pygame
 import pytmx
 
+import environment
 import static_objects
 from bush import animation, asset_handler, entity, level, physics
 
@@ -35,6 +36,12 @@ def get_anim(x, y, layer_index, tmx_map):
     return anim
 
 
+def get_terrain(x, y, layer_index, tmx_map):
+    props = tmx_map.get_tile_properties(x, y, layer_index) or {}
+    if "terrain" in props:
+        return props["terrain"]
+
+
 def load_map(tmx_map, engine, player_pos):
     if isinstance(tmx_map, str):
         tmx_map = tiled_loader.load(tmx_map)
@@ -57,11 +64,10 @@ def load_map(tmx_map, engine, player_pos):
         "farmplants_orange": pygame.sprite.Group(),
         "farmplants": pygame.sprite.Group(),
     }
+    map_env = environment.EnvironmentHandler()
 
     for layer_index, layer in enumerate(tmx_map.layers):
-        sprite_layer = layer_index
-        sprite_layer *= 3  # 3 sub layers in between each map layer (below, main above)
-        sprite_layer += 1  # defaults to main layer
+        sprite_layer = (layer_index * 3) + 1
         if isinstance(layer, pytmx.TiledTileLayer):
             layer_surface = pygame.Surface(
                 (tile_width * map_width, tile_height * map_height), pygame.SRCALPHA
@@ -77,6 +83,10 @@ def load_map(tmx_map, engine, player_pos):
                         layer=sprite_layer + 1,
                     )
                     main_group.add(tile)
+                terrain = get_terrain(x, y, layer_index, tmx_map)
+                if terrain is not None:
+                    print("add terrain", terrain)
+                    map_env.add((x, y), terrain)
             layer_sprite = entity.Entity(
                 map_rect.center, layer_surface, layer=sprite_layer
             )
@@ -101,6 +111,7 @@ def load_map(tmx_map, engine, player_pos):
                     "id": obj.name or obj.id,
                     "layer": sprite_layer,
                     "engine": engine,
+                    "environment": map_env,
                 }
                 for key, value in groups.items():
                     kwargs[key + "_group"] = value
@@ -118,6 +129,7 @@ def load_map(tmx_map, engine, player_pos):
         groups[key].add(current_player)
     current_player.change_layer(player_layer)
     current_player.change_collision_group(groups["collision"])
+    current_player.change_environment(map_env)
     current_player.rect.center = current_player.pos = pygame.Vector2(player_pos)
     main_group.follow = current_player
     return groups, event_script

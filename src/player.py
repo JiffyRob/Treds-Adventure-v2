@@ -24,16 +24,18 @@ class Player(environment.EnvironmentSprite):
         layer,
         id="Player",
         engine=None,
+        map_env=None,
         **__
     ):
         rect = pygame.Rect(0, 0, 14, 14)
         rect.center = pos
+        print("env:", map_env)
         super().__init__(
             pos,
             util.rect_surf(rect, "blue"),
             engine,
-            environment.EnvironmentHandler({}),
-            physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group),
+            environment=map_env,
+            physics_data=physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group),
             speed=96,
             id=id,
             layer=layer,

@@ -4,6 +4,7 @@ Has Access to all other modules
 """
 import pygame
 
+import environment
 import game_state
 import mapping
 import player
@@ -33,7 +34,9 @@ class Game:
         # day/night
         self.sky = sky.Sky(self.screen_size)
         # initial map load
-        self.player = player.Player(pygame.Vector2(), None, 8, "player", self)
+        self.player = player.Player(
+            pygame.Vector2(), None, 8, "player", self, environment.EnvironmentHandler()
+        )
         self.kill_dt = False
         self.load_map("test_map.tmx", START_SPOTS["default"]["pos"])
 
