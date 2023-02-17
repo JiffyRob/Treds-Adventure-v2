@@ -4,12 +4,12 @@ Has Access to all other modules
 """
 import pygame
 
+import custom_mapper
 import environment
 import game_state
-import mapping
 import player
 import sky
-from bush import asset_handler, color, event_binding, util
+from bush import asset_handler, color, level, util
 from bush.ai import scripting, state
 
 pygame.init()
@@ -38,6 +38,7 @@ class Game:
             pygame.Vector2(), None, 8, "player", self, environment.EnvironmentHandler()
         )
         self.kill_dt = False
+        self.map_loader = custom_mapper.MapLoader(self.screen_size, self.player)
         self.load_map("test_map.tmx", START_SPOTS["default"]["pos"])
 
     @scripting.ejecs_command
@@ -45,10 +46,11 @@ class Game:
         return self.player.command(command)
 
     def load_map(self, tmx_data, player_pos, push=False):
-        groups, event_script = mapping.load_map(tmx_data, self, player_pos)
+        groups, event_script = self.map_loader.load_map(tmx_data, self, player_pos)
         if not push:
             self.stack.pop()
         self.stack.push(game_state.MapState("game map", groups, self))
+        event_script = None
         if event_script:
             self.stack.push(
                 game_state.ScriptedMapState("game map", groups, self, event_script)

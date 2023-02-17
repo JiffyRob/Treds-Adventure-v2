@@ -28,7 +28,6 @@ def orange_farmplant(*args, **kwargs):
     return FarmPlant("orange", *args, **kwargs)
 
 
-
 class Throwable(entity.Entity):
     def __init__(self, pos, image, collision_group=None, *_, layer=5, **__):
         self.physics_data = physics.PhysicsData(physics.TYPE_STATIC, collision_group)
@@ -46,7 +45,6 @@ class FarmPlant(entity.Entity):
         image,
         collision_group=None,
         layer=5,
-        farmplants_group=None,
         farmplants_orange_group=None,
         farmplants_green_group=None,
         id=None,

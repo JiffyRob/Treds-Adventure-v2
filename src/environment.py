@@ -92,6 +92,8 @@ class EnvironmentSprite(entity.Actor):
             self.state = self.current_terrain.idle_state
 
     def update_terrain(self):
+        if self.environment is None:
+            return
         self.current_terrain_name = self.environment.get_environment_at(self.rect)
         self.current_terrain = self.environment.environment_data(
             self.current_terrain_name
@@ -105,7 +107,6 @@ class EnvironmentSprite(entity.Actor):
             self.desired_velocity.scale_to_length(
                 self.speed * self.current_terrain.speed
             )
-        print(self.desired_velocity)
         # slippety-slide!
         if self.current_terrain.traction != 1:
             sliding = True

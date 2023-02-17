@@ -1,7 +1,11 @@
 import pygame
 import pytmx
 
-from bush import animation, asset_handler, entity
+from bush import animation, asset_handler, entity, physics
+
+PRERENDER_NONE = 0
+PRERENDER_NORMAL = 1
+PRERENDER_DOUBLEDRAW = 2
 
 
 class MapLoader:
@@ -12,9 +16,10 @@ class MapLoader:
         sprite_kwargs,
         sprite_group_key_function=lambda sprite, is_nonsprite: ("main",),
         colorkey=(255, 255, 0),
-        mask_load_path=asset_handler.glob_loader.base,
-        map_load_path=asset_handler.glob_loader.base,
+        mask_load_path=".",
+        map_load_path=".",
         after_load_callback=lambda sprite_groups, map_properties: None,
+        prerender_mode=PRERENDER_NORMAL,
     ):
         self.sprite_creators = sprite_creators
         self.sprite_group_creators = sprite_group_creators
@@ -24,8 +29,9 @@ class MapLoader:
         self.mask_loader = asset_handler.AssetHandler(mask_load_path)
         self.map_loader = asset_handler.AssetHandler(map_load_path)
         self.after_load_callback = after_load_callback
+        self.prerender_mode = prerender_mode
 
-    def load_map(self, tmx_path):
+    def load_map(self, tmx_path, prerender_mode=PRERENDER_NORMAL):
         """Take a pytmx map path (or TiledMap) and return a series of sprite groups, to be rendered in order"""
 
         def get_anim():
@@ -48,13 +54,13 @@ class MapLoader:
             for key in groups:
                 masks[key].draw(mask, pos)
 
-        def static_sprite():
+        def static_sprite(pos, gid):
             anim = get_anim()
             if isinstance(anim, animation.Animation):
-                sprite = entity.Entity(tile_pos, anim, layer=sprite_layer, topleft=True)
+                sprite = entity.Entity(pos, anim, layer=sprite_layer, topleft=True)
                 add_to_groups(sprite, True)
             else:
-                surface.blit(anim, tile_pos)
+                surface.blit(anim, pos)
 
         if isinstance(tmx_path, pytmx.TiledMap):
             tmx_map = tmx_path
@@ -70,7 +76,7 @@ class MapLoader:
             for key, callback in self.sprite_group_creators.items()
         }
         masks = {key: pygame.mask.Mask(map_size) for key in sprite_groups.keys()}
-        for index, layer in enumerate(tmx_map.layers()):
+        for index, layer in enumerate(tmx_map.layers):
             sprite_layer = index * 3 + 1  # 3 sub layers per layer
             if isinstance(layer, pytmx.TiledImageLayer):
                 sprite = entity.Entity((0, 0), layer.image, layer=sprite_layer)
@@ -81,14 +87,16 @@ class MapLoader:
                 surface.fill(self.colorkey)
                 surface.set_colorkey(self.colorkey)
                 for x, y, gid in layer.iter_data():
-                    props = tmx_map.get_tile_properties_by_gid(gid)
+                    if not gid:
+                        continue
+                    props = tmx_map.get_tile_properties_by_gid(gid) or {}
                     tile_pos = tile_size.elementwise() * (x, y)
                     tile_mask = pygame.mask.from_surface(
                         tmx_map.get_tile_image_by_gid(gid)
                     )
                     if props.get("groups", False):
                         add_to_masks(tile_pos, tile_mask, props["groups"].split(", "))
-                    static_sprite()
+                    static_sprite(tile_pos, gid)
                 sprite = entity.Entity(
                     (0, 0), surface, layer=sprite_layer, topleft=True
                 )
@@ -96,14 +104,17 @@ class MapLoader:
                 continue
             if isinstance(layer, pytmx.TiledObjectGroup):
                 for obj in layer:
+                    obj.y += (
+                        obj.height
+                    )  # I don't know why, but objects are always up on height unit
                     gid = obj.gid
                     anim = pygame.Surface((obj.width, obj.height)).convert()
                     anim.set_colorkey(self.colorkey)
                     anim.fill(self.colorkey)
                     if obj.type is None:
                         if gid:
-                            static_sprite()
-                            props = object.properties
+                            static_sprite((obj.x, obj.y), gid)
+                            props = obj.properties
                             if obj.properties.get("groups", False):
                                 if "mask" in props:
                                     mask = pygame.mask.from_surface(
@@ -129,8 +140,18 @@ class MapLoader:
                         layer=sprite_layer,
                         topleft=True,
                         **obj.properties,
+                        **{
+                            key + "_group": value
+                            for key, value in sprite_groups.items()
+                        },
                         **self.sprite_kwargs,
                     )
                     add_to_groups(sprite, False)
+        for key, mask in masks.items():
+            sprite = entity.Entity((0, 0), groups=(sprite_groups[key],))
+            sprite.physics_data = physics.PhysicsData(
+                physics.TYPE_STATIC, sprite_groups[key]
+            )
+            sprite.mask = mask
         self.after_load_callback(sprite_groups, tmx_map.properties)
         return sprite_groups, tmx_map.properties
