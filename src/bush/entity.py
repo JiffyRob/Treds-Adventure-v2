@@ -7,17 +7,30 @@ from copy import deepcopy
 
 import pygame
 
+from bush import animation
+
 
 class Entity(pygame.sprite.Sprite):
     """Basic Entity"""
 
-    def __init__(self, pos, surface=None, groups=(), id=None, layer=None):
+    def __init__(
+        self, pos, surface=None, groups=(), id=None, layer=None, topleft=False
+    ):
         super().__init__(*groups)
         self.image = surface
+        self.anim = None
+        if isinstance(surface, animation.Animation):
+            self.anim = surface
+            self.image = self.anim.image()
         if surface is None:
             self.image = pygame.Surface((0, 0))
         self.pos = pygame.Vector2(pos)
-        self.rect = self.image.get_rect(center=self.pos)
+        self.rect = self.image.get_rect()
+        if topleft:
+            self.rect.topleft = self.pos
+            self.pos.update(*self.rect.center)
+        else:
+            self.rect.center = self.pos
         self._layer = 1
         if layer is not None:
             self._layer = layer
@@ -31,11 +44,15 @@ class Entity(pygame.sprite.Sprite):
 
     def update(self, dt):
         self.rect.center = self.pos
+        if self.anim:
+            self.image = self.anim.image()
 
 
 class Actor(Entity):
-    def __init__(self, pos, surface=None, groups=(), id=None, layer=None):
-        super().__init__(pos, surface, groups, id, layer)
+    def __init__(
+        self, pos, surface=None, groups=(), id=None, layer=None, topleft=False
+    ):
+        super().__init__(pos, surface, groups, id, layer, topleft=topleft)
         self.velocity = pygame.Vector2()
 
     def update(self, dt):
