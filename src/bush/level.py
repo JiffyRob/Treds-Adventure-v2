@@ -8,12 +8,7 @@ DUPLICATE_REMOVE = 1
 DUPLICATE_OVERWRITE = 2
 DUPLICATE_VALUE_ERROR = 3
 
-try:
-    import pytmx
-except ImportError:
-    pytmx = NotImplemented
-    print("WARNING: pytmx not found.  Tiled map primitives not available")
-from bush import animation, color, entity, physics
+from bush import entity
 
 
 class EntityGroup(pygame.sprite.Group):
@@ -124,78 +119,3 @@ class TopDownGroup(CameraGroup):
             return (sprite.layer * 1000) + sprite.rect.bottom
 
         return sorted(super().sprites(), key=sortkey)
-
-
-class AnimatedTile(entity.Entity):
-    def __init__(self, anim, pos, layer):
-        super().__init__(pos, anim.image())
-        self._layer = layer
-        self.anim = anim
-
-    def update(self, dt):
-        super().update(dt)
-        self.image = self.anim.image()
-
-
-def generate_map_sprites(
-    pytmx_map,
-    cam_size,
-    cam_pos=(0, 0),
-    entity_generator=lambda obj, layer, layer_ind: None,
-    tile_layer_callback=lambda obj, layer, layer_ind: None,
-    image_layer_callback=lambda layer, layer_ind: None,
-    top_down=False,
-):
-    # basic map data
-    tile_size = pygame.Vector2(pytmx_map.tilewidth, pytmx_map.tileheight)
-    map_size = pygame.Vector2(
-        pytmx_map.width * tile_size.x, pytmx_map.height * tile_size.y
-    )
-    # sprite group
-    if top_down:
-        sprite_group = TopDownGroup(cam_size, map_size, cam_pos)
-    else:
-        sprite_group = CameraGroup(cam_size, map_size, cam_pos)
-    # animation
-    anim_gids = {}
-    for gid, props in pytmx_map.tile_properties.items():
-        frames = []
-        lengths = []
-        for frame_gid, length in props["frames"]:
-            frames.append(pytmx_map.get_tile_image_by_gid(frame_gid))
-            lengths.append(length)
-        if frames:
-            anim_gids[gid] = animation.Animation(frames, lengths)
-
-    for layer_ind, layer in enumerate(pytmx_map.visible_layers()):
-        if isinstance(layer, pytmx.TiledTileLayer):
-            surface = pygame.Surface(map_size).convert()
-            surface.fill(color.MAGENTA)
-            surface.set_colorkey(color.MAGENTA)
-            for x, y, gid in layer.iter_data():
-                pos = tile_size.elementwise() * (x, y)
-                if gid in anim_gids:
-                    anim_tile = AnimatedTile(
-                        anim_gids[gid], pos + tile_size / 2, layer_ind + 0.01
-                    )
-                    sprite_group.add(anim_tile)
-                else:
-                    surface.blit(pytmx_map.get_tile_image_by_gid(gid), pos)
-            sprite = entity.EntityLite(surface, (0, 0))
-            sprite.layer = layer_ind
-            sprite_group.add(sprite)
-            tile_layer_callback(layer, layer_ind)
-        elif isinstance(layer, pytmx.TiledObjectGroup):
-            for obj in layer:
-                sprite = entity_generator(obj, layer, layer_ind)
-                if sprite is None:
-                    continue
-                sprite_group.add(sprite)
-        elif isinstance(layer, pytmx.TiledImageLayer):
-            sprite = entity.EntityLite(layer.image, layer.image.get_rect().center)
-            sprite._layer = layer_ind
-            sprite_group.add(sprite)
-            image_layer_callback(layer, layer_ind)
-        else:
-            raise TypeError("AAAAHHHHHH!!!!  The world exploded!")
-    return sprite_group
