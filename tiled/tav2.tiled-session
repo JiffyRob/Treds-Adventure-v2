@@ -20,6 +20,23 @@
                 "y": 367.99999999999994
             }
         },
+        "maps/farmplant_green.tsx": {
+            "scaleInDock": 1
+        },
+        "maps/master.tsx": {
+            "scaleInDock": 1
+        },
+        "maps/test_map.tmx": {
+            "scale": 0.344189453125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 502.6301603064263,
+                "y": 370.4355227691872
+            }
+        },
+        "maps/trees.tsx": {
+            "scaleInDock": 1
+        },
         "master.tsx": {
             "scaleInDock": 0.75,
             "scaleInEditor": 0.75
@@ -46,11 +63,109 @@
                 "y": 554.5454545454545
             }
         },
+        "tilesets/boat.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/crane.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/dungeon.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/farmplant_green.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/farmplant_orange.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/fish_net.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/flag.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/floor.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/floor_detail.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/floorb.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/hole.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/house.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/interior.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/interior_elements.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/interior_floor.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/master.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/narrow_house.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/nature.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/pipes.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/propeller.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/round_house.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/trees.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/water.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/waterfall.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "trees.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
         }
     },
+    "frame.defaultDuration": 150,
+    "last.externalTilesetPath": "/home/jack/Python Workspace/Treds-Adventure-v2/tiled/tilesets",
     "last.imagePath": "/home/jack/Python Workspace/Treds-Adventure-v2/resources/tiles",
     "last.objectTemplatePath": "/home/jack/Python Workspace/Treds-Adventure-v2/tiled",
     "last.worldFilePath": "/home/jack/Python Workspace/Treds-Adventure-v2/tiled",
@@ -65,18 +180,24 @@
         "master.tsx"
     ],
     "project": "tav2.tiled-project",
-    "property.type": "Terrain",
+    "property.type": "string",
     "recentFiles": [
-        "trees.tsx",
-        "master.tsx",
-        "test_map.tmx",
-        "test2.tmx",
-        "interior_tes.tmx",
-        "farmplant_green.tsx"
+        "tilesets/propeller.tsx",
+        "tilesets/trees.tsx",
+        "tilesets/boat.tsx",
+        "tilesets/crane.tsx",
+        "tilesets/dungeon.tsx",
+        "tilesets/farmplant_green.tsx",
+        "tilesets/farmplant_orange.tsx",
+        "tilesets/fish_net.tsx",
+        "tilesets/flag.tsx",
+        "tilesets/floor.tsx",
+        "tilesets/floor_detail.tsx",
+        "tilesets/floorb.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
-        "height": 16,
-        "width": 16
+        "height": 128,
+        "width": 64
     }
 }
