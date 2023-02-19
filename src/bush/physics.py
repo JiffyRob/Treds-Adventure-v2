@@ -13,6 +13,36 @@ TYPE_TRIGGER = 3
 PhysicsData = namedtuple("PhysicsData", ("type", "collision_group"))
 
 
+def optimize_for_physics(group):
+    groups = (
+        pygame.sprite.Group(),
+        pygame.sprite.Group(),
+        pygame.sprite.Group(),
+        pygame.sprite.Group(),
+    )
+    rects = [None, None, None, None]
+    for sprite in group.sprites():
+        type = sprite.physics_data.type
+        groups[type].add(sprite)
+        try:
+            rects[type].union_ip(sprite.rect)
+        except AttributeError:
+            rects[type] = sprite.rect.copy()
+    for key in (TYPE_STATIC, TYPE_FRICTION, TYPE_TRIGGER):
+        if rects[key] is None:
+            continue
+        megamask = pygame.Mask(rects[key].size)
+        for sprite in groups[key]:
+            megamask.draw(sprite.mask, sprite.rect.topleft)
+            group.remove(sprite)
+        new_sprite = pygame.sprite.Sprite()
+        new_sprite.rect = megamask.get_rect()
+        new_sprite.pos = new_sprite.rect.center
+        new_sprite.mask = megamask
+        new_sprite.physics_data = PhysicsData(TYPE_STATIC, group)
+        group.add(new_sprite)
+
+
 def dynamic_update(self, dt, stop_on_collision=False):
     for ind, axis in enumerate(("x", "y")):
         if not self.velocity[ind]:

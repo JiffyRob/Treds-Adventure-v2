@@ -99,6 +99,7 @@ class MapLoader(mapping.MapLoader):
         current_player.rect.center = current_player.pos = pygame.Vector2(player_pos)
         self.current_sprite_groups["main"].follow = current_player
         self.current_sprite_groups["main"].add(sprite_group)
+        physics.optimize_for_physics(self.current_sprite_groups["collision"])
         groups = self.current_sprite_groups
         self.current_sprite_groups = None
         return groups, properties.get("script", None)
