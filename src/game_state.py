@@ -10,8 +10,11 @@ loader = asset_handler.glob_loader
 class GameState(state.StackState):
     def __init__(self, value, engine, on_push=lambda: None, on_pop=lambda: None):
         self.engine = engine
+        self.cursor = engine.cursor
+        self.cursor.hide()
         self.input_handler = event_binding.EventHandler()
         self.input_handler.update_bindings(loader.load("data/game_bindings.json"))
+        self.screen_surf = None
         super().__init__(value, on_push, on_pop)
 
     def handle_events(self):
@@ -31,6 +34,9 @@ class GameState(state.StackState):
                 self._stack.push(PausemenuState(self.engine))
             if event.name == "quit":
                 self.engine.quit()
+
+    def cache_screen(self):
+        self.screen_surf = pygame.display.get_surface().copy()
 
     def draw(self, surface):
         pass
@@ -98,7 +104,7 @@ class PausemenuState(GameState):
         self.menu = pygame_gui.UIManager(
             (engine.screen_size.x * 0.7, engine.screen_size.y - 64)
         )
-        for index, text in enumerate(("Quit", "Resume")):
+        for index, text in enumerate(("Resume", "Quit")):
             rect = pygame.Rect((0, index * 55 + 100, 100, 50))
             rect.centerx = engine.screen_size.x / 2
             pygame_gui.elements.UIButton(
@@ -109,9 +115,10 @@ class PausemenuState(GameState):
         super().__init__(
             "Pausemenu",
             engine,
-            lambda: pygame.mouse.set_visible(True),
-            lambda: pygame.mouse.set_visible(False),
+            on_push=lambda: (self.cursor.enable(), self.cache_screen()),
+            on_pop=lambda: self.cursor.hide(),
         )
+        self.cursor.enable()
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -125,6 +132,7 @@ class PausemenuState(GameState):
             self.menu.process_events(event)
 
     def draw(self, surface):
+        surface.blit(self.screen_surf, (0, 0))
         self.menu.draw_ui(surface)
 
     def update(self, dt=0.03):

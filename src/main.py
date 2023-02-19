@@ -2,6 +2,8 @@
 Main - runs game and holds game loop.
 Has Access to all other modules
 """
+import random
+
 import pygame
 
 import custom_mapper
@@ -9,7 +11,7 @@ import environment
 import game_state
 import player
 import sky
-from bush import asset_handler, color, util
+from bush import asset_handler, color, joy_cursor, util
 from bush.ai import scripting, state
 
 pygame.init()
@@ -29,6 +31,17 @@ class Game:
         self.running = False
         self.bgcolor = color.GREY
         self.screen = pygame.display.set_mode(util.rvec(self.screen_size))
+        cursor_images = loader.load(
+            "resources/misc/cursor.png",
+            loader=asset_handler.load_spritesheet,
+            frame_size=(16, 16),
+        )
+        self.cursor = joy_cursor.JoyCursor(
+            pygame.transform.scale2x(cursor_images[not bool(random.randint(0, 100))]),
+            pygame.Vector2(4, 2),
+        )
+        self.cursor_group = pygame.sprite.GroupSingle(self.cursor)
+        self.cursor.hide()
         # game control state
         self.stack = state.StateStack()
         # day/night
@@ -71,7 +84,6 @@ class Game:
             util.rvec(self.screen_size), 0, vsync=True
         )
         pygame.display.set_caption(self.caption)
-        pygame.mouse.set_visible(False)
 
         self.running = True
         dt = 0
@@ -82,7 +94,9 @@ class Game:
                 self.quit()
                 continue
             current_state.update(dt)
+            self.cursor_group.update(dt)
             current_state.draw(self.screen)
+            self.cursor_group.draw(self.screen)
             current_state.handle_events()
             pygame.display.flip()
             dt = self.tick()
