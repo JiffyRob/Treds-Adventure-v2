@@ -14,6 +14,7 @@ def event_to_string(event):
 class EventHandler:
     def __init__(self, bindings={}):
         self.bindings = bindings
+        self.disabled = set()
 
     def load_bindings(self, path):
         self.bindings = util_load.load_json(path)
@@ -28,13 +29,19 @@ class EventHandler:
     def unbind(self, event_string):
         return self.bindings.pop(event_string)
 
+    def enable_event(self, event_string):
+        self.disabled.remove(event_string)
+
+    def disable_event(self, event_string):
+        self.disabled.add(event_string)
+
     def update_bindings(self, bindings):
         self.bindings.update(bindings)
 
     def process_event(self, event):
         as_string = event_to_string(event)
         event_id = self.bindings.get(as_string, None)
-        if event_id is None:
+        if event_id is None or event_id in self.disabled:
             return
         self.post_event(name=self.bindings[as_string], original_event=event)
 

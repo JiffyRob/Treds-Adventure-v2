@@ -118,6 +118,7 @@ class PausemenuState(GameState):
             on_push=lambda: (self.cursor.enable(), self.cache_screen()),
             on_pop=lambda: self.cursor.hide(),
         )
+        self.input_handler.disable_event("pause")
         self.cursor.enable()
 
     def handle_events(self):
