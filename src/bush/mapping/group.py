@@ -8,8 +8,6 @@ DUPLICATE_REMOVE = 1
 DUPLICATE_OVERWRITE = 2
 DUPLICATE_VALUE_ERROR = 3
 
-from bush import entity
-
 
 class EntityGroup(pygame.sprite.Group):
     def __init__(

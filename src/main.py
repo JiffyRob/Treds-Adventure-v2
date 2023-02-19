@@ -9,7 +9,7 @@ import environment
 import game_state
 import player
 import sky
-from bush import asset_handler, color, level, util
+from bush import asset_handler, color, util
 from bush.ai import scripting, state
 
 pygame.init()

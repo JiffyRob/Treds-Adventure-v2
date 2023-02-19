@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="14">
+<map version="1.8" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="17">
  <tileset firstgid="1" source="../tilesets/round_house.tsx"/>
  <tileset firstgid="4" source="../tilesets/propeller.tsx"/>
  <tileset firstgid="8" source="../tilesets/floor.tsx"/>
+ <tileset firstgid="580" source="../tilesets/trees.tsx"/>
  <layer id="1" name="ground" width="30" height="20">
   <data encoding="csv">
 283,284,283,283,283,283,283,286,285,287,284,284,285,284,284,287,285,283,286,287,287,287,286,287,283,286,284,286,283,284,
@@ -30,7 +31,25 @@
  <objectgroup id="3" name="objects">
   <object id="9" gid="2" x="8" y="24" width="48" height="128">
    <properties>
-    <property name="groups" value="collision"/>
+    <property name="groups" value="collision, main"/>
+   </properties>
+  </object>
+  <object id="14" gid="580" x="128" y="16" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="15" gid="580" x="192" y="16" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="16" gid="580" x="176" y="48" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
    </properties>
   </object>
  </objectgroup>

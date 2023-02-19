@@ -180,7 +180,7 @@
         "master.tsx"
     ],
     "project": "tav2.tiled-project",
-    "property.type": "string",
+    "property.type": "bool",
     "recentFiles": [
         "tilesets/propeller.tsx",
         "tilesets/trees.tsx",
