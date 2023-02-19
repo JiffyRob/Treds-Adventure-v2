@@ -39,7 +39,7 @@ class Game:
         self.cursor = joy_cursor.JoyCursor(
             pygame.transform.scale2x(cursor_images[0]),
             pygame.Vector2(4, 2),
-            alternate=cursor_images[1],
+            alternate=pygame.transform.scale2x(cursor_images[1]),
             alternate_chance=0.01,
         )
         self.cursor_group = pygame.sprite.GroupSingle(self.cursor)
