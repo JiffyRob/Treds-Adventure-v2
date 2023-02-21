@@ -1,6 +1,7 @@
 import pygame
 import pygame_gui
 
+import menu
 from bush import asset_handler, event_binding
 from bush.ai import scripting, state
 
@@ -101,17 +102,7 @@ class ScriptedMapState(GameState):
 
 class PausemenuState(GameState):
     def __init__(self, engine):
-        self.menu = pygame_gui.UIManager(
-            (engine.screen_size.x * 0.7, engine.screen_size.y - 64)
-        )
-        for index, text in enumerate(("Resume", "Quit")):
-            rect = pygame.Rect((0, index * 55 + 100, 100, 50))
-            rect.centerx = engine.screen_size.x / 2
-            pygame_gui.elements.UIButton(
-                relative_rect=rect,
-                text=text,
-                manager=self.menu,
-            )
+        self.menu = menu.create_menu("Paused", ("Resume", "Quit"), engine.screen_size)
         super().__init__(
             "Pausemenu",
             engine,

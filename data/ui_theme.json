@@ -1,0 +1,10 @@
+{
+  "defaults": {
+    "font": {
+      "name": "silver",
+      "size": "18",
+      "regular_path": "resources/misc/silver.ttf"
+    }
+
+  }
+}
