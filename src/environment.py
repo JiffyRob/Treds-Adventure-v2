@@ -25,31 +25,19 @@ DEFAULT_DATA = TERRAIN_DATA["default"]
 TERRAIN_ORDER = TERRAIN_DATA.pop("order")
 for key, value in TERRAIN_DATA.items():
     TERRAIN_DATA[key] = EnvironmentData(**{**DEFAULT_DATA, **value})
+del key, value  # don't want those cluttering up the namespace
 
 
 class EnvironmentHandler:
-    def __init__(self, tiles=(), tile_size=(16, 16)):
-        self.tiles = {
-            (*pygame.Vector2(pos) * 16, *tile_size): value
-            for pos, value in dict(tiles).items()
-        }
-        self.tile_size = tile_size
+    def __init__(self, env_masks=None):
+        self.env_masks = env_masks or {}
+        self.empty_mask = pygame.Mask((0, 0))
 
-    def get_environment_at(self, rect):
-        def sort_key(data):
-            return TERRAIN_ORDER.index(data[1])
-
-        collided = rect.collidedictall(self.tiles)
-        if collided:
-            collided.sort(key=sort_key)
-            return collided[0][1]
+    def get_environment_at(self, mask, offset=(0, 0)):
+        for key in TERRAIN_ORDER:
+            if self.env_masks.get(key, self.empty_mask).overlap(mask, offset):
+                return key
         return "default"
-
-    def add(self, pos, terrain):
-        self.tiles[(*pygame.Vector2(pos) * 16, *self.tile_size)] = terrain
-
-    def remove(self, pos):
-        self.tiles.pop(pos, None)
 
     def environment_data(self, environment):
         return TERRAIN_DATA.get(environment, "default")
@@ -80,6 +68,7 @@ class EnvironmentSprite(entity.Actor):
         self.current_terrain_name = "default"
         self.physics_data = physics_data
         self.engine = engine
+        self.mask = pygame.Mask(self.rect.size, True)
 
     def terrain_allows_move(self, move):
         return move in self.current_terrain.moves
@@ -94,7 +83,9 @@ class EnvironmentSprite(entity.Actor):
     def update_terrain(self):
         if self.environment is None:
             return
-        self.current_terrain_name = self.environment.get_environment_at(self.rect)
+        self.current_terrain_name = self.environment.get_environment_at(
+            self.mask, self.rect.topleft
+        )
         self.current_terrain = self.environment.environment_data(
             self.current_terrain_name
         )

@@ -2,6 +2,7 @@ import os
 
 import pygame
 
+import environment
 import game_objects
 from bush import asset_handler, entity, physics
 from bush.mapping import group, mapping
@@ -22,6 +23,7 @@ class MapLoader(mapping.MapLoader):
             "farmplants": lambda x: pygame.sprite.Group(),
         }
         self.current_sprite_groups = None
+        self.current_env_masks = None
         self.sprite_classes = {"bush": game_objects.Throwable}
         self.sprite_groups = {
             game_objects.Throwable: (
@@ -33,7 +35,19 @@ class MapLoader(mapping.MapLoader):
         self.default_groups = ("main",)
         self.default_player_layer = 4  # second layer (default sub)
         self.mask_loader = asset_handler.AssetHandler("resources/masks")
-        super().__init__("tiled/maps", sprite_creator=self.create_sprite)
+        super().__init__(
+            "tiled/maps",
+            sprite_creator=self.create_sprite,
+            tile_handler=self.handle_tile,
+        )
+
+    def handle_tile(self, tile, sprite_group):
+        terrain = tile.properties.get("terrain", None)
+        if terrain:
+            mask = tile.properties.get("mask", None) or pygame.mask.from_surface(
+                tile.image
+            )
+            self.current_env_masks[terrain].draw(mask, tile.pos)
 
     def create_sprite(self, obj, sprite_group):
         if obj.type is None:
@@ -87,6 +101,16 @@ class MapLoader(mapping.MapLoader):
         self.current_sprite_groups = {
             key: value(map_size) for key, value in self.group_creators.items()
         }
+        self.current_env_masks = {
+            key: pygame.Mask(
+                (tmx_map.tilewidth * tmx_map.width, tmx_map.tileheight * tmx_map.height)
+            )
+            for key in environment.TERRAIN_ORDER
+        }
+        for key in environment.TERRAIN_ORDER:
+            self.current_env_masks[key] = pygame.Mask(
+                (tmx_map.tilewidth * tmx_map.width, tmx_map.tileheight * tmx_map.height)
+            )
         sprite_group, properties = super().load(tmx_path)
         current_player = engine.player
         current_player.kill()
@@ -95,11 +119,14 @@ class MapLoader(mapping.MapLoader):
             self.current_sprite_groups[key].add(current_player)
         current_player.change_layer(player_layer)
         current_player.change_collision_group(self.current_sprite_groups["collision"])
-        current_player.change_environment(None)
+        current_player.change_environment(
+            environment.EnvironmentHandler(self.current_env_masks)
+        )
         current_player.rect.center = current_player.pos = pygame.Vector2(player_pos)
         self.current_sprite_groups["main"].follow = current_player
         self.current_sprite_groups["main"].add(sprite_group)
         physics.optimize_for_physics(self.current_sprite_groups["collision"])
         groups = self.current_sprite_groups
         self.current_sprite_groups = None
+        self.current_env_masks = None
         return groups, properties.get("script", None)

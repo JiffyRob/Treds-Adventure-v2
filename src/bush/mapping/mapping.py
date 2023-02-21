@@ -56,6 +56,7 @@ class MapLoader:
             layer=obj.layer * 3 + 1,
             topleft=True,
         ),
+        tile_handler=lambda tile, sprite_group: None,
         colorkey=(255, 255, 0),
     ):
         self.loader = asset_handler.AssetHandler(base_dir)
@@ -63,6 +64,7 @@ class MapLoader:
         self.cache_maps = cache_maps
         self.cache_files = cache_files
         self.sprite_creator = sprite_creator
+        self.tile_handler = tile_handler
         self.colorkey = colorkey
 
     def parse(self, map):
@@ -161,6 +163,7 @@ class MapLoader:
                 surface.fill(self.colorkey)
                 surface.set_colorkey(self.colorkey)
                 for tile in layer.items:
+                    self.tile_handler(tile, sprite_group)
                     try:
                         surface.blit(tile.image, tile.pos)
                     except TypeError:

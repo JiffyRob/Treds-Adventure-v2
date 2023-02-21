@@ -180,8 +180,9 @@
         "master.tsx"
     ],
     "project": "tav2.tiled-project",
-    "property.type": "bool",
+    "property.type": "Terrain",
     "recentFiles": [
+        "tilesets/water.tsx",
         "tilesets/propeller.tsx",
         "tilesets/trees.tsx",
         "tilesets/boat.tsx",
@@ -192,8 +193,7 @@
         "tilesets/fish_net.tsx",
         "tilesets/flag.tsx",
         "tilesets/floor.tsx",
-        "tilesets/floor_detail.tsx",
-        "tilesets/floorb.tsx"
+        "tilesets/floor_detail.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
