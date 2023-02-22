@@ -25,7 +25,6 @@ class GameState(state.StackState):
     def handle_event(self, event):
         self.input_handler.process_event(event)
         if event.type == event_binding.BOUND_EVENT:
-            print(event.name)
             if event.name == "pop state":
                 print("pop!")
                 self.pop()

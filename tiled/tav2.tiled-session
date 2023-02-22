@@ -27,15 +27,26 @@
             "scaleInDock": 1
         },
         "maps/test_map.tmx": {
-            "scale": 0.344189453125,
-            "selectedLayer": 0,
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 3,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 502.6301603064263,
-                "y": 370.4355227691872
+                "x": 34.666666666666664,
+                "y": 136.16666666666666
             }
         },
         "maps/trees.tsx": {
             "scaleInDock": 1
+        },
+        "maps/windmill.tmx": {
+            "scale": 8,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 65.125,
+                "y": 129.375
+            }
         },
         "master.tsx": {
             "scaleInDock": 0.75,
@@ -171,17 +182,20 @@
     "last.worldFilePath": "/home/jack/Python Workspace/Treds-Adventure-v2/tiled",
     "loadedWorlds": [
     ],
+    "map.height": 8,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
+    "map.width": 8,
     "openFiles": [
         "trees.tsx",
         "test_map.tmx",
         "master.tsx"
     ],
     "project": "tav2.tiled-project",
-    "property.type": "Terrain",
+    "property.type": "string",
     "recentFiles": [
+        "maps/test_map.tmx",
         "tilesets/water.tsx",
         "tilesets/propeller.tsx",
         "tilesets/trees.tsx",
@@ -192,8 +206,7 @@
         "tilesets/farmplant_orange.tsx",
         "tilesets/fish_net.tsx",
         "tilesets/flag.tsx",
-        "tilesets/floor.tsx",
-        "tilesets/floor_detail.tsx"
+        "tilesets/floor.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

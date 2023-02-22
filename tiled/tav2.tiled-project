@@ -3,7 +3,7 @@
     "commands": [
     ],
     "compatibilityVersion": 1080,
-    "extensionsPath": "extensions",
+    "extensionsPath": ".",
     "folders": [
         ".",
         "collision_templates"

@@ -29,7 +29,6 @@ class Player(environment.EnvironmentSprite):
     ):
         rect = pygame.Rect(0, 0, 14, 14)
         rect.center = pos
-        print("env:", map_env)
         super().__init__(
             pos,
             util.rect_surf(rect, "blue"),

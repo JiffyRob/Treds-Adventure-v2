@@ -53,15 +53,17 @@ class Game:
             pygame.Vector2(), None, 8, "player", self, environment.EnvironmentHandler()
         )
         self.kill_dt = False
-        self.map_loader = custom_mapper.MapLoader(self.screen_size, self.player)
+        self.map_loader = custom_mapper.MapLoader(self, self.player)
+        self.current_map = None
         self.load_map("test_map.tmx", START_SPOTS["default"]["pos"])
 
     @scripting.ejecs_command
     def player_command(self, command):
         return self.player.command(command)
 
-    def load_map(self, tmx_data, player_pos, push=False):
-        groups, event_script = self.map_loader.load_map(tmx_data, self, player_pos)
+    def load_map(self, tmx_path, player_pos, push=False):
+        self.current_map = tmx_path
+        groups, event_script = self.map_loader.load_map(tmx_path, self, player_pos)
         if not push:
             self.stack.pop()
         self.stack.push(game_state.MapState("game map", groups, self))

@@ -108,6 +108,7 @@ class MapLoader:
                         pygame.Vector2(obj.x, obj.y + obj.height),
                         get_anim(tmx_map, obj.gid),
                         obj.properties,
+                        obj.type,
                         obj.name,
                         obj.width,
                         obj.height,
@@ -115,8 +116,12 @@ class MapLoader:
                     continue
                 yield Object(
                     layer_index,
-                    pygame.Vector2(obj.x, obj.y + obj.height),
+                    pygame.Vector2(obj.x, obj.y),
                     properties=obj.properties,
+                    type=obj.type,
+                    name=obj.name,
+                    width=obj.width,
+                    height=obj.height,
                 )
 
         if isinstance(map, str):
@@ -190,5 +195,5 @@ class MapLoader:
                 for obj in layer.items:
                     self.sprite_creator(obj, sprite_group)
         if self.cache_maps:
-            self.cache[filepath] = sprite_group
-        return sprite_group, map.properties
+            self.cache[filepath] = (sprite_group, map.properties, True)
+        return sprite_group, map.properties, False

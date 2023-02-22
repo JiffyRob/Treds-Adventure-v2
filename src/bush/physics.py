@@ -23,7 +23,7 @@ def optimize_for_physics(group):
     rects = [None, None, None, None]
     for sprite in group.sprites():
         type = sprite.physics_data.type
-        groups[type].add(sprite)
+        print(groups[type], type)
         try:
             rects[type].union_ip(sprite.rect)
         except AttributeError:
@@ -57,6 +57,7 @@ def dynamic_update(self, dt, stop_on_collision=False):
         for sprite in self.physics_data.collision_group:
             if not self.velocity[ind]:
                 continue
+
             callbacks[sprite.physics_data.type](self, sprite, ind, stop_on_collision)
 
 
@@ -117,6 +118,9 @@ def friction_collision(dynamic, friction, dt, _):
     pass
 
 
-def trigger_collision(dynamic, trigger, dt, _):
+def trigger_collision(dynamic, trigger, axis, _):
     # TODO
-    pass
+    if rect_mask_collide(
+        dynamic.rect.move(-trigger.rect.left, -trigger.rect.top), trigger.mask
+    ):
+        trigger.on_collision(dynamic, axis)

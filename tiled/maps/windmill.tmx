@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="2">
+ <tileset firstgid="1" source="../tilesets/interior.tsx"/>
+ <tileset firstgid="1281" source="../tilesets/interior_floor.tsx"/>
+ <layer id="1" name="bg" width="8" height="8">
+  <data encoding="csv">
+3,4,10,11,12,12,13,14,
+35,36,42,43,44,44,45,46,
+195,196,1556,1557,1557,1558,205,206,
+195,196,1578,1579,1579,1580,237,238,
+227,228,1578,1579,1579,1580,269,270,
+259,260,1600,1601,1584,1602,269,270,
+129,130,586,584,1581,585,589,590,
+161,162,618,616,1603,617,621,622
+</data>
+ </layer>
+ <objectgroup id="2" name="objects">
+  <object id="1" type="teleport" x="64.125" y="121.25" width="15.75" height="6.75">
+   <properties>
+    <property name="dest" value="32, 184"/>
+    <property name="dest_map" value="test_map.tmx"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
