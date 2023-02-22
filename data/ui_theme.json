@@ -1,10 +1,36 @@
 {
   "defaults": {
-    "font": {
-      "name": "silver",
-      "size": "18",
-      "regular_path": "resources/misc/silver.ttf"
+    "colours": {
+      "normal_bg": "#4a5270d0",
+      "hovered_bg": "#2d697bd0",
+      "disabled_bg": "#3b364330",
+      "selected_bg": "#79b8ced0",
+      "dark_bg": "#141b1bd0",
+      "normal_text": "#f2eaf1",
+      "hovered_text": "#f2eaf1",
+      "selected_text": "#f2eaf1",
+      "disabled_text": "#4e484a",
+      "normal_border": "#4a5270",
+      "hovered_border": "#2d697b",
+      "disabled_border": "#3b3643",
+      "selected_border": "#79b8ce",
+      "active_border": "#79b8ce",
+      "filled_bar": "#345a52, #74a334, 90"
     }
-
+  },
+  "#silver":{
+    "font": [
+      {
+        "name": "silver",
+        "size": "30",
+        "regular_resource": { "package": "resources.misc", "resource": "silver.ttf"}
+      }
+    ]
+  },
+  "label": {
+    "prototype": "#silver"
+  },
+  "button": {
+    "prototype": "#silver"
   }
 }

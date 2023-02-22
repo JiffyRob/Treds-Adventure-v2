@@ -115,7 +115,6 @@ class PausemenuState(GameState):
     def handle_events(self):
         for event in pygame.event.get():
             super().handle_event(event)
-            print(event_binding.event_to_string(event))
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element.text == "Quit":
                     self.engine.quit()
