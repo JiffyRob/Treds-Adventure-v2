@@ -54,7 +54,7 @@
   </object>
   <object id="17" type="teleport" x="26.6667" y="148.667" width="11" height="11">
    <properties>
-    <property name="dest" value="189, 152"/>
+    <property name="dest" value="72, 115"/>
     <property name="dest_map" value="windmill.tmx"/>
    </properties>
   </object>
