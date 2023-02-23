@@ -23,16 +23,18 @@ START_SPOTS = loader.load("data/player_start_positions.json")
 class Game:
     def __init__(self):
         # Basic Pygame Boilerplate Variables (BPBV)
-        self.screen_size = pygame.Vector2(640, 480)
+        self.screen_size = pygame.Vector2(480, 320)
         self.caption = "Tred's Adventure"
         self.screen = None
         self.clock = pygame.time.Clock()
         self.fps = 30
         self.running = False
         self.bgcolor = color.GREY
-        self.screen = pygame.display.set_mode(util.rvec(self.screen_size))
+        self.screen = pygame.display.set_mode(
+            util.rvec(self.screen_size), pygame.SCALED
+        )
         cursor_images = loader.load(
-            "resources/misc/cursor.png",
+            "resources/hud/cursor.png",
             loader=asset_handler.load_spritesheet,
             frame_size=(16, 16),
         )
@@ -85,7 +87,7 @@ class Game:
 
     def run(self):
         self.screen = pygame.display.set_mode(
-            util.rvec(self.screen_size), 0, vsync=True
+            util.rvec(self.screen_size), pygame.SCALED, vsync=True
         )
         pygame.display.set_caption(self.caption)
 

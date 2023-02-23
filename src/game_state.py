@@ -9,13 +9,17 @@ loader = asset_handler.glob_loader
 
 
 class GameState(state.StackState):
-    def __init__(self, value, engine, on_push=lambda: None, on_pop=lambda: None):
+    def __init__(
+        self, value, engine, on_push=lambda: None, on_pop=lambda: None, gui=None
+    ):
         self.engine = engine
         self.cursor = engine.cursor
         self.cursor.hide()
         self.input_handler = event_binding.EventHandler()
         self.input_handler.update_bindings(loader.load("data/game_bindings.json"))
         self.screen_surf = None
+        self.gui = gui
+        print(self.gui, self.gui.get_sprite_group())
         super().__init__(value, on_push, on_pop)
 
     def handle_events(self):
@@ -23,6 +27,8 @@ class GameState(state.StackState):
             self.handle_event(event)
 
     def handle_event(self, event):
+        if self.gui:
+            self.gui.process_events(event)
         self.input_handler.process_event(event)
         if event.type == event_binding.BOUND_EVENT:
             if event.name == "pop state":
@@ -39,10 +45,12 @@ class GameState(state.StackState):
         self.screen_surf = pygame.display.get_surface().copy()
 
     def draw(self, surface):
-        pass
+        if self.gui:
+            self.gui.draw_ui(surface)
 
     def update(self, dt=0.03):
         super().update()
+        self.gui.update(dt)
 
 
 class MapState(GameState):
@@ -55,9 +63,17 @@ class MapState(GameState):
         self.player_input_handler.update_bindings(
             loader.load("data/player_bindings.json")
         )
-        super().__init__(map_name, engine)
+        gui = pygame_gui.UIManager(engine.screen_size, menu.THEME_PATH)
+        heart_images = loader.load(
+            "resources/hud/heart.png",
+            loader=asset_handler.load_spritesheet,
+            frame_size=(16, 16),
+        )
+        menu.HeartMeter(pygame.Rect(8, 8, -1, -1), heart_images, engine.player, gui)
+        super().__init__(map_name, engine, gui=gui)
 
     def update(self, dt=0.03):
+        super().update(dt)
         self.sky.update(dt)
         self.main_group.update(dt)
 
@@ -70,6 +86,7 @@ class MapState(GameState):
     def draw(self, surface):
         self.main_group.draw(surface)
         self.sky.render(surface)
+        super().draw(surface)
 
 
 class ScriptedMapState(GameState):

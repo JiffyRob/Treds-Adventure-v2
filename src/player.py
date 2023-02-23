@@ -6,7 +6,7 @@ from typing import Union
 import pygame
 
 import environment
-from bush import color, event_binding, physics, util
+from bush import entity_component, event_binding, physics, util
 
 
 class Player(environment.EnvironmentSprite):
@@ -42,6 +42,9 @@ class Player(environment.EnvironmentSprite):
         self.rect = rect
         self.rect.center = self.pos
         self.engine = engine
+        entity_component.prepare_health(self, 12, 12, self.kill)
+        self.heal = lambda amount: entity_component.heal(self, amount)
+        self.hurt = lambda amount: entity_component.hurt(self, amount)
 
     def event(self, event):
         if event.type == event_binding.BOUND_EVENT:

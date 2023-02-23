@@ -22,8 +22,8 @@
     "font": [
       {
         "name": "silver",
-        "size": "30",
-        "regular_resource": { "package": "resources.misc", "resource": "silver.ttf"}
+        "size": "17",
+        "regular_resource": { "package": "resources.hud", "resource": "silver.ttf"}
       }
     ]
   },
