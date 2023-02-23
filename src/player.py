@@ -45,6 +45,8 @@ class Player(environment.EnvironmentSprite):
         entity_component.prepare_health(self, 12, 12, self.kill)
         self.heal = lambda amount: entity_component.heal(self, amount)
         self.hurt = lambda amount: entity_component.hurt(self, amount)
+        self.current_mana = 6
+        self.mana_capacity = 12
 
     def event(self, event):
         if event.type == event_binding.BOUND_EVENT:

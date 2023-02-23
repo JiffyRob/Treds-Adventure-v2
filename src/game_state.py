@@ -19,7 +19,6 @@ class GameState(state.StackState):
         self.input_handler.update_bindings(loader.load("data/game_bindings.json"))
         self.screen_surf = None
         self.gui = gui
-        print(self.gui, self.gui.get_sprite_group())
         super().__init__(value, on_push, on_pop)
 
     def handle_events(self):
@@ -73,6 +72,15 @@ class MapState(GameState):
             frame_size=(16, 16),
         )
         menu.HeartMeter(pygame.Rect(8, 8, -1, -1), heart_images, engine.player, gui)
+        get_player_mana = (
+            lambda: engine.player.current_mana / engine.player.mana_capacity
+        )
+        pygame_gui.elements.UIStatusBar(
+            pygame.Rect(-68, 4, 64, 9),
+            gui,
+            percent_method=get_player_mana,
+            anchors={"top": "top", "right": "right"},
+        )
         super().__init__(map_name, engine, gui=gui)
 
     def update(self, dt=0.03):
@@ -121,12 +129,13 @@ class ScriptedMapState(GameState):
 
 class PausemenuState(GameState):
     def __init__(self, engine):
-        self.menu = menu.create_menu("Paused", ("Resume", "Quit"), engine.screen_size)
+        gui = menu.create_menu("Paused", ("Resume", "Quit"), engine.screen_size)
         super().__init__(
             "Pausemenu",
             engine,
             on_push=lambda: (self.cursor.enable(), self.cache_screen()),
             on_pop=lambda: self.cursor.hide(),
+            gui=gui,
         )
         self.input_handler.disable_event("pause")
         self.cursor.enable()
@@ -139,12 +148,7 @@ class PausemenuState(GameState):
                     self.engine.quit()
                 if event.ui_element.text == "Resume":
                     self.pop()
-            self.menu.process_events(event)
 
     def draw(self, surface):
         surface.blit(self.screen_surf, (0, 0))
-        self.menu.draw_ui(surface)
-
-    def update(self, dt=0.03):
-        super().update(dt)
-        self.menu.update(dt)
+        super().draw(surface)

@@ -15,7 +15,8 @@
       "disabled_border": "#3b3643",
       "selected_border": "#79b8ce",
       "active_border": "#79b8ce",
-      "filled_bar": "#345a52, #74a334, 90"
+      "filled_bar": "#a5608b",
+      "unfilled_bar": "#8d977f"
     }
   },
   "#silver":{

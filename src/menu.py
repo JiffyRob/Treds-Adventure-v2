@@ -54,7 +54,6 @@ class HeartMeter(pygame_gui.elements.UIImage):
         return surface
 
     def update(self, time_delta):
-        print(self.relative_rect)
         surface = self.get_image()
         size = surface.get_size()
         self.set_dimensions(size)
