@@ -78,3 +78,7 @@ class Player(environment.EnvironmentSprite):
 
     def change_layer(self, layer):
         self._layer = layer
+
+    def update(self, dt):
+        self.current_mana = min(self.current_mana + (dt * 0.1), self.mana_capacity)
+        super().update(dt)
