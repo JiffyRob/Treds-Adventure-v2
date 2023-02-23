@@ -40,6 +40,9 @@ class GameState(state.StackState):
                 self._stack.push(PausemenuState(self.engine))
             if event.name == "quit":
                 self.engine.quit()
+            if event.name == "screenshot":
+                surface = pygame.display.get_surface()
+                pygame.image.save(surface, "screenshot.png")
 
     def cache_screen(self):
         self.screen_surf = pygame.display.get_surface().copy()

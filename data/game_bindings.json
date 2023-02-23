@@ -2,5 +2,7 @@
   "KeyDown-escape": "pop state",
   "KeyDown-p": "pause",
   "KeyDown-f11": "toggle fullscreen",
-  "Quit": "quit"
+  "Quit": "quit",
+
+  "KeyDown-s": "screenshot"
 }
