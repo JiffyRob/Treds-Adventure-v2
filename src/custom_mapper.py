@@ -53,11 +53,21 @@ class MapLoader(mapping.MapLoader):
 
     def handle_tile(self, tile, sprite_group):
         terrain = tile.properties.get("terrain", None)
+        mask = tile.properties.get("mask", None) or pygame.mask.from_surface(tile.image)
         if terrain:
-            mask = tile.properties.get("mask", None) or pygame.mask.from_surface(
-                tile.image
-            )
             self.current_env_masks[terrain].draw(mask, tile.pos)
+        groups = tile.properties.get("groups", None)
+        if groups:
+            sprite = entity.Entity(
+                tile.pos,
+                pygame.Surface((16, 16), pygame.SRCALPHA),
+                (self.current_sprite_groups[i] for i in groups.split(", ")),
+                topleft=True,
+            )
+            sprite.physics_data = physics.PhysicsData(
+                physics.TYPE_STATIC, self.current_sprite_groups["collision"]
+            )
+            sprite.mask = mask
 
     def create_sprite(self, obj, sprite_group):
         if obj.type is None:
