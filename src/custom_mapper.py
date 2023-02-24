@@ -5,16 +5,17 @@ import pygame
 import environment
 import event_objects
 import game_objects
+import player
 from bush import asset_handler, entity, physics
 from bush.mapping import group, mapping
 
 
 class MapLoader(mapping.MapLoader):
-    def __init__(self, engine, player):
+    def __init__(self, engine, state):
         self.collision_group = pygame.sprite.Group()
         self.group_creators = {
             "main": lambda map_size: group.TopDownGroup(
-                engine.screen_size, map_size, (0, 0), player
+                engine.screen_size, map_size, (0, 0), self.get_player()
             ),
             "player": lambda x: pygame.sprite.GroupSingle(),
             "collision": lambda x: pygame.sprite.Group(),
@@ -25,6 +26,7 @@ class MapLoader(mapping.MapLoader):
         }
         self.current_sprite_groups = None
         self.current_env_masks = None
+        self.current_player = None
         self.engine = engine
         self.sprite_classes = {
             "bush": game_objects.Throwable,
@@ -50,6 +52,9 @@ class MapLoader(mapping.MapLoader):
             sprite_creator=self.create_sprite,
             tile_handler=self.handle_tile,
         )
+
+    def get_player(self):
+        return self.current_player
 
     def handle_tile(self, tile, sprite_group):
         terrain = tile.properties.get("terrain", None)
@@ -117,6 +122,12 @@ class MapLoader(mapping.MapLoader):
         )
 
     def load_map(self, tmx_path, engine, player_pos):
+        self.current_player = player.Player(
+            player_pos,
+            4,
+            environment.EnvironmentHandler(self.current_env_masks),
+            engine,
+        )
         try:
             self.current_sprite_groups, properties = self.aux_cache[tmx_path]
             sprite_group = self.current_sprite_groups["main"]
@@ -146,23 +157,19 @@ class MapLoader(mapping.MapLoader):
                 )
             sprite_group, properties, cached = super().load(tmx_path)
         script = properties.get("script", None)
-
-        current_player = engine.player
-        current_player.kill()
         player_layer = properties.get("player_layer", 0) or self.default_player_layer
         for key in self.player_groups:
-            self.current_sprite_groups[key].add(current_player)
-        current_player.change_layer(player_layer)
-        current_player.change_collision_group(self.current_sprite_groups["collision"])
-        current_player.change_environment(
-            environment.EnvironmentHandler(self.current_env_masks)
+            self.current_sprite_groups[key].add(self.current_player)
+        self.current_player.change_layer(player_layer)
+        self.current_player.change_collision_group(
+            self.current_sprite_groups["collision"]
         )
-        current_player.rect.center = current_player.pos = pygame.Vector2(player_pos)
-        self.current_sprite_groups["main"].follow = current_player
+        self.current_sprite_groups["main"].follow = self.current_player
         self.current_sprite_groups["main"].add(sprite_group)
         physics.optimize_for_physics(self.current_sprite_groups["collision"])
         groups = self.current_sprite_groups
         self.current_sprite_groups = None
         self.current_env_masks = None
+        self.current_player = None
         self.aux_cache[tmx_path] = groups, properties
         return groups, properties.get("script", None)

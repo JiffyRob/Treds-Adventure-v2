@@ -17,26 +17,17 @@ class Player(environment.EnvironmentSprite):
         id: player's integer id
     """
 
-    def __init__(
-        self,
-        pos: Union[pygame.Vector2, list, tuple],
-        collision_group,
-        layer,
-        id="Player",
-        engine=None,
-        map_env=None,
-        **__
-    ):
+    def __init__(self, pos, layer, map_env, engine, **__):
+        game_state = engine.state
         rect = pygame.Rect(0, 0, 14, 14)
         rect.center = pos
         super().__init__(
             pos,
             util.rect_surf(rect, "blue"),
             engine,
-            environment=map_env,
-            physics_data=physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group),
-            speed=96,
-            id=id,
+            map_env,
+            physics.PhysicsData(physics.TYPE_DYNAMIC, pygame.sprite.Group()),
+            id="player",
             layer=layer,
         )
         self.rect = rect

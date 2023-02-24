@@ -11,7 +11,7 @@ import environment
 import game_state
 import player
 import sky
-from bush import asset_handler, color, joy_cursor, util
+from bush import asset_handler, color, joy_cursor, save_state, util
 from bush.ai import scripting, state
 
 pygame.init()
@@ -48,14 +48,12 @@ class Game:
         self.cursor.hide()
         # game control state
         self.stack = state.StateStack()
+        self.state = save_state.LeveledGameState("saves", "test_level.tmx")
         # day/night
         self.sky = sky.Sky(self.screen_size)
         # initial map load
-        self.player = player.Player(
-            pygame.Vector2(), None, 8, "player", self, environment.EnvironmentHandler()
-        )
         self.kill_dt = False
-        self.map_loader = custom_mapper.MapLoader(self, self.player)
+        self.map_loader = custom_mapper.MapLoader(self, self.state)
         self.current_map = None
         self.load_map("test_map.tmx", START_SPOTS["default"]["pos"])
 
