@@ -101,8 +101,11 @@ def static_collision(dynamic, static, axis, stop_on_collision):
         distance += 0.25
         direction_index = (direction_index + 1) % 3
         check_rect.center = check_pos
-    dynamic.rect = check_rect
-    dynamic.pos = pygame.Vector2(check_rect.center)
+    if collided:
+        dynamic.rect = check_rect
+        dynamic.pos = pygame.Vector2(check_rect.center)
+    else:
+        dynamic.pos = dynamic.rect.center = check_pos
     if collided and stop_on_collision:
         dynamic.velocity[axis] = 0
     return collided

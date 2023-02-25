@@ -3,6 +3,8 @@
   "KeyDown-p": "pause",
   "KeyDown-f11": "toggle fullscreen",
   "Quit": "quit",
+  "JoyDeviceAdded": "add joystick",
+  "JoyDeviceRemoved": "remove joystick",
 
   "KeyDown-s": "screenshot"
 }
