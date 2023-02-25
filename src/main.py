@@ -2,8 +2,6 @@
 Main - runs game and holds game loop.
 Has Access to all other modules
 """
-import random
-
 import pygame
 
 import custom_mapper
