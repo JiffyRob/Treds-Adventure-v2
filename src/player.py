@@ -35,6 +35,8 @@ class Player(environment.EnvironmentSprite):
         entity_component.prepare_health(self, 12, 12, self.kill)
         self.heal = lambda amount: entity_component.heal(self, amount)
         self.hurt = lambda amount: entity_component.hurt(self, amount)
+        self.walk_speed = 64
+        self.run_speed = 96
         self.current_mana = 6
         self.mana_capacity = 12
         self.save_state = self.engine.state
@@ -65,11 +67,21 @@ class Player(environment.EnvironmentSprite):
         words = command_name.split(" ")
         if words[0] == "walk":
             directions = {
-                "up": (self.desired_velocity.x, -self.speed),
-                "down": (self.desired_velocity.x, self.speed),
-                "left": (-self.speed, self.desired_velocity.y),
-                "right": (self.speed, self.desired_velocity.y),
+                "up": (self.desired_velocity.x, -self.walk_speed),
+                "down": (self.desired_velocity.x, self.walk_speed),
+                "left": (-self.walk_speed, self.desired_velocity.y),
+                "right": (self.walk_speed, self.desired_velocity.y),
             }
+            self.speed = self.walk_speed
+            self.desired_velocity = pygame.Vector2(directions[words[1]])
+        if words[0] == "run":
+            directions = {
+                "up": (0, -self.run_speed),
+                "down": (0, self.run_speed),
+                "left": (-self.run_speed, 0),
+                "right": (self.run_speed, 0),
+            }
+            self.speed = self.run_speed
             self.desired_velocity = pygame.Vector2(directions[words[1]])
         if words[0] == "stop":
             directions = {

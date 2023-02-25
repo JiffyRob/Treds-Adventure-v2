@@ -7,6 +7,36 @@ AXIS_MAGNITUDES = {"center": 0.2, "near": 0.6, "far": 3}
 INCLUDE_JOY_IDS = False
 INCLUDE_AXIS_DIRECTION = True
 INCLUDE_AXIS_MAGNITUDE = False
+INCLUDE_MOD_KEYS = True
+MOD_STRINGS = {
+    pygame.KMOD_NONE: "none",
+    pygame.KMOD_LSHIFT: "left shift",
+    pygame.KMOD_RSHIFT: "right shift",
+    pygame.KMOD_SHIFT: "shift",
+    pygame.KMOD_LCTRL: "left ctrl",
+    pygame.KMOD_RCTRL: "right ctrl",
+    pygame.KMOD_CTRL: "ctrl",
+    pygame.KMOD_LALT: "left alt",
+    pygame.KMOD_RALT: "right alt",
+    pygame.KMOD_ALT: "alt",
+    pygame.KMOD_LMETA: "left meta",
+    pygame.KMOD_RMETA: "right meta",
+    pygame.KMOD_META: "meta",
+    pygame.KMOD_CAPS: "caplock",
+    pygame.KMOD_NUM: "numlock",
+    pygame.KMOD_MODE: "AltGr",
+}
+DISABLED_MOD_KEYS = 0
+MOD_ORDER = (
+    pygame.KMOD_CTRL,
+    pygame.KMOD_ALT,
+    pygame.KMOD_SHIFT,
+    pygame.KMOD_NUM,
+    pygame.KMOD_META,
+    pygame.KMOD_CAPS,
+    pygame.KMOD_MODE,
+    pygame.KMOD_NONE,
+)
 
 
 def axis_direction(num):
@@ -26,31 +56,66 @@ def axis_magnitude(num):
             return key
 
 
+def get_mod_string(mod_num, disabled_mod_keys=None):
+    if disabled_mod_keys is None:
+        disabled_mod_keys = DISABLED_MOD_KEYS
+    mod_num &= ~disabled_mod_keys  # remove disabled keys
+    try:
+        return MOD_STRINGS[mod_num]
+    except KeyError:
+        identifiers = []
+        for key in MOD_ORDER:
+            if mod_num | key:
+                identifiers.append(MOD_STRINGS[key])
+        return "+".join(identifiers)
+
+
 def event_to_string(
     event,
+    include_mod_keys=None,
+    disabled_mod_keys=None,
     include_joy_ids=None,
     include_axis_direction=None,
     include_axis_magnitude=None,
 ):
-    include_joy_ids = include_joy_ids or INCLUDE_JOY_IDS
-    include_axis_direction = include_axis_direction or INCLUDE_AXIS_DIRECTION
-    include_axis_magnitude = include_axis_magnitude or INCLUDE_AXIS_MAGNITUDE
+    if include_mod_keys is None:
+        include_mod_keys = INCLUDE_MOD_KEYS
+    if disabled_mod_keys is None:
+        disabled_mod_keys = DISABLED_MOD_KEYS
+    if include_joy_ids is None:
+        include_joy_ids = INCLUDE_JOY_IDS
+    if include_axis_direction is None:
+        include_axis_direction = INCLUDE_AXIS_DIRECTION
+    if include_axis_magnitude is None:
+        include_axis_magnitude = INCLUDE_AXIS_MAGNITUDE
     identifiers = [pygame.event.event_name(event.type)]
+
     if "Joy" in identifiers[0] and include_joy_ids:
         if hasattr(event, "instance_id"):
             identifiers.append(event.instance_id)
         else:
             identifiers.append(event.device_index)
+
     if event.type in (pygame.KEYDOWN, pygame.KEYUP):
-        identifiers.append(pygame.key.name(event.key))
+        key_name = pygame.key.name(event.key)
+        mod_name = get_mod_string(event.mod, disabled_mod_keys)
+        identifiers.append(key_name)
+        if include_mod_keys and mod_name not in {
+            key_name,
+            MOD_STRINGS[pygame.KMOD_NONE],
+        }:
+            identifiers.append("mod " + mod_name)
+
     if event.type in (pygame.JOYBUTTONUP, pygame.JOYBUTTONDOWN):
         identifiers.append(event.button)
+
     if event.type == pygame.JOYAXISMOTION:
         identifiers.append(event.axis)
         if include_axis_direction:
             identifiers.append(axis_direction(event.value))
         if include_axis_magnitude:
             identifiers.append(axis_magnitude(event.value))
+
     return "-".join([str(i) for i in identifiers])
 
 
@@ -58,6 +123,8 @@ class EventHandler:
     def __init__(
         self,
         bindings=None,
+        include_mod_keys=None,
+        disabled_mod_keys=None,
         include_joy_ids=None,
         include_axis_direction=None,
         include_axis_magnitude=None,
@@ -65,9 +132,12 @@ class EventHandler:
         self.bindings = bindings or {}
         self.disabled = set()
         self.joysticks = dict(enumerate((init_joysticks())))
-        self.include_joy_ids = None
-        self.include_axis_direction = None
-        self.include_axis_magnitude = None
+        self.include_mod_keys = INCLUDE_MOD_KEYS
+        self.disabled_mod_keys = DISABLED_MOD_KEYS
+        self.set_mod_flags(include_mod_keys, disabled_mod_keys)
+        self.include_joy_ids = INCLUDE_JOY_IDS
+        self.include_axis_direction = INCLUDE_AXIS_DIRECTION
+        self.include_axis_magnitude = INCLUDE_AXIS_MAGNITUDE
         self.set_joy_flags(
             include_joy_ids, include_axis_direction, include_axis_magnitude
         )
@@ -78,11 +148,22 @@ class EventHandler:
         include_axis_direction=None,
         include_axis_magnitude=None,
     ):
-        self.include_joy_ids = include_joy_ids or INCLUDE_JOY_IDS
-        self.include_axis_direction = include_axis_direction or INCLUDE_AXIS_DIRECTION
-        self.include_axis_magnitude = include_axis_magnitude or INCLUDE_AXIS_MAGNITUDE
+        if include_joy_ids is not None:
+            self.include_joy_ids = include_joy_ids
+        if include_axis_direction is not None:
+            self.include_axis_direction = include_axis_direction
+        if include_axis_magnitude is not None:
+            self.include_axis_magnitude = include_axis_magnitude
 
-    def load_bindings(self, path, keep_old=False, load_joy_flags=True):
+    def set_mod_flags(self, include_mod_keys=None, disabled_mod_keys=None):
+        if include_mod_keys is not None:
+            self.include_mod_keys = include_mod_keys
+        if disabled_mod_keys is not None:
+            self.disabled_mod_keys = disabled_mod_keys
+
+    def load_bindings(
+        self, path, keep_old=False, load_joy_flags=True, load_mod_flags=True
+    ):
         if keep_old:
             self.update_bindings(util_load.load_json(path))
         else:
@@ -120,6 +201,8 @@ class EventHandler:
     def process_event(self, event):
         as_string = event_to_string(
             event,
+            include_mod_keys=self.include_mod_keys,
+            disabled_mod_keys=self.disabled_mod_keys,
             include_joy_ids=self.include_joy_ids,
             include_axis_direction=self.include_axis_direction,
             include_axis_magnitude=self.include_axis_magnitude,
