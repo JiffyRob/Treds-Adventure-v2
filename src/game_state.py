@@ -39,6 +39,10 @@ class GameState(state.StackState):
                 self._stack.push(PausemenuState(self.engine))
             if event.name == "quit":
                 self.engine.quit()
+            if event.name == "add joystick":
+                self.input_handler.add_joystick(event.original_event.device_index)
+            if event.name == "remove joystick":
+                self.input_handler.remove_joystick(event.original_event.device_index)
             if event.name == "screenshot":
                 surface = pygame.display.get_surface()
                 pygame.image.save(surface, "screenshot.png")
@@ -61,10 +65,6 @@ class MapState(GameState):
         self.sky = engine.sky
         self.main_group = groups["main"]
         self.player = groups["player"].sprite
-        self.player_input_handler = event_binding.EventHandler({})
-        self.player_input_handler.update_bindings(
-            loader.load("data/player_bindings.json")
-        )
         gui = pygame_gui.UIManager(engine.screen_size, menu.THEME_PATH)
         heart_images = loader.load(
             "resources/hud/heart.png",
@@ -82,6 +82,7 @@ class MapState(GameState):
             anchors={"top": "top", "right": "right"},
         )
         super().__init__(map_name, engine, gui=gui)
+        self.input_handler.update_bindings(loader.load("data/player_bindings.json"))
 
     def update(self, dt=0.03):
         super().update(dt)
@@ -91,7 +92,6 @@ class MapState(GameState):
     def handle_events(self):
         for event in pygame.event.get():
             super().handle_event(event)
-            self.player_input_handler.process_event(event)
             self.player.event(event)
 
     def draw(self, surface):

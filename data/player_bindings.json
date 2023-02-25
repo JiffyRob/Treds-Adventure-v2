@@ -6,5 +6,12 @@
   "KeyDown-up": "walk up",
   "KeyUp-up": "stop up",
   "KeyDown-down": "walk down",
-  "KeyUp-down": "stop down"
+  "KeyUp-down": "stop down",
+
+  "JoyAxisMotion-1-back": "walk up",
+  "JoyAxisMotion-1-center": ["stop up", "stop down"],
+  "JoyAxisMotion-1-forward": "walk down",
+  "JoyAxisMotion-0-back": "walk left",
+  "JoyAxisMotion-0-center": ["stop left", "stop right"],
+  "JoyAxisMotion-0-forward": "walk right"
 }
