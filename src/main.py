@@ -5,9 +5,7 @@ Has Access to all other modules
 import pygame
 
 import custom_mapper
-import environment
 import game_state
-import player
 import sky
 from bush import asset_handler, color, joy_cursor, save_state, util
 from bush.ai import scripting, state
@@ -53,6 +51,7 @@ class Game:
         self.kill_dt = False
         self.map_loader = custom_mapper.MapLoader(self, self.state)
         self.current_map = None
+        self.player = None
         self.load_map("test_map.tmx", START_SPOTS["default"]["pos"])
 
     @scripting.ejecs_command
@@ -62,6 +61,7 @@ class Game:
     def load_map(self, tmx_path, player_pos, push=False):
         self.current_map = tmx_path
         groups, event_script = self.map_loader.load_map(tmx_path, self, player_pos)
+        self.player = groups["player"].sprite
         if not push:
             self.stack.pop()
         self.stack.push(game_state.MapState("game map", groups, self))
