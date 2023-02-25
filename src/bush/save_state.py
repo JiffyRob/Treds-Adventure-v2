@@ -28,13 +28,15 @@ class LeveledGameState:
     def get(self, key, level=None, default=None):
         if level is None:
             return self.data.get(key, default)
-        return self.data.get(level, self.default_level).get(key, default)
+        return self.data.get(level, self.data[self.default_level]).get(key, default)
 
     def set(self, key, value, level=None):
         if level is None:
             self.data[key] = value
-        else:
+        elif level in self.data:
             self.data[level][key] = value
+        else:
+            self.data[level] = {key: value}
 
     def load(self, file_path=None):
         self.data = self.loader.load(file_path)

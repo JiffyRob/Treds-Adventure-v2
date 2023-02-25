@@ -122,15 +122,10 @@ class MapLoader(mapping.MapLoader):
         )
 
     def load_map(self, tmx_path, engine, player_pos):
-        self.current_player = player.Player(
-            player_pos,
-            4,
-            environment.EnvironmentHandler(self.current_env_masks),
-            engine,
-        )
         try:
             self.current_sprite_groups, properties = self.aux_cache[tmx_path]
             sprite_group = self.current_sprite_groups["main"]
+            self.current_sprite_groups["player"].sprite.kill()
         except KeyError:
             tmx_map = self.loader.load(tmx_path)
             map_size = pygame.Vector2(
@@ -156,6 +151,12 @@ class MapLoader(mapping.MapLoader):
                     )
                 )
             sprite_group, properties, cached = super().load(tmx_path)
+        self.current_player = player.Player(
+            player_pos,
+            4,
+            environment.EnvironmentHandler(self.current_env_masks),
+            engine,
+        )
         script = properties.get("script", None)
         player_layer = properties.get("player_layer", 0) or self.default_player_layer
         for key in self.player_groups:

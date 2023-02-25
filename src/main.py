@@ -60,6 +60,8 @@ class Game:
 
     def load_map(self, tmx_path, player_pos, push=False):
         self.current_map = tmx_path
+        if self.player is not None:
+            self.player.save_data()
         groups, event_script = self.map_loader.load_map(tmx_path, self, player_pos)
         self.player = groups["player"].sprite
         if not push:

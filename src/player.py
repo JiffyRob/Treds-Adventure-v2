@@ -18,7 +18,6 @@ class Player(environment.EnvironmentSprite):
     """
 
     def __init__(self, pos, layer, map_env, engine, **__):
-        game_state = engine.state
         rect = pygame.Rect(0, 0, 14, 14)
         rect.center = pos
         super().__init__(
@@ -38,6 +37,25 @@ class Player(environment.EnvironmentSprite):
         self.hurt = lambda amount: entity_component.hurt(self, amount)
         self.current_mana = 6
         self.mana_capacity = 12
+        self.save_state = self.engine.state
+        self.save_fields = (
+            "current_mana",
+            "mana_capacity",
+            "current_health",
+            "health_capacity",
+        )
+        self.load_data()
+
+    def save_data(self):
+        for field in self.save_fields:
+            self.save_state.set(field, getattr(self, field), "player")
+
+    def load_data(self):
+        try:
+            for field in self.save_fields:
+                setattr(self, self.save_state.get(field, "player"))
+        except KeyError:
+            self.save_data()
 
     def event(self, event):
         if event.type == event_binding.BOUND_EVENT:
