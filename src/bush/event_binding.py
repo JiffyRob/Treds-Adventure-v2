@@ -124,7 +124,6 @@ class EventHandler:
             include_axis_direction=self.include_axis_direction,
             include_axis_magnitude=self.include_axis_magnitude,
         )
-        print(as_string)
         event_id = self.bindings.get(as_string, None)
         if event_id is None:
             return
@@ -153,7 +152,7 @@ class EventHandler:
 
 def init_joysticks():
     pygame.joystick.init()
-    print(pygame.joystick.get_count())
+    print(f"found {pygame.joystick.get_count()} joysticks")
     for i in range(pygame.joystick.get_count()):
         joy = pygame.joystick.Joystick(i)
         joy.init()

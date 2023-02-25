@@ -6,5 +6,5 @@
   "JoyDeviceAdded": "add joystick",
   "JoyDeviceRemoved": "remove joystick",
 
-  "KeyDown-s": "screenshot",
+  "KeyDown-s": "screenshot"
 }
