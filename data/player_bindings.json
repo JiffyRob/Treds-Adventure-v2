@@ -1,25 +1,27 @@
 {
-  "KeyDown-left": "walk left",
-  "KeyDown-left-mod left shift": "run left",
-  "KeyUp-left-mod left shift": "stop left",
+  "KeyDown-left": "go left",
   "KeyUp-left": "stop left",
-  "KeyDown-right": "walk right",
-  "KeyDown-right-mod left shift": "run right",
-  "KeyUp-right-mod left shift": "stop right",
+  "KeyDown-right": "go right",
   "KeyUp-right": "stop right",
-  "KeyDown-up": "walk up",
-  "KeyDown-up-mod left shift": "run up",
-  "KeyUp-up-mod left shift": "stop up",
+  "KeyDown-up": "go up",
   "KeyUp-up": "stop up",
-  "KeyDown-down": "walk down",
-  "KeyDown-down-mod left shift": "run down",
-  "KeyUp-down-mod left shift": "stop down",
+  "KeyDown-down": "go down",
   "KeyUp-down": "stop down",
+  "KeyDown-left shift": "start running x",
+  "KeyUp-left shift": "start walking x",
 
-  "JoyAxisMotion-1-back": "walk up",
+  "JoyAxisMotion-1-back": "go up",
   "JoyAxisMotion-1-center": ["stop up", "stop down"],
-  "JoyAxisMotion-1-forward": "walk down",
-  "JoyAxisMotion-0-back": "walk left",
+  "JoyAxisMotion-1-forward": "go down",
+  "JoyAxisMotion-0-back": "go left",
   "JoyAxisMotion-0-center": ["stop left", "stop right"],
-  "JoyAxisMotion-0-forward": "walk right"
+  "JoyAxisMotion-0-forward": "go right",
+
+  "JoyAxisMagnitudeReached-0-far": "start walking x",
+  "JoyAxisMagnitudeReached-0-near": "start meandering x",
+  "JoyAxisMagnitudeReached-1-far": "start walking y",
+  "JoyAxisMagnitudeReached-1-near": "start meandering y",
+
+  "JoyButtonDown-7": "start running x",
+  "JoyButtonUp-7": "start walking x"
 }

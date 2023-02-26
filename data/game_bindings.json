@@ -2,9 +2,23 @@
   "KeyDown-escape": "pop state",
   "KeyDown-p": "pause",
   "KeyDown-f11": "toggle fullscreen",
+  "KeyDown-up": "cursor up",
+  "KeyDown-down": "cursor down",
+  "KeyDown-left": "cursor left",
+  "KeyDown-right": "cursor right",
+  "KeyUp-up": "cursor stop up",
+  "KeyUp-down": "cursor stop down",
+  "KeyUp-left": "cursor stop left",
+  "KeyUp-right": "cursor stop right",
+
   "Quit": "quit",
   "JoyDeviceAdded": "add joystick",
   "JoyDeviceRemoved": "remove joystick",
+
+  "JoyButtonDown-1": "pause",
+  "JoyButtonDown-0": "cursor click left",
+  "JoyButtonUp-0": "cursor release left",
+  "JoyButtonDown-10": "toggle fullscreen",
 
   "KeyDown-s": "screenshot"
 }

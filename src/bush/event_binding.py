@@ -3,11 +3,14 @@ import pygame
 from bush import util_load
 
 BOUND_EVENT = pygame.event.custom_type()
-AXIS_MAGNITUDES = {"center": 0.2, "near": 0.6, "far": 3}
+JOY_AXIS_MAGNITUDE_REACHED = pygame.event.custom_type()
+
+AXIS_MAGNITUDES = {"center": 0.3, "near": 0.7, "far": 3}
 INCLUDE_JOY_IDS = False
 INCLUDE_AXIS_DIRECTION = True
 INCLUDE_AXIS_MAGNITUDE = False
-INCLUDE_MOD_KEYS = True
+INCLUDE_MOD_KEYS = False
+INCLUDE_MOD_KEYS_ON_KEYUP = False
 MOD_STRINGS = {
     pygame.KMOD_NONE: "none",
     pygame.KMOD_LSHIFT: "left shift",
@@ -73,6 +76,7 @@ def get_mod_string(mod_num, disabled_mod_keys=None):
 def event_to_string(
     event,
     include_mod_keys=None,
+    include_mod_keys_on_keyup=None,
     disabled_mod_keys=None,
     include_joy_ids=None,
     include_axis_direction=None,
@@ -80,6 +84,8 @@ def event_to_string(
 ):
     if include_mod_keys is None:
         include_mod_keys = INCLUDE_MOD_KEYS
+    if include_mod_keys_on_keyup is None:
+        include_mod_keys_on_keyup = INCLUDE_MOD_KEYS_ON_KEYUP
     if disabled_mod_keys is None:
         disabled_mod_keys = DISABLED_MOD_KEYS
     if include_joy_ids is None:
@@ -88,7 +94,10 @@ def event_to_string(
         include_axis_direction = INCLUDE_AXIS_DIRECTION
     if include_axis_magnitude is None:
         include_axis_magnitude = INCLUDE_AXIS_MAGNITUDE
-    identifiers = [pygame.event.event_name(event.type)]
+    if event.type == JOY_AXIS_MAGNITUDE_REACHED:
+        identifiers = ["JoyAxisMagnitudeReached"]
+    else:
+        identifiers = [pygame.event.event_name(event.type)]
 
     if "Joy" in identifiers[0] and include_joy_ids:
         if hasattr(event, "instance_id"):
@@ -100,21 +109,38 @@ def event_to_string(
         key_name = pygame.key.name(event.key)
         mod_name = get_mod_string(event.mod, disabled_mod_keys)
         identifiers.append(key_name)
-        if include_mod_keys and mod_name not in {
-            key_name,
-            MOD_STRINGS[pygame.KMOD_NONE],
-        }:
+        if (
+            include_mod_keys
+            and mod_name
+            not in {
+                key_name,
+                MOD_STRINGS[pygame.KMOD_NONE],
+            }
+            and not (event.type == pygame.KEYUP and include_mod_keys_on_keyup)
+        ):
             identifiers.append("mod " + mod_name)
 
     if event.type in (pygame.JOYBUTTONUP, pygame.JOYBUTTONDOWN):
         identifiers.append(event.button)
 
+    if event.type == JOY_AXIS_MAGNITUDE_REACHED:
+        identifiers.extend((event.axis, event.magnitude))
+
     if event.type == pygame.JOYAXISMOTION:
         identifiers.append(event.axis)
         if include_axis_direction:
             identifiers.append(axis_direction(event.value))
+        magnitude = axis_magnitude(event.value)
         if include_axis_magnitude:
-            identifiers.append(axis_magnitude(event.value))
+            identifiers.append(magnitude)
+        pygame.event.post(
+            pygame.event.Event(
+                JOY_AXIS_MAGNITUDE_REACHED,
+                instance_id=event.instance_id,
+                axis=event.axis,
+                magnitude=magnitude,
+            )
+        )
 
     return "-".join([str(i) for i in identifiers])
 
@@ -124,6 +150,7 @@ class EventHandler:
         self,
         bindings=None,
         include_mod_keys=None,
+        include_mod_keys_on_keyup=None,
         disabled_mod_keys=None,
         include_joy_ids=None,
         include_axis_direction=None,
@@ -133,8 +160,11 @@ class EventHandler:
         self.disabled = set()
         self.joysticks = dict(enumerate((init_joysticks())))
         self.include_mod_keys = INCLUDE_MOD_KEYS
+        self.include_mod_keys_on_keyup = INCLUDE_MOD_KEYS_ON_KEYUP
         self.disabled_mod_keys = DISABLED_MOD_KEYS
-        self.set_mod_flags(include_mod_keys, disabled_mod_keys)
+        self.set_mod_flags(
+            include_mod_keys, include_mod_keys_on_keyup, disabled_mod_keys
+        )
         self.include_joy_ids = INCLUDE_JOY_IDS
         self.include_axis_direction = INCLUDE_AXIS_DIRECTION
         self.include_axis_magnitude = INCLUDE_AXIS_MAGNITUDE
@@ -155,9 +185,16 @@ class EventHandler:
         if include_axis_magnitude is not None:
             self.include_axis_magnitude = include_axis_magnitude
 
-    def set_mod_flags(self, include_mod_keys=None, disabled_mod_keys=None):
+    def set_mod_flags(
+        self,
+        include_mod_keys=None,
+        include_mod_keys_on_keyup=None,
+        disabled_mod_keys=None,
+    ):
         if include_mod_keys is not None:
             self.include_mod_keys = include_mod_keys
+        if include_mod_keys_on_keyup is not None:
+            self.include_mod_keys_on_keyup = include_mod_keys_on_keyup
         if disabled_mod_keys is not None:
             self.disabled_mod_keys = disabled_mod_keys
 
@@ -172,6 +209,10 @@ class EventHandler:
             joy_flags = self.bindings.pop("joy-flags")
             if load_joy_flags:
                 self.set_joy_flags(**joy_flags)
+        if "mod-flags" in self.bindings:
+            mod_flags = self.bindings.pop("mod-flags")
+            if load_mod_flags:
+                self.set_mod_flags(**mod_flags)
         self.bindings.pop("#", None)  # Remove comment symbol
 
     def save_bindings(self, path):
