@@ -1,3 +1,5 @@
+import os
+
 import pygame
 import pygame_gui
 
@@ -6,6 +8,7 @@ from bush import asset_handler, event_binding
 from bush.ai import scripting, state
 
 loader = asset_handler.glob_loader
+LOAD_PATH = "data/saves"
 
 
 class GameState(state.StackState):
@@ -150,7 +153,7 @@ class PausemenuState(GameState):
                 if event.ui_element.text == "Resume":
                     self.pop()
                 if event.ui_element.text == "Load/Save":
-                    state = SaveMenuState(self.engine, self)
+                    state = LoadSaveMenuState(self.engine, self)
                     self._stack.push(state)
                 if event.ui_element.text == "Quit":
                     self.engine.quit()
@@ -160,7 +163,7 @@ class PausemenuState(GameState):
         super().draw(surface)
 
 
-class SaveMenuState(GameState):
+class LoadSaveMenuState(GameState):
     def __init__(self, engine, preceding_state):
         gui = menu.create_menu(
             "Load/Save", ("Load", "Save", "Back"), engine.screen_size
@@ -175,7 +178,6 @@ class SaveMenuState(GameState):
             preceding_state.screen_surf
         )  # cache the screen under the previous state
         self.input_handler.disable_event("pause")
-        self.cursor.enable()
 
     def draw(self, surface):
         surface.blit(self.screen_surf, (0, 0))
@@ -187,7 +189,75 @@ class SaveMenuState(GameState):
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element.text == "Load":
                     print("Load Game")
+                    state = LoadMenuState(self.engine, self)
+                    self._stack.push(state)
                 if event.ui_element.text == "Save":
                     print("Save Game")
+                    state = SaveMenuState(self.engine, self)
+                    self._stack.push(state)
                 if event.ui_element.text == "Back":
                     self.pop()
+
+
+class SaveMenuState(GameState):
+    def __init__(self, engine, preceding_state):
+        button_names = ["New!"]
+        for dir_entry in os.scandir(LOAD_PATH):
+            button_names.append(dir_entry.name)
+        gui = menu.create_menu("Save Game", button_names, engine.screen_size)
+        super().__init__(
+            "SaveMenu",
+            engine,
+            on_push=lambda: (self.cursor.enable()),
+            gui=gui,
+        )
+        self.screen_surf = (
+            preceding_state.screen_surf
+        )  # cache the screen under the previous state
+        self.input_handler.disable_event("pause")
+
+    def draw(self, surface):
+        surface.blit(self.screen_surf, (0, 0))
+        super().draw(surface)
+
+    def event(self, event):
+        if event.type == pygame_gui.UI_BUTTON_PRESSED:
+            if event.ui_element.text == "New!":
+                print("new file...")
+            else:
+                self.engine.state.save(
+                    os.path.join(
+                        os.path.join(LOAD_PATH, event.ui_element.text),
+                        event.ui_element.text + ".sav",
+                    )
+                )
+
+
+class LoadMenuState(GameState):
+    def __init__(self, engine, preceding_state):
+        button_names = []
+        for dir_entry in os.scandir(LOAD_PATH):
+            button_names.append(dir_entry.name)
+        gui = menu.create_menu("Load Game", button_names, engine.screen_size)
+        super().__init__(
+            "LoadMenu",
+            engine,
+            on_push=lambda: (self.cursor.enable()),
+            gui=gui,
+        )
+        self.screen_surf = (
+            preceding_state.screen_surf
+        )  # cache the screen under the previous state
+        self.input_handler.disable_event("pause")
+
+    def draw(self, surface):
+        surface.blit(self.screen_surf, (0, 0))
+        super().draw(surface)
+
+    def handle_events(self):
+        for event in pygame.event.get():
+            super().handle_event(event)
+            if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                self.engine.state.load(
+                    os.path.join(LOAD_PATH, event.ui_element.text + ".sav")
+                )
