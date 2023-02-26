@@ -120,12 +120,12 @@ def save_csv_simple(data, path, delimiter=", "):
 
 
 def load_pickle(path):
-    with open(os.path.join(path)) as file:
+    with open(os.path.join(path), "rb") as file:
         return pickle.load(file)
 
 
 def save_pickle(data, path):
-    with open(os.path.join(path), "w") as file:
+    with open(os.path.join(path), "wb") as file:
         pickle.dump(data, file)
 
 

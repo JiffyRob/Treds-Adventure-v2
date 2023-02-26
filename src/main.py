@@ -44,7 +44,7 @@ class Game:
         self.cursor.hide()
         # game control state
         self.stack = state.StateStack()
-        self.state = save_state.LeveledGameState("saves", "test_level.tmx")
+        self.state = save_state.LeveledGameState("data/saves", "test_level.tmx")
         # day/night
         self.sky = sky.Sky(self.screen_size)
         # initial map load

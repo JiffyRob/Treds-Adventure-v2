@@ -3,6 +3,8 @@ import math
 import pygame
 import pygame_gui
 
+import game_state
+
 THEME_PATH = "data/ui_theme.json"
 
 
@@ -61,7 +63,9 @@ class HeartMeter(pygame_gui.elements.UIImage):
         super().update(time_delta)
 
 
-def create_menu(menu_name, button_names, screen_size):
+def create_menu(
+    menu_name, button_names, screen_size, return_container=False, return_skipped=False
+):
     menu = pygame_gui.UIManager(screen_size, theme_path=THEME_PATH)
     container_rect = pygame.Rect(
         (0, 0),
@@ -69,11 +73,29 @@ def create_menu(menu_name, button_names, screen_size):
     )
     container_rect.center = screen_size / 2
     container = pygame_gui.elements.UIPanel(container_rect, 3, menu)
-    rect = pygame.Rect(0, 10, 100, 30)
+    height = 30
+    rect = pygame.Rect(0, 10, 100, height)
     rect.centerx = container_rect.width / 2
     pygame_gui.elements.UILabel(rect, menu_name, menu, container)
+    skipped = []
     for i, button_name in enumerate(button_names):
-        rect = pygame.Rect((0, (i + 1) * 32 + 10, 100, 30))
+        rect = pygame.Rect((0, (i + 1) * (height + 2) + 10, 100, 30))
         rect.centerx = container_rect.width / 2
-        pygame_gui.elements.UIButton(rect, button_name, menu, container)
-    return menu
+        if button_name == ":SKIP":
+            skipped.append(rect)
+            continue
+        pygame_gui.elements.UIButton(
+            rect,
+            button_name,
+            menu,
+            container,
+            generate_click_events_from=(pygame.BUTTON_LEFT, pygame.BUTTON_RIGHT),
+        )
+    return_values = [menu]
+    if return_container:
+        return_values.append(container)
+    if return_skipped:
+        return_values.append(skipped)
+    if len(return_values) == 1:
+        return return_values[0]
+    return return_values

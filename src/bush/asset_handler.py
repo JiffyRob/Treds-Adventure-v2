@@ -85,7 +85,7 @@ class AssetHandler:
 
     def save(self, data, path):
         filetype = path.split(".")[-1]
-        self.save_dict.get(filetype, "generic")(data, path)
+        self.save_dict.get(filetype, "generic")(data, os.path.join(self.base, path))
 
     def empty(self):
         for key in self.type_dict.keys():

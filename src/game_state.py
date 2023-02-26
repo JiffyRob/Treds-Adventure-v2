@@ -8,7 +8,6 @@ from bush import asset_handler, event_binding
 from bush.ai import scripting, state
 
 loader = asset_handler.glob_loader
-LOAD_PATH = "data/saves"
 
 
 class GameState(state.StackState):
@@ -17,7 +16,6 @@ class GameState(state.StackState):
     ):
         self.engine = engine
         self.cursor = engine.cursor
-        self.cursor.hide()
         self.input_handler = event_binding.EventHandler()
         self.input_handler.update_bindings(loader.load("data/game_bindings.json"))
         self.screen_surf = None
@@ -40,7 +38,11 @@ class GameState(state.StackState):
             if event.name == "toggle fullscreen":
                 self.engine.toggle_fullscreen()
             if event.name == "pause":
-                self._stack.push(PausemenuState(self.engine))
+                self._stack.push(
+                    PauseMenu(
+                        self.engine, screen_surf=pygame.display.get_surface().convert()
+                    )
+                )
             if event.name == "quit":
                 self.engine.quit()
             if event.name == "add joystick":
@@ -60,7 +62,8 @@ class GameState(state.StackState):
 
     def update(self, dt=0.03):
         super().update()
-        self.gui.update(dt)
+        if self.gui is not None:
+            self.gui.update(dt)
 
 
 class MapState(GameState):
@@ -131,133 +134,165 @@ class ScriptedMapState(GameState):
         self.sky.render(surface)
 
 
-class PausemenuState(GameState):
-    def __init__(self, engine):
-        gui = menu.create_menu(
-            "Paused", ("Resume", "Load/Save", "Quit"), engine.screen_size
-        )
-        super().__init__(
-            "Pausemenu",
-            engine,
-            on_push=lambda: (self.cursor.enable(), self.cache_screen()),
-            on_pop=lambda: self.cursor.hide(),
-            gui=gui,
-        )
-        self.input_handler.disable_event("pause")
-        self.cursor.enable()
-
-    def handle_events(self):
-        for event in pygame.event.get():
-            super().handle_event(event)
-            if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element.text == "Resume":
-                    self.pop()
-                if event.ui_element.text == "Load/Save":
-                    state = LoadSaveMenuState(self.engine, self)
-                    self._stack.push(state)
-                if event.ui_element.text == "Quit":
-                    self.engine.quit()
-
-    def draw(self, surface):
-        surface.blit(self.screen_surf, (0, 0))
-        super().draw(surface)
-
-
-class LoadSaveMenuState(GameState):
-    def __init__(self, engine, preceding_state):
-        gui = menu.create_menu(
-            "Load/Save", ("Load", "Save", "Back"), engine.screen_size
-        )
-        super().__init__(
-            "SaveMenu",
-            engine,
-            on_push=lambda: (self.cursor.enable()),
-            gui=gui,
-        )
-        self.screen_surf = (
-            preceding_state.screen_surf
-        )  # cache the screen under the previous state
-        self.input_handler.disable_event("pause")
-
-    def draw(self, surface):
-        surface.blit(self.screen_surf, (0, 0))
-        super().draw(surface)
-
-    def handle_events(self):
-        for event in pygame.event.get():
-            super().handle_event(event)
-            if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element.text == "Load":
-                    print("Load Game")
-                    state = LoadMenuState(self.engine, self)
-                    self._stack.push(state)
-                if event.ui_element.text == "Save":
-                    print("Save Game")
-                    state = SaveMenuState(self.engine, self)
-                    self._stack.push(state)
-                if event.ui_element.text == "Back":
-                    self.pop()
-
-
-class SaveMenuState(GameState):
-    def __init__(self, engine, preceding_state):
-        button_names = ["New!"]
-        for dir_entry in os.scandir(LOAD_PATH):
-            button_names.append(dir_entry.name)
-        gui = menu.create_menu("Save Game", button_names, engine.screen_size)
-        super().__init__(
-            "SaveMenu",
-            engine,
-            on_push=lambda: (self.cursor.enable()),
-            gui=gui,
-        )
-        self.screen_surf = (
-            preceding_state.screen_surf
-        )  # cache the screen under the previous state
-        self.input_handler.disable_event("pause")
-
-    def draw(self, surface):
-        surface.blit(self.screen_surf, (0, 0))
-        super().draw(surface)
-
-    def event(self, event):
-        if event.type == pygame_gui.UI_BUTTON_PRESSED:
-            if event.ui_element.text == "New!":
-                print("new file...")
+class MenuState(GameState):
+    def __init__(
+        self,
+        value,
+        engine,
+        on_push=None,
+        on_pop=None,
+        button_bindings=None,
+        supermenu=None,
+        screen_surf=None,
+    ):
+        if on_push is None:
+            on_push = lambda: self.cursor.enable()
+        if on_pop is None:
+            if supermenu is None:
+                on_pop = lambda: None
             else:
-                self.engine.state.save(
-                    os.path.join(
-                        os.path.join(LOAD_PATH, event.ui_element.text),
-                        event.ui_element.text + ".sav",
-                    )
-                )
+                on_pop = lambda: supermenu.rebuild()
+        super().__init__(value, engine, on_push, on_pop)
+        self.screen_surf = screen_surf
+        if supermenu is not None and self.screen_surf is None:
+            self.screen_surf = supermenu.screen_surf
+        self.button_bindings = button_bindings or {}
+        self.nothing_func = lambda: None
+        self.rebuild()
 
-
-class LoadMenuState(GameState):
-    def __init__(self, engine, preceding_state):
-        button_names = []
-        for dir_entry in os.scandir(LOAD_PATH):
-            button_names.append(dir_entry.name)
-        gui = menu.create_menu("Load Game", button_names, engine.screen_size)
-        super().__init__(
-            "LoadMenu",
-            engine,
-            on_push=lambda: (self.cursor.enable()),
-            gui=gui,
-        )
-        self.screen_surf = (
-            preceding_state.screen_surf
-        )  # cache the screen under the previous state
-        self.input_handler.disable_event("pause")
+    def rebuild(self):
+        self.gui = None
 
     def draw(self, surface):
-        surface.blit(self.screen_surf, (0, 0))
+        if self.screen_surf is not None:
+            surface.blit(self.screen_surf, (0, 0))
         super().draw(surface)
+
+    def handle_event(self, event):
+        super().handle_event(event)
+        if event.type == pygame_gui.UI_BUTTON_PRESSED:
+            self.button_bindings.get(event.ui_element.text, self.nothing_func)()
+
+    def run_submenu(self, menu_type, **kwargs):
+        self._stack.push(menu_type(engine=self.engine, supermenu=self, **kwargs))
+
+
+class PauseMenu(MenuState):
+    def __init__(self, engine, screen_surf):
+        super().__init__(
+            "PauseMenu",
+            engine,
+            button_bindings={
+                "Resume": self.pop,
+                "Load/Save": self.run_loadsave_menu,
+                "Quit": engine.quit,
+            },
+            screen_surf=screen_surf,
+        )
+
+    def rebuild(self):
+        self.gui = menu.create_menu(
+            "PauseMenu",
+            ["Resume", "Load/Save", "Quit"],
+            self.engine.screen_size,
+        )
+
+    def run_loadsave_menu(self):
+        self.run_submenu(LoadSaveMenu)
+
+
+class LoadSaveMenu(MenuState):
+    def __init__(self, engine, supermenu):
+        super().__init__(
+            "LoadSaveMenu",
+            engine,
+            button_bindings={
+                "Load": self.run_load_menu,
+                "Save": self.run_save_menu,
+                "Back": self.pop,
+            },
+            supermenu=supermenu,
+        )
+
+    def rebuild(self):
+        self.gui = menu.create_menu(
+            "Load/Save",
+            ["Load", "Save", "Back"],
+            self.engine.screen_size,
+        )
+
+    def run_load_menu(self):
+        self.run_submenu(LoadMenu)
+
+    def run_save_menu(self):
+        self.run_submenu(SaveMenu)
+
+
+class SaveMenu(MenuState):
+    def __init__(self, engine, supermenu):
+        self.save_names = []
+        super().__init__(
+            "SaveMenu",
+            engine,
+            button_bindings={"New!": self.run_newsave, "Back": self.pop},
+            supermenu=supermenu,
+        )
+
+    def rebuild(self):
+        button_names = []
+        for name in get_save_names(self.engine.state.loader.base):
+            button_names.append(name)
+        button_names.append("Back")
+        if len(button_names) < 5:
+            button_names.insert(0, "New!")
+        self.gui = menu.create_menu("Save", button_names, self.engine.screen_size)
+        button_names = [i for i in button_names if i not in {"New!", "Back"}]
+        self.save_names = button_names
 
     def handle_events(self):
         for event in pygame.event.get():
-            super().handle_event(event)
+            self.handle_event(event)
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                self.engine.state.load(
-                    os.path.join(LOAD_PATH, event.ui_element.text + ".sav")
-                )
+                if event.ui_element.text in self.save_names:
+                    self.save(event.ui_element.text)
+
+    def run_newsave(self):
+        pass
+
+    def delete_save(self):
+        pass
+
+    def save(self, name):
+        print("Saving", name)
+
+
+class LoadMenu(MenuState):
+    def __init__(self, engine, supermenu):
+        self.save_names = []
+        super().__init__(
+            "LoadMenu", engine, button_bindings={"Back": self.pop}, supermenu=supermenu
+        )
+
+    def rebuild(self):
+        button_names = []
+        for name in get_save_names(self.engine.state.loader.base):
+            button_names.append(name)
+        button_names.append("Back")
+        self.gui = menu.create_menu("Load", button_names, self.engine.screen_size)
+        button_names = [i for i in button_names if i != "Back"]
+        self.save_names = button_names
+
+    def handle_events(self):
+        for event in pygame.event.get():
+            self.handle_event(event)
+            if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element.text in self.save_names:
+                    self.load(event.ui_element.text)
+
+    def load(self, name):
+        print("Loading", name)
+
+
+def get_save_names(path):
+    for dir_entry in os.scandir(path):
+        yield dir_entry.name.split(".")[0]

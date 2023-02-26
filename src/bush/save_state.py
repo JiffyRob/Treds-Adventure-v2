@@ -2,12 +2,14 @@ from bush import asset_handler
 
 
 class GameState:
-    def __init__(self, save_directory):
+    def __init__(self, save_directory, load_hook=lambda loaded_state: None):
         self.loader = asset_handler.AssetHandler(save_directory)
+        self.load_hook = load_hook
         self.data = {}
 
     def load(self, file_path):
         self.data = self.loader.load(file_path)
+        self.load_hook(self)
 
     def get(self, key, default=None):
         return self.data.get(key, default)
@@ -20,11 +22,18 @@ class GameState:
 
 
 class LeveledGameState:
-    def __init__(self, save_directory, default_level, save_path=None):
+    def __init__(
+        self,
+        save_directory,
+        default_level,
+        load_hook=lambda loaded_state: loaded_state,
+        save_path=None,
+    ):
         self.loader = asset_handler.AssetHandler(save_directory)
         self.data = {}
         self.default_level = default_level
         self.save_path = save_path
+        self.load_hook = load_hook
 
     def get(self, key, level=None, default=None):
         if level is None:
@@ -43,7 +52,9 @@ class LeveledGameState:
         file_path = file_path or self.save_path
         self.save_path = file_path
         self.data = self.loader.load(file_path)
+        self.load_hook(self)
 
     def save(self, file_path=None):
+        print(file_path)
         file_path = file_path or self.save_path
-        self.loader.save(file_path, self.data)
+        self.loader.save(self.data, file_path)
