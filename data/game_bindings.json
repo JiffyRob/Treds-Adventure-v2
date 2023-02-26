@@ -10,6 +10,8 @@
   "KeyUp-down": "cursor stop down",
   "KeyUp-left": "cursor stop left",
   "KeyUp-right": "cursor stop right",
+  "KeyDown-return": "cursor click left",
+  "KeyUp-return": "cursor release left",
 
   "Quit": "quit",
   "JoyDeviceAdded": "add joystick",
