@@ -6,8 +6,8 @@
     "activeFile": "tilesets/interior.tsx",
     "expandedProjectPaths": [
         ".",
-        "maps",
-        "tilesets"
+        "tilesets",
+        "maps"
     ],
     "fileStates": {
         "farmplant_green.tsx": {
@@ -35,8 +35,8 @@
             "scale": 3,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 33.33333333333333,
-                "y": 134.66666666666666
+                "x": 240,
+                "y": 159.83333333333331
             }
         },
         "maps/trees.tsx": {
@@ -49,8 +49,8 @@
             "scale": 3,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 67.33333333333333,
-                "y": 104.33333333333334
+                "x": 63.99999999999999,
+                "y": 63.83333333333333
             }
         },
         "master.tsx": {

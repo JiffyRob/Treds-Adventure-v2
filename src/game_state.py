@@ -130,7 +130,9 @@ class ScriptedMapState(GameState):
 
 class PausemenuState(GameState):
     def __init__(self, engine):
-        gui = menu.create_menu("Paused", ("Resume", "Quit"), engine.screen_size)
+        gui = menu.create_menu(
+            "Paused", ("Resume", "Load/Save", "Quit"), engine.screen_size
+        )
         super().__init__(
             "Pausemenu",
             engine,
@@ -145,11 +147,47 @@ class PausemenuState(GameState):
         for event in pygame.event.get():
             super().handle_event(event)
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element.text == "Quit":
-                    self.engine.quit()
                 if event.ui_element.text == "Resume":
                     self.pop()
+                if event.ui_element.text == "Load/Save":
+                    state = SaveMenuState(self.engine, self)
+                    self._stack.push(state)
+                if event.ui_element.text == "Quit":
+                    self.engine.quit()
 
     def draw(self, surface):
         surface.blit(self.screen_surf, (0, 0))
         super().draw(surface)
+
+
+class SaveMenuState(GameState):
+    def __init__(self, engine, preceding_state):
+        gui = menu.create_menu(
+            "Load/Save", ("Load", "Save", "Back"), engine.screen_size
+        )
+        super().__init__(
+            "SaveMenu",
+            engine,
+            on_push=lambda: (self.cursor.enable()),
+            gui=gui,
+        )
+        self.screen_surf = (
+            preceding_state.screen_surf
+        )  # cache the screen under the previous state
+        self.input_handler.disable_event("pause")
+        self.cursor.enable()
+
+    def draw(self, surface):
+        surface.blit(self.screen_surf, (0, 0))
+        super().draw(surface)
+
+    def handle_events(self):
+        for event in pygame.event.get():
+            super().handle_event(event)
+            if event.type == pygame_gui.UI_BUTTON_PRESSED:
+                if event.ui_element.text == "Load":
+                    print("Load Game")
+                if event.ui_element.text == "Save":
+                    print("Save Game")
+                if event.ui_element.text == "Back":
+                    self.pop()

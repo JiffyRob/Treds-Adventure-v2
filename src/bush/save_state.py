@@ -20,10 +20,11 @@ class GameState:
 
 
 class LeveledGameState:
-    def __init__(self, save_directory, default_level):
+    def __init__(self, save_directory, default_level, save_path=None):
         self.loader = asset_handler.AssetHandler(save_directory)
         self.data = {}
         self.default_level = default_level
+        self.save_path = save_path
 
     def get(self, key, level=None, default=None):
         if level is None:
@@ -39,7 +40,10 @@ class LeveledGameState:
             self.data[level] = {key: value}
 
     def load(self, file_path=None):
+        file_path = file_path or self.save_path
+        self.save_path = file_path
         self.data = self.loader.load(file_path)
 
-    def save(self, file_path):
+    def save(self, file_path=None):
+        file_path = file_path or self.save_path
         self.loader.save(file_path, self.data)
