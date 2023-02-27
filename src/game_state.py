@@ -175,11 +175,6 @@ class MenuState(GameState):
     def rebuild(self):
         self.gui = None
 
-    def clear_menu_stack(self):
-        if self.supermenu is not None:
-            self.supermenu.clear_menu_stack()
-        self.pop()
-
     def draw(self, surface):
         if self.screen_surf is not None:
             surface.blit(self.screen_surf, (0, 0))
@@ -279,7 +274,6 @@ class SaveMenu(MenuState):
 
     def save(self, name):
         print("Saving", name)
-        self.clear_menu_stack()
         self.engine.state.save(name + ".pkl")
 
 
@@ -309,7 +303,6 @@ class LoadMenu(MenuState):
     def load(self, name):
         print("Loading", name)
         path = name + ".pkl"
-        self.clear_menu_stack()
         self.engine.state.load(path)
 
 
@@ -318,7 +311,6 @@ class MainMenu(MenuState):
         super().__init__(
             "MainMenu",
             engine,
-            on_pop=engine.quit,
             button_bindings={
                 "New Game": self.run_newmenu,
                 "Load Game": self.run_loadmenu,
@@ -339,9 +331,6 @@ class MainMenu(MenuState):
 
     def run_loadmenu(self):
         self.run_submenu(LoadMenu)
-
-    def clear_menu_stack(self):
-        pass  # Never gets cleared
 
 
 class NewSaveMenu(MenuState):
@@ -377,7 +366,6 @@ class NewSaveMenu(MenuState):
     def save(self):
         print("Saving", self.text_input.text)
         path = self.text_input.text + ".pkl"
-        self.pop()
         self.engine.state.load("../default_save_values.json")
         self.engine.state.save(path)
 

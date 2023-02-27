@@ -44,7 +44,10 @@ class Game:
         # game control state
         self.stack = state.StateStack()
         self.state = save_state.LeveledGameState(
-            "data/saves", "test_level.tmx", load_hook=self.load_new_state
+            "data/saves",
+            "test_level.tmx",
+            save_hook=self.save_state,
+            load_hook=self.load_new_state,
         )
         # day/night
         self.sky = sky.Sky(self.screen_size)
@@ -61,7 +64,13 @@ class Game:
 
     def load_new_state(self, _):
         map_path = self.state.get("map", "engine")
+        self.stack.clear()
+        self.stack.push(game_state.MainMenu(self))
+        self.player = None
         self.load_map(map_path, START_SPOTS[map_path], push=True)
+
+    def save_state(self, _):
+        self.player.save_data()
 
     def load_map(self, tmx_path, player_pos, push=None):
         self.current_map = tmx_path
@@ -73,7 +82,6 @@ class Game:
         if push == False or (push is None and self.stack.get_current() == "MainMenu"):
             self.stack.pop()
         self.stack.push(game_state.MapState("game map", groups, self))
-        print(self.stack)
         event_script = None
         if event_script:
             self.stack.push(
@@ -102,6 +110,7 @@ class Game:
         while self.running:
             current_state = self.stack.get_current()
             if current_state is None:
+                print("Quitting due to stack emptiness")
                 self.quit()
                 continue
             current_state.update(dt)
@@ -116,6 +125,8 @@ class Game:
         self.screen = None
 
     def quit(self):
+        print("QUIT", self.stack)
+        raise BaseException
         self.running = False
 
 
