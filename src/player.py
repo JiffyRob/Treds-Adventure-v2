@@ -59,11 +59,8 @@ class Player(environment.EnvironmentSprite):
             self.save_state.set(field, getattr(self, field), "player")
 
     def load_data(self):
-        try:
-            for field in self.save_fields:
-                setattr(self, field, self.save_state.get(field, "player"))
-        except KeyError:
-            self.save_data()
+        for field in self.save_fields:
+            setattr(self, field, self.save_state.get(field, "player"))
 
     def event(self, event):
         if event.type == event_binding.BOUND_EVENT:

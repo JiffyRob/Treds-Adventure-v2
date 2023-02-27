@@ -170,6 +170,7 @@ class MenuState(GameState):
         self.nothing_func = lambda: None
         self.rebuild()
         self.input_handler.disable_event("pause")
+        self.supermenu = supermenu
 
     def rebuild(self):
         self.gui = None
@@ -273,6 +274,7 @@ class SaveMenu(MenuState):
 
     def save(self, name):
         print("Saving", name)
+        self.engine.state.save(name + ".pkl")
 
 
 class LoadMenu(MenuState):
@@ -301,9 +303,7 @@ class LoadMenu(MenuState):
     def load(self, name):
         print("Loading", name)
         path = name + ".pkl"
-        self.pop()
-        self.engine.state.load("../default_save_values.json")
-        self.engine.state.save(path)
+        self.engine.state.load(path)
 
 
 class MainMenu(MenuState):
@@ -311,7 +311,6 @@ class MainMenu(MenuState):
         super().__init__(
             "MainMenu",
             engine,
-            on_pop=engine.quit,
             button_bindings={
                 "New Game": self.run_newmenu,
                 "Load Game": self.run_loadmenu,
@@ -367,11 +366,12 @@ class NewSaveMenu(MenuState):
     def save(self):
         print("Saving", self.text_input.text)
         path = self.text_input.text + ".pkl"
-        self.pop()
         self.engine.state.load("../default_save_values.json")
         self.engine.state.save(path)
 
 
 def get_save_names(path):
     for dir_entry in os.scandir(path):
-        yield dir_entry.name.split(".")[0]
+        name, ext = dir_entry.name.split(".")
+        if ext == "pkl":
+            yield name
