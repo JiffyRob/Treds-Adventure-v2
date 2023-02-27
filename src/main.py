@@ -63,15 +63,17 @@ class Game:
         map_path = self.state.get("map", "engine")
         self.load_map(map_path, START_SPOTS[map_path], push=True)
 
-    def load_map(self, tmx_path, player_pos, push=False):
+    def load_map(self, tmx_path, player_pos, push=None):
         self.current_map = tmx_path
         if self.player is not None:
             self.player.save_data()
         groups, event_script = self.map_loader.load_map(tmx_path, self, player_pos)
         self.player = groups["player"].sprite
-        if not push:
+        print(self.stack)
+        if push == False or (push is None and self.stack.get_current() == "MainMenu"):
             self.stack.pop()
         self.stack.push(game_state.MapState("game map", groups, self))
+        print(self.stack)
         event_script = None
         if event_script:
             self.stack.push(

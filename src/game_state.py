@@ -170,9 +170,15 @@ class MenuState(GameState):
         self.nothing_func = lambda: None
         self.rebuild()
         self.input_handler.disable_event("pause")
+        self.supermenu = supermenu
 
     def rebuild(self):
         self.gui = None
+
+    def clear_menu_stack(self):
+        if self.supermenu is not None:
+            self.supermenu.clear_menu_stack()
+        self.pop()
 
     def draw(self, surface):
         if self.screen_surf is not None:
@@ -273,6 +279,8 @@ class SaveMenu(MenuState):
 
     def save(self, name):
         print("Saving", name)
+        self.clear_menu_stack()
+        self.engine.state.save(name + ".pkl")
 
 
 class LoadMenu(MenuState):
@@ -301,9 +309,8 @@ class LoadMenu(MenuState):
     def load(self, name):
         print("Loading", name)
         path = name + ".pkl"
-        self.pop()
-        self.engine.state.load("../default_save_values.json")
-        self.engine.state.save(path)
+        self.clear_menu_stack()
+        self.engine.state.load(path)
 
 
 class MainMenu(MenuState):
@@ -332,6 +339,9 @@ class MainMenu(MenuState):
 
     def run_loadmenu(self):
         self.run_submenu(LoadMenu)
+
+    def clear_menu_stack(self):
+        pass  # Never gets cleared
 
 
 class NewSaveMenu(MenuState):
@@ -374,4 +384,6 @@ class NewSaveMenu(MenuState):
 
 def get_save_names(path):
     for dir_entry in os.scandir(path):
-        yield dir_entry.name.split(".")[0]
+        name, ext = dir_entry.name.split(".")
+        if ext == "pkl":
+            yield name
