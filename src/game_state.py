@@ -12,7 +12,13 @@ loader = asset_handler.glob_loader
 
 class GameState(state.StackState):
     def __init__(
-        self, value, engine, on_push=lambda: None, on_pop=lambda: None, gui=None
+        self,
+        value,
+        engine,
+        on_push=lambda: None,
+        on_pop=lambda: None,
+        gui=None,
+        enable_cursor=False,
     ):
         self.engine = engine
         self.cursor = engine.cursor
@@ -20,6 +26,10 @@ class GameState(state.StackState):
         self.input_handler.update_bindings(loader.load("data/game_bindings.json"))
         self.screen_surf = None
         self.gui = gui
+        if enable_cursor:
+            self.cursor.enable()
+        else:
+            self.cursor.hide()
         super().__init__(value, on_push, on_pop)
 
     def handle_events(self):
@@ -146,19 +156,20 @@ class MenuState(GameState):
         screen_surf=None,
     ):
         if on_push is None:
-            on_push = lambda: self.cursor.enable()
+            on_push = lambda: None
         if on_pop is None:
             if supermenu is None:
                 on_pop = lambda: None
             else:
                 on_pop = lambda: supermenu.rebuild()
-        super().__init__(value, engine, on_push, on_pop)
+        super().__init__(value, engine, on_push, on_pop, enable_cursor=True)
         self.screen_surf = screen_surf
         if supermenu is not None and self.screen_surf is None:
             self.screen_surf = supermenu.screen_surf
         self.button_bindings = button_bindings or {}
         self.nothing_func = lambda: None
         self.rebuild()
+        self.input_handler.disable_event("pause")
 
     def rebuild(self):
         self.gui = None
@@ -243,10 +254,8 @@ class SaveMenu(MenuState):
         for name in get_save_names(self.engine.state.loader.base):
             button_names.append(name)
         button_names.append("Back")
-        if len(button_names) < 5:
-            button_names.insert(0, "New!")
         self.gui = menu.create_menu("Save", button_names, self.engine.screen_size)
-        button_names = [i for i in button_names if i not in {"New!", "Back"}]
+        button_names = [i for i in button_names if i != "Back"]
         self.save_names = button_names
 
     def handle_events(self):
@@ -291,6 +300,76 @@ class LoadMenu(MenuState):
 
     def load(self, name):
         print("Loading", name)
+        path = name + ".pkl"
+        self.pop()
+        self.engine.state.load("../default_save_values.json")
+        self.engine.state.save(path)
+
+
+class MainMenu(MenuState):
+    def __init__(self, engine):
+        super().__init__(
+            "MainMenu",
+            engine,
+            on_pop=engine.quit,
+            button_bindings={
+                "New Game": self.run_newmenu,
+                "Load Game": self.run_loadmenu,
+                "Quit": engine.quit,
+            },
+            screen_surf=loader.load("resources/hud/bg_forest.png"),
+        )
+
+    def rebuild(self):
+        self.gui = menu.create_menu(
+            "Tred's Adventure",
+            ["New Game", "Load Game", "Quit"],
+            self.engine.screen_size,
+        )
+
+    def run_newmenu(self):
+        self.run_submenu(NewSaveMenu)
+
+    def run_loadmenu(self):
+        self.run_submenu(LoadMenu)
+
+
+class NewSaveMenu(MenuState):
+    def __init__(self, engine, supermenu):
+        self.text_input = None
+        super().__init__(
+            "NewSaveMenu",
+            engine,
+            button_bindings={"Confirm": self.save, "Back": self.pop},
+            supermenu=supermenu,
+        )
+
+    def rebuild(self):
+        self.gui, container, skipped = menu.create_menu(
+            "New Game",
+            [":SKIP", "Confirm", "Back"],
+            self.engine.screen_size,
+            return_container=True,
+            return_skipped=True,
+        )
+        self.text_input = pygame_gui.elements.UITextEntryLine(
+            skipped[0], self.gui, container, placeholder_text="Save Name"
+        )
+
+    def handle_events(self):
+        for event in pygame.event.get():
+            self.handle_event(event)
+            if event.type == pygame_gui.UI_TEXT_ENTRY_CHANGED:
+                print(event.text)
+            if event.type == pygame_gui.UI_TEXT_ENTRY_FINISHED:
+                self.save()
+
+    def save(self):
+        print("Saving", self.text_input.text)
+        path = self.text_input.text + ".pkl"
+        self.pop()
+        self.engine.state.load("../default_save_values.json")
+        self.engine.state.save(path)
 
 
 def get_save_names(path):

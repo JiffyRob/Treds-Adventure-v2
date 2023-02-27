@@ -38,7 +38,9 @@ class LeveledGameState:
     def get(self, key, level=None, default=None):
         if level is None:
             return self.data.get(key, default)
-        return self.data.get(level, self.data[self.default_level]).get(key, default)
+        return self.data.get(level, self.data.get(self.default_level, {})).get(
+            key, default
+        )
 
     def set(self, key, value, level=None):
         if level is None:

@@ -23,6 +23,10 @@ class StateStack:
             return self.stack.pop(-1)
         return None
 
+    def clear(self):
+        while self.stack:
+            self.pop()
+
     def get_current(self):
         if not self.stack:
             return None

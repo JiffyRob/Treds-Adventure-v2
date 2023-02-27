@@ -43,12 +43,14 @@ class Player(environment.EnvironmentSprite):
         }
         self.current_mana = 6
         self.mana_capacity = 12
+        self.items = []
         self.save_state = self.engine.state
         self.save_fields = (
             "current_mana",
             "mana_capacity",
             "current_health",
             "health_capacity",
+            "items",
         )
         self.load_data()
 
@@ -59,7 +61,7 @@ class Player(environment.EnvironmentSprite):
     def load_data(self):
         try:
             for field in self.save_fields:
-                setattr(self, self.save_state.get(field, "player"))
+                setattr(self, field, self.save_state.get(field, "player"))
         except KeyError:
             self.save_data()
 

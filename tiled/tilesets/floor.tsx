@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.8" tiledversion="1.9.2" name="floor" tilewidth="16" tileheight="16" tilecount="572" columns="22" objectalignment="topleft">
+ <transformations hflip="0" vflip="0" rotate="1" preferuntransformed="1"/>
  <image source="../../resources/tiles/floor.png" width="352" height="417"/>
  <tile id="165">
   <properties>

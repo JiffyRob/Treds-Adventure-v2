@@ -12,7 +12,6 @@ from bush.ai import scripting, state
 
 pygame.init()
 loader = asset_handler.glob_loader
-
 START_SPOTS = loader.load("data/player_start_positions.json")
 
 
@@ -38,13 +37,15 @@ class Game:
             pygame.transform.scale2x(cursor_images[0]),
             pygame.Vector2(4, 2),
             alternate=pygame.transform.scale2x(cursor_images[1]),
-            alternate_chance=0.02,
+            alternate_chance=0.01,
         )
         self.cursor_group = pygame.sprite.GroupSingle(self.cursor)
         self.cursor.hide()
         # game control state
         self.stack = state.StateStack()
-        self.state = save_state.LeveledGameState("data/saves", "test_level.tmx")
+        self.state = save_state.LeveledGameState(
+            "data/saves", "test_level.tmx", load_hook=self.load_new_state
+        )
         # day/night
         self.sky = sky.Sky(self.screen_size)
         # initial map load
@@ -52,11 +53,15 @@ class Game:
         self.map_loader = custom_mapper.MapLoader(self, self.state)
         self.current_map = None
         self.player = None
-        self.load_map("test_map.tmx", START_SPOTS["default"]["pos"])
+        self.stack.push(game_state.MainMenu(self))
 
     @scripting.ejecs_command
     def player_command(self, command):
         return self.player.command(command)
+
+    def load_new_state(self, _):
+        map_path = self.state.get("map", "engine")
+        self.load_map(map_path, START_SPOTS[map_path], push=True)
 
     def load_map(self, tmx_path, player_pos, push=False):
         self.current_map = tmx_path

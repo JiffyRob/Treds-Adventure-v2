@@ -22,6 +22,14 @@
                 "y": 367.99999999999994
             }
         },
+        "maps/bg_forest.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 300.6666666666667,
+                "y": 157.99999999999997
+            }
+        },
         "maps/farmplant_green.tsx": {
             "scaleInDock": 1
         },
@@ -32,11 +40,11 @@
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 3,
+            "scale": 0.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 240,
-                "y": 159.83333333333331
+                "x": 536,
+                "y": 338
             }
         },
         "maps/trees.tsx": {
@@ -46,11 +54,11 @@
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 3,
+            "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 63.99999999999999,
-                "y": 63.83333333333333
+                "x": 149,
+                "y": 114
             }
         },
         "master.tsx": {
@@ -128,7 +136,7 @@
             "scaleInEditor": 1
         },
         "tilesets/interior.tsx": {
-            "scaleInDock": 1,
+            "scaleInDock": 0.5,
             "scaleInEditor": 1
         },
         "tilesets/interior_elements.tsx": {
@@ -156,7 +164,7 @@
             "scaleInEditor": 1
         },
         "tilesets/propeller.tsx": {
-            "scaleInDock": 1,
+            "scaleInDock": 0.75,
             "scaleInEditor": 1
         },
         "tilesets/round_house.tsx": {
@@ -187,11 +195,11 @@
     "last.worldFilePath": "/home/jack/Python Workspace/Treds-Adventure-v2/tiled",
     "loadedWorlds": [
     ],
-    "map.height": 8,
+    "map.height": 20,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 8,
+    "map.width": 30,
     "openFiles": [
         "maps/windmill.tmx",
         "tilesets/interior_floor.tsx",
@@ -201,18 +209,18 @@
     "project": "tav2.tiled-project",
     "property.type": "string",
     "recentFiles": [
+        "tilesets/trees.tsx",
+        "tilesets/floor.tsx",
+        "tilesets/water.tsx",
+        "tilesets/house.tsx",
+        "maps/bg_forest.tmx",
+        "maps/test_map.tmx",
         "maps/windmill.tmx",
         "tilesets/interior_floor.tsx",
-        "maps/test_map.tmx",
         "tilesets/interior.tsx",
-        "tilesets/water.tsx",
-        "tilesets/propeller.tsx",
-        "tilesets/trees.tsx",
-        "tilesets/boat.tsx",
-        "tilesets/crane.tsx",
-        "tilesets/dungeon.tsx",
-        "tilesets/farmplant_green.tsx",
-        "tilesets/farmplant_orange.tsx"
+        "tilesets/pipes.tsx",
+        "tilesets/narrow_house.tsx",
+        "tilesets/hole.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
