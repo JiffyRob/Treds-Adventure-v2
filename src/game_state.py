@@ -27,11 +27,16 @@ class GameState(state.StackState):
         self.input_handler.update_bindings(loader.load("data/game_bindings.json"))
         self.screen_surf = None
         self.gui = gui
-        if enable_cursor:
+        self.enable_cursor = enable_cursor
+        actual_on_push = lambda: (on_push(), self.reset_cursor())
+        actual_on_pop = lambda: (on_pop(), self.reset_cursor())
+        super().__init__(value, actual_on_push, actual_on_pop)
+
+    def reset_cursor(self):
+        if self.enable_cursor:
             self.cursor.enable()
         else:
             self.cursor.hide()
-        super().__init__(value, on_push, on_pop)
 
     def handle_events(self):
         for event in pygame.event.get():
