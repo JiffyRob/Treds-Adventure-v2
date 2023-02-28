@@ -126,7 +126,6 @@ class Game:
 
     def quit(self):
         print("QUIT", self.stack)
-        raise BaseException
         self.running = False
 
 

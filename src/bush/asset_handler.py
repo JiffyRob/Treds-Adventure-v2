@@ -29,6 +29,8 @@ class AssetHandler:
             "pkl": load_pickle,
             "tmx": load_map,
             "world": load_world,
+            "gz": load_gzip,
+            "sav": load_gzip,
             "generic": load_text,
         }
         # file extension -> save function
@@ -40,6 +42,8 @@ class AssetHandler:
             "json": save_json,
             "csv": save_csv,
             "pkl": save_pickle,
+            "gz": load_gzip,
+            "sav": save_gzip,
             "generic": save_text,
         }
         # file extension -> cache dictionary
@@ -53,6 +57,8 @@ class AssetHandler:
             "json": data_cache,
             "csv": data_cache,
             "pkl": data_cache,
+            "gz": data_cache,
+            "sav": data_cache,
             "tmx": map_cache,
             "world": world_cache,
             "generic": generic_cache,

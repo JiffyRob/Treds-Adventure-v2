@@ -8,6 +8,7 @@ from bush import asset_handler, event_binding
 from bush.ai import scripting, state
 
 loader = asset_handler.glob_loader
+EXT = ".sav"
 
 
 class GameState(state.StackState):
@@ -274,7 +275,7 @@ class SaveMenu(MenuState):
 
     def save(self, name):
         print("Saving", name)
-        self.engine.state.save(name + ".pkl")
+        self.engine.state.save(name + EXT)
 
 
 class LoadMenu(MenuState):
@@ -302,7 +303,7 @@ class LoadMenu(MenuState):
 
     def load(self, name):
         print("Loading", name)
-        path = name + ".pkl"
+        path = name + EXT
         self.engine.state.load(path)
 
 
@@ -365,7 +366,7 @@ class NewSaveMenu(MenuState):
 
     def save(self):
         print("Saving", self.text_input.text)
-        path = self.text_input.text + ".pkl"
+        path = self.text_input.text + EXT
         self.engine.state.load("../default_save_values.json")
         self.engine.state.save(path)
 
@@ -373,5 +374,6 @@ class NewSaveMenu(MenuState):
 def get_save_names(path):
     for dir_entry in os.scandir(path):
         name, ext = dir_entry.name.split(".")
-        if ext == "pkl":
+        print(name, ext)
+        if ext == EXT[1:]:
             yield name

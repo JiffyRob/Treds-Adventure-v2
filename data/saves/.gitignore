@@ -1,3 +1,0 @@
-# Ignore everything but this file - saves don't get commited to the repository
-*
-!.gitignore

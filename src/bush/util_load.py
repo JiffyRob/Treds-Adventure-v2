@@ -2,9 +2,12 @@ import csv
 import json
 import os
 import pickle
+import zlib
 
 import pygame
 import pytmx
+
+ENCODING = "UTF-8"
 
 
 def load_image(path):
@@ -53,6 +56,16 @@ def load_spritesheet(path, frame_size, margin=(0, 0), spacing=0):
     return surf_list
 
 
+def load_gzip(path):
+    with open(path, "rb") as file:
+        return json.loads(zlib.decompress(file.read()).decode("UTF-8"))
+
+
+def save_gzip(data, path):
+    with open(path, "wb") as file:
+        file.write(zlib.compress(bytes(json.dumps(data), "UTF-8")))
+
+
 def save_image(image, path, extension=".png"):
     return pygame.image.save(image, path, extension)
 
@@ -79,7 +92,7 @@ def load_json(path):
 
 
 def save_json(data, path):
-    with open(os.path.join(path)) as file:
+    with open(os.path.join(path), "w") as file:
         json.dump(data, file)
 
 
