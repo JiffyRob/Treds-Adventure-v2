@@ -149,6 +149,7 @@ class EventHandler:
     def __init__(
         self,
         bindings=None,
+        aux_bindings=None,
         include_mod_keys=None,
         include_mod_keys_on_keyup=None,
         disabled_mod_keys=None,
@@ -157,6 +158,7 @@ class EventHandler:
         include_axis_magnitude=None,
     ):
         self.bindings = bindings or {}
+        self.aux_bindings = aux_bindings or {}
         self.disabled = set()
         self.joysticks = dict(enumerate((init_joysticks())))
         self.include_mod_keys = INCLUDE_MOD_KEYS
@@ -199,34 +201,47 @@ class EventHandler:
             self.disabled_mod_keys = disabled_mod_keys
 
     def load_bindings(
-        self, path, keep_old=False, load_joy_flags=True, load_mod_flags=True
+        self,
+        path,
+        keep_old=False,
+        load_joy_flags=True,
+        load_mod_flags=True,
+        aux=False,
     ):
         if keep_old:
-            self.update_bindings(util_load.load_json(path))
+            self.update_bindings(util_load.load_json(path), aux=aux)
         else:
-            self.bindings = util_load.load_json(path)
-        if "joy-flags" in self.bindings:
-            joy_flags = self.bindings.pop("joy-flags")
+            self.set_bindings(util_load.load_json(path), aux=aux)
+        bindings = self.bindings
+        if aux:
+            bindings = self.aux_bindings
+        if "joy-flags" in bindings:
+            joy_flags = bindings.pop("joy-flags")
             if load_joy_flags:
                 self.set_joy_flags(**joy_flags)
-        if "mod-flags" in self.bindings:
-            mod_flags = self.bindings.pop("mod-flags")
+        if "mod-flags" in bindings:
+            mod_flags = bindings.pop("mod-flags")
             if load_mod_flags:
                 self.set_mod_flags(**mod_flags)
-        self.bindings.pop("#", None)  # Remove comment symbol
+        bindings.pop("#", None)  # Remove comment symbol
 
     def save_bindings(self, path):
         util_load.save_json(self.bindings, path)
 
-    def bind(self, event_string, string_id):
-        if event_string not in self.bindings:
-            self.bindings[event_string] = string_id
-        elif isinstance(self.bindings[event_string], list):
-            self.bindings[event_string].append(string_id)
+    def bind(self, event_string, string_id, aux=False):
+        bindings = self.bindings
+        if aux:
+            bindings = self.aux_bindings
+        if event_string not in bindings:
+            bindings[event_string] = string_id
+        elif isinstance(bindings[event_string], list):
+            bindings[event_string].append(string_id)
         else:
-            self.bindings[event_string] = [self.bindings[event_string], string_id]
+            bindings[event_string] = [bindings[event_string], string_id]
 
-    def unbind(self, event_string):
+    def unbind(self, event_string, aux=False):
+        if aux:
+            return self.aux_bindings.pop(event_string)
         return self.bindings.pop(event_string)
 
     def enable_event(self, event_string):
@@ -235,9 +250,13 @@ class EventHandler:
     def disable_event(self, event_string):
         self.disabled.add(event_string)
 
-    def update_bindings(self, bindings):
+    def update_bindings(self, bindings, aux=False):
         for event_string, string_id in bindings.items():
-            self.bind(event_string, string_id)
+            self.bind(event_string, string_id, aux=aux)
+
+    def set_bindings(self, bindings, aux=False):
+        self.bindings = {}
+        self.update_bindings(bindings, aux=aux)
 
     def process_event(self, event):
         as_string = event_to_string(
@@ -248,18 +267,19 @@ class EventHandler:
             include_axis_direction=self.include_axis_direction,
             include_axis_magnitude=self.include_axis_magnitude,
         )
-        event_id = self.bindings.get(as_string, None)
-        if event_id is None:
-            return
-        if not isinstance(event_id, str):
-            for event_name in self.bindings[as_string]:
-                if event_name in self.disabled:
-                    continue
-                self.post_event(name=event_name, original_event=event)
-        else:
-            if event_id in self.disabled:
+        for bindings in (self.bindings, self.aux_bindings):
+            event_id = bindings.get(as_string, None)
+            if event_id is None:
                 return
-            self.post_event(name=self.bindings[as_string], original_event=event)
+            if not isinstance(event_id, str):
+                for event_name in bindings[as_string]:
+                    if event_name in self.disabled:
+                        continue
+                    self.post_event(name=event_name, original_event=event)
+            else:
+                if event_id in self.disabled:
+                    return
+                self.post_event(name=bindings[as_string], original_event=event)
 
     def post_event(self, name, **kwargs):
         new_event = pygame.event.Event(BOUND_EVENT, name=name, **kwargs)
