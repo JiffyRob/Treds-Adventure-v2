@@ -7,7 +7,7 @@ import pygame
 import custom_mapper
 import game_state
 import sky
-from bush import asset_handler, color, joy_cursor, save_state, util
+from bush import asset_handler, joy_cursor, save_state, util
 from bush.ai import scripting, state
 
 pygame.init()
@@ -24,7 +24,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.fps = 30
         self.running = False
-        self.bgcolor = color.GREY
+        self.bgcolor = (20, 27, 27)
         self.screen = pygame.display.set_mode(
             util.rvec(self.screen_size), pygame.SCALED
         )
@@ -115,6 +115,7 @@ class Game:
                 continue
             current_state.update(dt)
             self.cursor_group.update(dt)
+            self.screen.fill(self.bgcolor)
             current_state.draw(self.screen)
             self.cursor_group.draw(self.screen)
             current_state.handle_events()

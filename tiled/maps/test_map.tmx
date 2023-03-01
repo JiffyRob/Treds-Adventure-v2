@@ -32,6 +32,7 @@
   <object id="9" gid="2" x="8" y="24" width="48" height="128">
    <properties>
     <property name="groups" value="collision, main"/>
+    <property name="mask" value="mill.png"/>
    </properties>
   </object>
   <object id="14" gid="580" x="128" y="16" width="32" height="64">
@@ -52,7 +53,7 @@
     <property name="mask" value="tree.png"/>
    </properties>
   </object>
-  <object id="17" type="teleport" x="26.6667" y="148.667" width="11" height="11">
+  <object id="17" type="teleport" x="27" y="137" width="11" height="11">
    <properties>
     <property name="dest" value="72, 115"/>
     <property name="dest_map" value="windmill.tmx"/>

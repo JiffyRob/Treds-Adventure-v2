@@ -20,7 +20,7 @@ class Player(environment.EnvironmentSprite):
     """
 
     def __init__(self, pos, layer, map_env, engine, **__):
-        rect = pygame.Rect(0, 0, 14, 14)
+        rect = pygame.Rect(0, 0, 10, 10)
         rect.center = pos
         super().__init__(
             pos,
