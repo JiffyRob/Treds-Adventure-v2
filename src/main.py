@@ -2,8 +2,15 @@
 Main - runs game and holds game loop.
 Has Access to all other modules
 """
+import os
+import sys
+
+sys.path.insert(1, os.path.abspath("."))
 import pygame
 
+from bush import asset_handler
+
+loader = asset_handler.glob_loader
 import custom_mapper
 import game_state
 import sky
@@ -11,7 +18,6 @@ from bush import asset_handler, joy_cursor, save_state, util
 from bush.ai import scripting, state
 
 pygame.init()
-loader = asset_handler.glob_loader
 START_SPOTS = loader.load("data/player_start_positions.json")
 
 

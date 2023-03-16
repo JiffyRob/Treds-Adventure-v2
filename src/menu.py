@@ -3,8 +3,6 @@ import math
 import pygame
 import pygame_gui
 
-import game_state
-
 THEME_PATH = "data/ui_theme.json"
 
 
