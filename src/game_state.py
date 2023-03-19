@@ -5,7 +5,7 @@ import pygame_gui
 
 import menu
 from bush import asset_handler, event_binding
-from bush.ai import scripting, state
+from bush.ai import state
 
 loader = asset_handler.glob_loader
 EXT = ".sav"
@@ -130,7 +130,7 @@ class ScriptedMapState(GameState):
         self.main_group = groups["main"]
         self.player = groups["player"].sprite
         scripting_api = {"command-player": engine.player_command}
-        self.interpreter = scripting.EJECSController(script, scripting_api)
+        self.interpreter = None  # TODO
         super().__init__(map_name, engine)
 
     def update(self, dt=0.03):

@@ -15,7 +15,7 @@ import custom_mapper
 import game_state
 import sky
 from bush import asset_handler, joy_cursor, save_state, util
-from bush.ai import scripting, state
+from bush.ai import state
 
 pygame.init()
 START_SPOTS = loader.load("data/player_start_positions.json")
@@ -63,10 +63,6 @@ class Game:
         self.current_map = None
         self.player = None
         self.stack.push(game_state.MainMenu(self))
-
-    @scripting.ejecs_command
-    def player_command(self, command):
-        return self.player.command(command)
 
     def load_new_state(self, _):
         map_path = self.state.get("map", "engine")
