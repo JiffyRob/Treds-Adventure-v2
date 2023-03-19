@@ -104,5 +104,4 @@ class Player(environment.EnvironmentSprite):
 
     def update(self, dt):
         self.current_mana = min(self.current_mana + (dt * 0.1), self.mana_capacity)
-        print(self.desired_velocity, self.velocity, (self.facing))
         super().update(dt)
