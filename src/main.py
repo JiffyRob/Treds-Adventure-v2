@@ -81,7 +81,7 @@ class Game:
         groups, event_script = self.map_loader.load_map(tmx_path, self, player_pos)
         self.player = groups["player"].sprite
         print(self.stack)
-        if push is False or (push is None and self.stack.get_current() == "MainMenu"):
+        if push is False or (push is None and self.stack.get_current() != "MainMenu"):
             self.stack.pop()
         self.stack.push(game_state.MapState("game map", groups, self))
         event_script = None
