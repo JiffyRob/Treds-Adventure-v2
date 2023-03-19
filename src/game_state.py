@@ -28,9 +28,7 @@ class GameState(state.StackState):
         self.screen_surf = None
         self.gui = gui
         self.enable_cursor = enable_cursor
-        actual_on_push = lambda: (on_push(), self.reset_cursor())
-        actual_on_pop = lambda: (on_pop(), self.reset_cursor())
-        super().__init__(value, actual_on_push, actual_on_pop)
+        super().__init__(value, on_push, on_pop)
 
     def reset_cursor(self):
         if self.enable_cursor:
@@ -80,6 +78,8 @@ class GameState(state.StackState):
         super().update()
         if self.gui is not None:
             self.gui.update(dt)
+        if self.cursor.visible != self.enable_cursor:
+            self.reset_cursor()
 
 
 class MapState(GameState):
@@ -134,11 +134,11 @@ class ScriptedMapState(GameState):
         super().__init__(map_name, engine)
 
     def update(self, dt=0.03):
-        self.interpreter.run()
+        # self.interpreter.run()
         self.main_group.update(dt)
         self.sky.update(dt)
-        if self.interpreter.finished():
-            self.pop()
+        # if self.interpreter.finished():
+        #     self.pop()
 
     def handle_event(self, event):
         if event.type == event_binding.BOUND_EVENT and event.name == "pop state":
