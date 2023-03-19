@@ -5,17 +5,17 @@ from collections import namedtuple
 
 import pygame
 
+from bush import collision
+
 TYPE_STATIC = 0
 TYPE_DYNAMIC = 1
-TYPE_FRICTION = 2
-TYPE_TRIGGER = 3
+TYPE_TRIGGER = 2
 
 PhysicsData = namedtuple("PhysicsData", ("type", "collision_group"))
 
 
 def optimize_for_physics(group):
     groups = (
-        pygame.sprite.Group(),
         pygame.sprite.Group(),
         pygame.sprite.Group(),
         pygame.sprite.Group(),
@@ -28,7 +28,7 @@ def optimize_for_physics(group):
             rects[type].union_ip(sprite.rect)
         except AttributeError:
             rects[type] = sprite.rect.copy()
-    for key in (TYPE_STATIC, TYPE_FRICTION, TYPE_TRIGGER):
+    for key in (TYPE_STATIC, TYPE_TRIGGER):
         if rects[key] is None:
             continue
         megamask = pygame.Mask(rects[key].size)
@@ -41,6 +41,7 @@ def optimize_for_physics(group):
         new_sprite.mask = megamask
         new_sprite.physics_data = PhysicsData(TYPE_STATIC, group)
         group.add(new_sprite)
+    print("optoed!")
 
 
 def dynamic_update(self, dt, stop_on_collision=False):
@@ -51,7 +52,6 @@ def dynamic_update(self, dt, stop_on_collision=False):
         callbacks = (
             static_collision,
             dynamic_collision,
-            friction_collision,
             trigger_collision,
         )
         for sprite in self.physics_data.collision_group:
@@ -59,12 +59,6 @@ def dynamic_update(self, dt, stop_on_collision=False):
                 continue
 
             callbacks[sprite.physics_data.type](self, sprite, ind, stop_on_collision)
-
-
-def rect_mask_collide(rect, mask):
-    rect_mask = pygame.Mask(rect.size, True)
-    value = mask.overlap(rect_mask, rect.topleft) is not None
-    return value
 
 
 def static_collision(dynamic, static, axis, stop_on_collision):
@@ -76,7 +70,7 @@ def static_collision(dynamic, static, axis, stop_on_collision):
     walk_directions = (
         pygame.Vector2(-direction.y, direction.x),
         pygame.Vector2(direction.y, -direction.x),
-        pygame.Vector2(direction) * 0.4,
+        pygame.Vector2(direction) * 0.6,
     )
     # start position of entity
     start_pos = pygame.Vector2(dynamic.pos)
@@ -92,7 +86,7 @@ def static_collision(dynamic, static, axis, stop_on_collision):
     # return value
     collided = False
     # walk in all directions
-    while rect_mask_collide(
+    while collision.collide_rect_mask(
         check_rect.move(-pygame.Vector2(static.rect.topleft)), static.mask
     ):
         collided = True
@@ -116,14 +110,9 @@ def dynamic_collision(dynamic1, dynamic2, dt, _):
     pass
 
 
-def friction_collision(dynamic, friction, dt, _):
-    # TODO
-    pass
-
-
 def trigger_collision(dynamic, trigger, axis, _):
     # TODO
-    if rect_mask_collide(
+    if collision.collide_rect_mask(
         dynamic.rect.move(-trigger.rect.left, -trigger.rect.top), trigger.mask
     ):
         trigger.on_collision(dynamic, axis)
