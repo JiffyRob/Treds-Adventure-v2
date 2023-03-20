@@ -4,10 +4,14 @@ import pygame
 import pygame_gui
 
 import menu
-from bush import asset_handler, event_binding
+from bush import asset_handler, event_binding, sound_manager
 from bush.ai import state
 
+# defining variables like this allows to flip out to specific ones later
+# the audio player is by default linked to the asset loader
 loader = asset_handler.glob_loader
+# Don't make a new music player.  Only 1 should exist
+music_player = sound_manager.music_player
 EXT = ".sav"
 
 
@@ -83,11 +87,14 @@ class GameState(state.StackState):
 
 
 class MapState(GameState):
-    def __init__(self, map_name, groups, engine):
+    def __init__(self, map_name, groups, engine, soundtrack=None):
         self.groups = groups
         self.sky = engine.sky
         self.main_group = groups["main"]
         self.player = groups["player"].sprite
+        self.soundtrack = soundtrack
+        if self.soundtrack is not None:
+            music_player.play(self.soundtrack)
         gui = pygame_gui.UIManager(engine.screen_size, menu.THEME_PATH)
         heart_images = loader.load(
             "resources/hud/heart.png",

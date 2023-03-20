@@ -5,6 +5,8 @@ Has Access to all other modules
 import os
 import sys
 
+import bush.sound_manager
+
 sys.path.insert(1, os.path.abspath("."))
 import pygame
 
@@ -14,11 +16,14 @@ loader = asset_handler.glob_loader
 import custom_mapper
 import game_state
 import sky
-from bush import asset_handler, joy_cursor, save_state, util
+from bush import asset_handler, joy_cursor, save_state, sound_manager, util, util_load
 from bush.ai import state
 
 pygame.init()
 START_SPOTS = loader.load("data/player_start_positions.json")
+bush.sound_manager.music_player.add_tracks(
+    util_load.load_json("data/music_tracks.json")
+)
 
 
 class Game:
@@ -78,12 +83,14 @@ class Game:
         self.current_map = tmx_path
         if self.player is not None:
             self.player.save_data()
-        groups, event_script = self.map_loader.load_map(tmx_path, self, player_pos)
+        groups, track, event_script = self.map_loader.load_map(
+            tmx_path, self, player_pos
+        )
         self.player = groups["player"].sprite
         print(self.stack)
         if push is False or (push is None and self.stack.get_current() != "MainMenu"):
             self.stack.pop()
-        self.stack.push(game_state.MapState("game map", groups, self))
+        self.stack.push(game_state.MapState("game map", groups, self, track))
         event_script = None
         if event_script:
             self.stack.push(

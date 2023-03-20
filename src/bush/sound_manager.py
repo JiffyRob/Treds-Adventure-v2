@@ -1,99 +1,110 @@
 import pygame
 
-from bush import util_load
+from bush import asset_handler, util_load
 
 
-def set_channel_count(num):
-    pygame.mixer.set_num_channels(num)
+class SoundHandler:
+    def __init__(self, sounds=None, load_callback=util_load.load_audio):
+        self.sounds = {}
+        if sounds is not None:
+            for key, sound in sounds:
+                if isinstance(sound, str):
+                    self.load(key)
+                else:
+                    self.sounds[key] = sound
+        self.load_callback = load_callback
+
+    def load(self, path):
+        sound = self.load_callback(path)
+        self.sounds[path] = sound
+        return sound
+
+    def delete(self, path):
+        self.sounds.pop(path, None)
+
+    def get(self, path):
+        return self.sounds.get(path, self.load(path))
+
+    def play(self, name):
+        self.get(name).play()
+
+    def stop(self, name=None):
+        if name is None:
+            for sound in self.sounds.values():
+                sound.stop()
+        elif name in self.sounds:
+            self.sounds[name].stop()
 
 
-class AudioPlayer:
-    def __init__(
-        self,
-        audio=None,
-        load_callback=util_load.load_audio,
-        default_fadein=0,
-        default_fadeout=500,
-        default_looping=0,
-        default_unload=True,
-    ):
-        audio = audio or {}
-        self.audio = {}
-        self.default_fadein = default_fadein
-        self.default_fadeout = default_fadeout
-        self.default_looping = default_looping
-        self.default_unload = default_unload
+class _MusicPlayer:
+    def __init__(self, tracks=None):
+        if tracks is None:
+            tracks = {}
+        self.tracks = tracks
+        self.paused = False
+        self.current_track = None
+
+    def add_track(self, name, path):
+        self.tracks[name] = path
+
+    def add_tracks(self, track_dict):
+        for key, value in track_dict.items():
+            self.add_track(key, value)
+
+    def remove_track(self, name):
+        self.tracks.pop(name, None)
+
+    def play(self, track, loops=-1):
+        pygame.mixer.music.load(self.tracks[track])
+        pygame.mixer.music.play(loops)
+        self.current_track = self.tracks[track]
+
+    def stop(self):
+        pygame.mixer.music.stop()
+        pygame.mixer.music.unload()
         self.current_track = None
         self.paused = False
-        for key, sound in audio.items():
-            if isinstance(sound, str):
-                sound = load_callback(sound)
-            self.audio[key] = sound
 
-    def get_sound(self, key):
-        return self.audio[key]
-
-    @staticmethod
-    def set_channel_count(num):
-        set_channel_count(num)
-
-    def play(self, sound):
-        self.audio[sound].play()
-
-    def switch_music(self, track, loops=None, fadeout=None, fadein=None):
-        self.stop_music(fadeout)
-        self.play_music(track, loops, fadein)
-
-    def play_music(self, track, loops=None, fadein=None):
-        if fadein is None:
-            fadein = self.default_fadein
-        if loops is None:
-            loops = self.default_looping
-        pygame.mixer.music.load(self.audio[track])
-        pygame.mixer.music.play(loops, fade_ms=fadein)
-        self.current_track = track
-
-    def pause_music(self):
-        self.paused = True
+    def pause(self):
         pygame.mixer.music.pause()
+        self.paused = True
 
-    def unpause_music(self):
-        self.paused = False
+    def unpause(self):
         pygame.mixer.music.unpause()
+        self.paused = False
 
-    def queue_music(self, track):
-        pygame.mixer.music.queue(self.audio[track])
-
-    def restart_music(self, preserve_paused=False):
-        self.play_music(self.current_track)
-        if self.paused and preserve_paused:
-            self.pause_music()
+    def rewind(self, preserve_pause=True):
+        pygame.mixer.music.play(self.tracks[self.current_track])
+        if self.paused and preserve_pause:
+            pygame.mixer.music.pause()
         else:
             self.paused = False
 
-    def stop_music(self, fadeout=None, unload=None):
-        if unload is None:
-            unload = self.default_unload
-        if fadeout is None:
-            fadeout = self.default_fadeout
-        if fadeout:
-            pygame.mixer.music.fadeout(fadeout)
-        else:
-            pygame.mixer.music.stop()
-        if unload:
-            self.unload_music()
-        self.current_track = None
+    def queue(self, track):
+        pygame.mixer.music.queue(self.tracks[track])
 
-    def unload_music(self):
-        pygame.mixer.music.unload()
+    @property
+    def volume(self):
+        return pygame.mixer.music.get_volume()
 
-    def stop_sound(self, sound=None):
-        if sound is None:
-            for sound in self.audio.values():
-                sound.stop()
-            return
-        self.audio[sound].stop()
+    @volume.setter
+    def volume(self, volume):
+        return pygame.mixer.music.set_volume(volume)
 
-    def stop_all(self):
-        self.stop_music()
-        self.stop_sound()
+    def get_metadata(self, track=None):
+        if pygame.version >= (2, 1, 4):
+            if track is None:
+                track = self.current_track
+            if track is None:
+                track = "all"
+            if track == "all":
+                output = {}
+                for name, path in self.tracks.items():
+                    output[name] = pygame.mixer.music.get_metadata(path)
+                return output
+            return pygame.mixer.music.get_metadata(self.tracks[track])
+        return {}
+
+
+glob_player = SoundHandler(load_callback=asset_handler.glob_loader.load)
+music_player = _MusicPlayer()

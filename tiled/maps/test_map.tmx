@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="19">
+<map version="1.8" tiledversion="1.10.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="19">
+ <properties>
+  <property name="track" value="old_theme"/>
+ </properties>
  <tileset firstgid="1" source="../tilesets/round_house.tsx"/>
  <tileset firstgid="4" source="../tilesets/propeller.tsx"/>
  <tileset firstgid="8" source="../tilesets/floor.tsx"/>

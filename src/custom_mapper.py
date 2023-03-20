@@ -158,7 +158,6 @@ class MapLoader(mapping.MapLoader):
             environment.EnvironmentHandler(self.current_env_masks),
             engine,
         )
-        script = properties.get("script", None)
         player_layer = properties.get("player_layer", 0) or self.default_player_layer
         for key in self.player_groups:
             self.current_sprite_groups[key].add(self.current_player)
@@ -174,4 +173,4 @@ class MapLoader(mapping.MapLoader):
         self.current_env_masks = None
         self.current_player = None
         self.aux_cache[tmx_path] = groups, properties
-        return groups, properties.get("script", None)
+        return groups, properties.get("track", None), properties.get("script", None)
