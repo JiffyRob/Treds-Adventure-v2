@@ -4,8 +4,10 @@ import pygame
 
 import environment
 import event_objects
+import game_object
 import game_objects
 import player
+import scripts
 from bush import asset_handler, entity, physics
 from bush.mapping import group, mapping
 
@@ -120,6 +122,7 @@ class MapLoader(mapping.MapLoader):
                 f"{key}_group": value
                 for key, value in self.current_sprite_groups.items()
             },
+            script=scripts.get_script(obj.properties.get("script", None)),
         )
 
     def load_map(self, tmx_path, engine, player_pos):

@@ -1,7 +1,0 @@
-[
-  ["#", "Player walks down for 2000 milliseconds"],
-  ["command-player", "walk down"],
-  ["wait", 2000],
-  {"action":  "command-player", "command":  "stop down"},
-  {"action":  "print", "value": "hello", ":IF":  ["eq", 1, 1]}
-]

@@ -59,8 +59,17 @@ class EntityScript(Script):
         self.sprite = sprite
         self.desired_position = None
 
+    def begin(self):
+        pass
+
+    def end(self):
+        pass
+
     def move_to(self, vector):
         self.desired_position = vector
+
+    def go_direction(self, vector):
+        self.sprite.desired_velocity = vector
 
     def set_anim(self, name):
         self.sprite.set_anim(name)

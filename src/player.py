@@ -7,11 +7,11 @@ SPEED_MEANDERING = 32
 SPEED_WALKING = 96
 SPEED_RUNNING = 128
 
-import environment
-from bush import entity_component, event_binding, physics, util
+import game_object
+from bush import event_binding, physics, util
 
 
-class Player(environment.EnvironmentSprite):
+class Player(game_object.DynamicGameObject):
     """main player of the game
 
     Args:
@@ -30,13 +30,12 @@ class Player(environment.EnvironmentSprite):
             physics.PhysicsData(physics.TYPE_DYNAMIC, pygame.sprite.Group()),
             id="player",
             layer=layer,
+            start_health=6,
+            max_health=12,
         )
         self.rect = rect
         self.rect.center = self.pos
         self.engine = engine
-        entity_component.prepare_health(self, 12, 12, self.kill)
-        self.heal = lambda amount: entity_component.heal(self, amount)
-        self.hurt = lambda amount: entity_component.hurt(self, amount)
         self.speeds = {
             "x": SPEED_WALKING,
             "y": SPEED_WALKING,
