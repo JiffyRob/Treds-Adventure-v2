@@ -1,10 +1,10 @@
 import os
 
+import npc
 import pygame
 
 import environment
 import event_objects
-import game_object
 import game_objects
 import player
 import scripts
@@ -33,6 +33,8 @@ class MapLoader(mapping.MapLoader):
         self.sprite_classes = {
             "bush": game_objects.Throwable,
             "teleport": event_objects.Teleport,
+            "npc-static": npc.StaticNPC,
+            "npc-dynamc": npc.DynamicNPC,
         }
         self.sprite_groups = {
             "bush": (
@@ -42,6 +44,16 @@ class MapLoader(mapping.MapLoader):
             "teleport": (
                 "main",
                 "collision",
+            ),
+            "npc-static": (
+                "main",
+                "collision",
+                "event",
+            ),
+            "npc-dynamic": (
+                "main",
+                "physics",
+                "event",
             ),
         }
         self.player_groups = ("main", "player")
