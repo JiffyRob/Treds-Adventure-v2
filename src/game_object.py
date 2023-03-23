@@ -1,5 +1,6 @@
 import pygame
 
+import scripts
 from bush import entity, physics, sound_manager, timer, util
 
 player = sound_manager.glob_player
@@ -16,23 +17,25 @@ class StaticGameObject(entity.Actor):
         id=None,
         layer=None,
         script=None,
+        entity_group=None,
+        other_groups=None,
     ):
         super().__init__(pos, surface, groups, id, layer, topleft)
         # scripting
-        self.script = script
-        if script is not None:
-            self.load_script(script)
+        self.script = scripts.get_script(
+            script, self, engine, entity_group, other_groups
+        )
+        if self.script is not None:
+            self.script.begin()
         # state
         self.facing = "down"
         self.state = "idle"
         self.pushed_state = None
-        # engine
-        self.engine = engine
 
     # scripting
-    def load_script(self, script):
-        self.script = script
-        self.script.begin()
+    def update_script(self, dt):
+        if self.script is not None:
+            self.script.update(dt)
 
     # scripting commands
     def push_state(self, state):
@@ -57,13 +60,12 @@ class StaticGameObject(entity.Actor):
     # state
     def update_state(self):
         if self.velocity:
-            self.state = self.current_terrain.move_state
             self.facing = util.string_direction(self.velocity)
-        else:
-            self.state = self.current_terrain.idle_state
 
     # engine
     def update(self, dt):
+        # update script
+        self.update_script(dt)
         # update state
         self.update_state()
 
@@ -158,6 +160,13 @@ class DynamicGameObject(StaticGameObject):
         # DIE
         if self.current_health == 0:
             self.on_death()
+
+    def update_state(self):
+        if self.velocity:
+            self.state = self.current_terrain.move_state
+            self.facing = util.string_direction(self.velocity)
+        else:
+            self.state = self.current_terrain.idle_state
 
     def update(self, dt):
         # calculate and update self.current_terrain

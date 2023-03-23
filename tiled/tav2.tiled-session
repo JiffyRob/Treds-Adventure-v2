@@ -40,11 +40,11 @@
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 0.5,
+            "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 238,
-                "y": 158
+                "x": 217.33333333333331,
+                "y": 296
             }
         },
         "maps/trees.tsx": {
@@ -57,8 +57,8 @@
             "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 64,
-                "y": 63.75
+                "x": 62.5,
+                "y": 63.5
             }
         },
         "master.tsx": {
@@ -224,7 +224,7 @@
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
-        "height": 128,
-        "width": 64
+        "height": 16,
+        "width": 16
     }
 }

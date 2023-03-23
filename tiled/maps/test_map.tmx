@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.10.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="19">
+<map version="1.8" tiledversion="1.10.0" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="20">
  <properties>
   <property name="track" value="old_theme"/>
  </properties>
@@ -7,6 +7,7 @@
  <tileset firstgid="4" source="../tilesets/propeller.tsx"/>
  <tileset firstgid="8" source="../tilesets/floor.tsx"/>
  <tileset firstgid="580" source="../tilesets/trees.tsx"/>
+ <tileset firstgid="592" source="../tilesets/npc.tsx"/>
  <layer id="1" name="ground" width="30" height="20">
   <data encoding="csv">
 283,284,283,283,283,283,283,286,285,287,284,284,285,284,284,287,285,283,286,287,287,287,286,287,283,286,284,286,283,284,
@@ -60,6 +61,11 @@
    <properties>
     <property name="dest" value="72, 115"/>
     <property name="dest_map" value="windmill.tmx"/>
+   </properties>
+  </object>
+  <object id="19" type="npc-static" gid="592" x="144" y="160" width="16" height="16">
+   <properties>
+    <property name="script" value="test-script"/>
    </properties>
   </object>
  </objectgroup>

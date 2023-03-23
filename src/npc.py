@@ -1,6 +1,7 @@
 import pygame
 
 import game_object
+from bush import physics
 
 
 class StaticNPC(game_object.StaticGameObject):
@@ -14,8 +15,11 @@ class StaticNPC(game_object.StaticGameObject):
         id=None,
         layer=None,
         script=None,
+        **kwargs,
     ):
         super().__init__(pos, surface, engine, groups, topleft, id, layer, script)
+        self.physics_data = physics.PhysicsData(physics.TYPE_STATIC, None)
+        self.mask = pygame.mask.from_surface(self.image)
         # TODO
 
 
