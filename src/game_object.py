@@ -21,20 +21,7 @@ class StaticGameObject(entity.Actor):
         interaction_script=None,
         event_group=None,
     ):
-        print(
-            "params",
-            pos,
-            surface,
-            engine,
-            groups,
-            topleft,
-            anim_dict,
-            id,
-            layer,
-            script,
-            interaction_script,
-            event_group,
-        )
+
         super().__init__(pos, surface, groups, id, layer, topleft)
         # scripting
         self.script = scripts.get_script(script, self, engine, event_group)
@@ -92,7 +79,6 @@ class StaticGameObject(entity.Actor):
 
     # rendering
     def update_image(self):
-        print(self.anim_dict)
         if self.anim_dict:
             self.anim = self.anim_dict.get(
                 f"{self.state} {self.facing}",
@@ -103,7 +89,6 @@ class StaticGameObject(entity.Actor):
             )
         if self.anim is not None:
             self.image = self.anim.image()
-        print(self.anim)
 
     # engine
     def update(self, dt):
@@ -217,7 +202,6 @@ class DynamicGameObject(StaticGameObject):
     def update_state(self):
         if self.velocity:
             self.state = self.current_terrain.move_state
-            print(self.velocity)
             self.facing = util.string_direction(self.velocity)
         else:
             self.state = self.current_terrain.idle_state

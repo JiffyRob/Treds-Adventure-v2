@@ -126,20 +126,3 @@ class IDHandler:
     def reset(self, start: int):
         """Reset counter back to start"""
         self._current_id = start - 1
-
-
-class FifoQueue:
-    """
-    Simple FIFO Queue to cut down on dependencies
-    """
-
-    def __init__(self):
-        self._list = []
-
-    def add(self, thing):
-        self._list.append(thing)
-
-    def pop(self, thing):
-        if self._list:
-            return self._list.pop(0)
-        return QUEUE_EMPTY
