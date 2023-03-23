@@ -40,11 +40,19 @@
             "expandedObjectLayers": [
                 3
             ],
+<<<<<<< HEAD
             "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
                 "x": 217.33333333333331,
                 "y": 296
+=======
+            "scale": 1.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 158,
+                "y": 44.66666666666666
+>>>>>>> main
             }
         },
         "maps/trees.tsx": {
@@ -209,10 +217,10 @@
     "project": "tav2.tiled-project",
     "property.type": "string",
     "recentFiles": [
+        "maps/test_map.tmx",
         "maps/windmill.tmx",
         "tilesets/interior_floor.tsx",
         "tilesets/interior.tsx",
-        "maps/test_map.tmx",
         "tilesets/trees.tsx",
         "tilesets/floor.tsx",
         "tilesets/water.tsx",
