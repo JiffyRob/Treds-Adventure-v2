@@ -8,7 +8,9 @@ SPEED_WALKING = 96
 SPEED_RUNNING = 128
 
 import game_object
-from bush import event_binding, physics, util
+from bush import animation, asset_handler, event_binding, physics, util
+
+loader = asset_handler.AssetHandler("resources/sprites/player")
 
 
 class Player(game_object.DynamicGameObject):
@@ -20,21 +22,32 @@ class Player(game_object.DynamicGameObject):
     """
 
     def __init__(self, pos, layer, map_env, engine, **__):
-        rect = pygame.Rect(0, 0, 10, 10)
-        rect.center = pos
+        tiny_frames = loader.load(
+            "tiny.png", loader=asset_handler.load_spritesheet, frame_size=(16, 16)
+        )
+        anim_dict = {
+            "tiny walk down": animation.Animation(tiny_frames[0:16:4], 150),
+            "tiny walk up": animation.Animation(tiny_frames[1:17:4], 150),
+            "tiny walk left": animation.Animation(tiny_frames[2:18:4], 150),
+            "tiny walk right": animation.Animation(tiny_frames[3:18:4], 150),
+            "tiny idle down": animation.Animation(tiny_frames[0:1]),
+            "tiny idle up": animation.Animation(tiny_frames[1:2]),
+            "tiny idle left": animation.Animation(tiny_frames[2:3]),
+            "tiny idle right": animation.Animation(tiny_frames[3:4]),
+        }
         super().__init__(
             pos,
-            util.rect_surf(rect, "blue"),
+            pygame.Surface((16, 16)),
             engine,
             map_env,
             physics.PhysicsData(physics.TYPE_DYNAMIC, pygame.sprite.Group()),
+            anim_dict=anim_dict,
             id="player",
             layer=layer,
             start_health=6,
             max_health=12,
         )
-        self.rect = rect
-        self.rect.center = self.pos
+        self.collision_rect = self.rect
         self.engine = engine
         self.speeds = {
             "x": SPEED_WALKING,
@@ -51,6 +64,7 @@ class Player(game_object.DynamicGameObject):
             "health_capacity",
             "items",
         )
+        self.tiny = True
         self.load_data()
 
     def save_data(self):
@@ -100,6 +114,16 @@ class Player(game_object.DynamicGameObject):
 
     def change_layer(self, layer):
         self._layer = layer
+
+    def update_rects(self):
+        self.rect.center = self.pos
+        self.collision_rect = pygame.Rect(0, 0, 10, 10)
+        self.collision_rect.midbottom = self.rect.midbottom
+
+    def update_state(self):
+        super().update_state()
+        if self.tiny:
+            self.state = "tiny " + self.state
 
     def update(self, dt):
         self.current_mana = min(self.current_mana + (dt * 0.1), self.mana_capacity)

@@ -31,6 +31,7 @@ class DynamicNPC(game_object.DynamicGameObject):
         engine,
         groups=(),
         topleft=False,
+        anim_name=None,
         id=None,
         layer=None,
         script=None,

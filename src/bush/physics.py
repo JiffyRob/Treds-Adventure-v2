@@ -41,7 +41,6 @@ def optimize_for_physics(group):
         new_sprite.mask = megamask
         new_sprite.physics_data = PhysicsData(TYPE_STATIC, group)
         group.add(new_sprite)
-    print("optoed!")
 
 
 def dynamic_update(self, dt, stop_on_collision=False):
@@ -81,7 +80,7 @@ def static_collision(dynamic, static, axis, stop_on_collision):
     # which direction to walk in
     direction_index = 0
     # rect to check collision from
-    check_rect = dynamic.rect.copy()
+    check_rect = dynamic.collision_rect.copy()
     check_rect.center = check_pos
     # return value
     collided = False
@@ -96,8 +95,7 @@ def static_collision(dynamic, static, axis, stop_on_collision):
         direction_index = (direction_index + 1) % 3
         check_rect.center = check_pos
     if collided:
-        dynamic.rect = check_rect
-        dynamic.pos = pygame.Vector2(check_rect.center)
+        dynamic.pos = check_pos
     else:
         dynamic.pos = dynamic.rect.center = check_pos
     if collided and stop_on_collision:

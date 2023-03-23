@@ -90,12 +90,25 @@ class StaticGameObject(entity.Actor):
         else:
             self.state = None
 
+    # rendering
+    def update_image(self):
+        print(self.anim_dict)
+        if self.anim_dict:
+            self.anim = self.anim_dict.get(
+                f"{self.state} {self.facing}", self.anim_dict.get(self.state, None)
+            )
+        if self.anim is not None:
+            self.image = self.anim.image()
+        print(self.anim)
+
     # engine
     def update(self, dt):
         # update script
         self.update_script(dt)
         # update state
         self.update_state()
+        # update image
+        self.update_image()
 
 
 class DynamicGameObject(StaticGameObject):
@@ -129,7 +142,8 @@ class DynamicGameObject(StaticGameObject):
         self.current_terrain = self.environment.environment_data("default")
         self.current_terrain_name = "default"
         self.physics_data = physics_data
-        self.mask = pygame.Mask(self.rect.size, True)
+        self.collision_rect = self.rect
+        self.mask = pygame.Mask(self.rect.size, fill=True)
         # health
         self.current_health = start_health
         self.health_capacity = max_health
@@ -162,6 +176,10 @@ class DynamicGameObject(StaticGameObject):
         self.current_terrain = self.environment.environment_data(
             self.current_terrain_name
         )
+
+    def update_rects(self):
+        self.rect.center = self.pos
+        self.collision_rect.center = self.pos
 
     def change_environment(self, new_env):
         self.environment = new_env
@@ -216,7 +234,9 @@ class DynamicGameObject(StaticGameObject):
             sliding = False
             self.velocity = self.desired_velocity
         # physics update
+        self.update_rects()
         physics.dynamic_update(self, dt, sliding)
+        self.update_rects()
         # update health
         self.update_health()
         # update state
