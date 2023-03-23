@@ -13,6 +13,13 @@ class Script:
         self.other_groups = other_groups
         self.timer_list = []
         self.sky = self.engine.sky
+        self.running = False
+
+    def begin(self):
+        self.running = True
+
+    def end(self):
+        self.running = False
 
     def get_entity(self, name):
         self.entity_group.get_by_id(name)
@@ -48,6 +55,10 @@ class Script:
             self.player.lose(thing)
 
     def update(self, dt):
+        if self.running:
+            self.script_update(dt)
+
+    def script_update(self, dt):
         for timer_to_update in self.timer_list:
             timer_to_update.update()
         self.timer_list = [i for i in self.timer_list if i.time_left()]
@@ -58,12 +69,6 @@ class EntityScript(Script):
         super().__init__(engine, entity_group, other_groups)
         self.sprite = sprite
         self.desired_position = None
-
-    def begin(self):
-        pass
-
-    def end(self):
-        pass
 
     def move_to(self, vector):
         self.desired_position = vector
@@ -77,8 +82,8 @@ class EntityScript(Script):
     def get_state(self):
         return self.sprite.state  # may change later TODO
 
-    def update(self, dt):
-        super().update(dt)
+    def script_update(self, dt):
+        super().script_update(dt)
         if self.desired_position:
             self.sprite.desired_velocity = (
                 self.desired_position - self.sprite.pos

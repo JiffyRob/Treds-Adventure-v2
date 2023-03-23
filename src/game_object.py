@@ -17,16 +17,17 @@ class StaticGameObject(entity.Actor):
         id=None,
         layer=None,
         script=None,
-        entity_group=None,
-        other_groups=None,
+        interaction_script=None,
+        event_group=None,
     ):
         super().__init__(pos, surface, groups, id, layer, topleft)
         # scripting
-        self.script = scripts.get_script(
-            script, self, engine, entity_group, other_groups
-        )
+        self.script = scripts.get_script(script, self, engine, event_group)
         if self.script is not None:
             self.script.begin()
+        self.interaction_script = scripts.get_script(
+            interaction_script, self, engine, event_group
+        )
         # state
         self.facing = "down"
         self.state = "idle"
@@ -36,6 +37,12 @@ class StaticGameObject(entity.Actor):
     def update_script(self, dt):
         if self.script is not None:
             self.script.update(dt)
+        if self.interaction_script is not None:
+            self.interaction_script.update(dt)
+
+    def interact(self, dt):
+        if self.interaction_script is not None:
+            self.interaction_script.begin()
 
     # scripting commands
     def push_state(self, state):
