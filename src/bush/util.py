@@ -7,6 +7,10 @@ import pygame
 
 # Constants
 QUEUE_EMPTY = "QUEUE_EMPTY"
+METHOD_COUNTERCLOCKWISE = 0
+METHOD_CLOCKWISE = 1
+METHOD_X = 2
+METHOD_Y = 3
 
 
 def debug_view(img):
@@ -55,6 +59,34 @@ def string_direction(vec: pygame.Vector2):
         (1, 1): "right_down",
         (0, 0): "still",
     }[direction(vec)]
+
+
+def round_string_direction(string, method=METHOD_X):
+    def counter_clockwise(direc):
+        return {
+            "right_up": "up",
+            "right_down": "right",
+            "left_down": "down",
+            "left_up": "left",
+        }[direc]
+
+    def clockwise(direc):
+        return {
+            "right_up": "right",
+            "right_down": "down",
+            "left_down": "left",
+            "left_up": "up",
+        }[direc]
+
+    def x(direc):
+        return direc.split("_")[0]
+
+    def y(direc):
+        return direc.split("_")[1]
+
+    if "_" not in string:
+        return string
+    return (counter_clockwise, clockwise, x, y)[method](string)
 
 
 def vec_abs(vec: pygame.Vector2):

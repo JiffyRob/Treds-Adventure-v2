@@ -95,7 +95,11 @@ class StaticGameObject(entity.Actor):
         print(self.anim_dict)
         if self.anim_dict:
             self.anim = self.anim_dict.get(
-                f"{self.state} {self.facing}", self.anim_dict.get(self.state, None)
+                f"{self.state} {self.facing}",
+                self.anim_dict.get(
+                    f"{self.state} {util.round_string_direction(self.facing)}",
+                    self.anim_dict.get(self.state, None),
+                ),
             )
         if self.anim is not None:
             self.image = self.anim.image()
