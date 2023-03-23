@@ -37,7 +37,7 @@ class Game:
         self.running = False
         self.bgcolor = (20, 27, 27)
         self.screen = pygame.display.set_mode(
-            util.rvec(self.screen_size), pygame.SCALED
+            util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE
         )
         cursor_images = loader.load(
             "resources/hud/cursor.png",
@@ -51,7 +51,6 @@ class Game:
             alternate_chance=0.01,
         )
         self.cursor_group = pygame.sprite.GroupSingle(self.cursor)
-        self.cursor.hide()
         # game control state
         self.stack = state.StateStack()
         self.state = save_state.LeveledGameState(
@@ -109,7 +108,7 @@ class Game:
 
     def run(self):
         self.screen = pygame.display.set_mode(
-            util.rvec(self.screen_size), pygame.SCALED, vsync=True
+            util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE, vsync=True
         )
         pygame.display.set_caption(self.caption)
 
