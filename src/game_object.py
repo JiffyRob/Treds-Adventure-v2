@@ -14,12 +14,27 @@ class StaticGameObject(entity.Actor):
         engine,
         groups=(),
         topleft=False,
+        anim_dict=None,
         id=None,
         layer=None,
         script=None,
         interaction_script=None,
         event_group=None,
     ):
+        print(
+            "params",
+            pos,
+            surface,
+            engine,
+            groups,
+            topleft,
+            anim_dict,
+            id,
+            layer,
+            script,
+            interaction_script,
+            event_group,
+        )
         super().__init__(pos, surface, groups, id, layer, topleft)
         # scripting
         self.script = scripts.get_script(script, self, engine, event_group)
@@ -32,6 +47,7 @@ class StaticGameObject(entity.Actor):
         self.facing = "down"
         self.state = "idle"
         self.pushed_state = None
+        self.anim_dict = anim_dict
 
     # scripting
     def update_script(self, dt):
@@ -47,6 +63,9 @@ class StaticGameObject(entity.Actor):
     # scripting commands
     def push_state(self, state):
         self.pushed_state = state
+
+    def unpush_state(self):
+        self.pushed_state = None
 
     @staticmethod
     def play_sound(name):
@@ -66,8 +85,10 @@ class StaticGameObject(entity.Actor):
 
     # state
     def update_state(self):
-        if self.velocity:
-            self.facing = util.string_direction(self.velocity)
+        if self.pushed_state:
+            self.state = self.pushed_state
+        else:
+            self.state = None
 
     # engine
     def update(self, dt):
@@ -89,6 +110,7 @@ class DynamicGameObject(StaticGameObject):
         speed=72,
         groups=(),
         topleft=False,
+        anim_dict=None,
         id=None,
         layer=None,
         start_health=12,
@@ -96,7 +118,9 @@ class DynamicGameObject(StaticGameObject):
         on_death=None,
         script=None,
     ):
-        super().__init__(pos, surface, engine, groups, topleft, id, layer, script)
+        super().__init__(
+            pos, surface, engine, groups, topleft, anim_dict, id, layer, script
+        )
         # motion
         self.desired_velocity = pygame.Vector2()
         self.weight = weight
@@ -171,6 +195,7 @@ class DynamicGameObject(StaticGameObject):
     def update_state(self):
         if self.velocity:
             self.state = self.current_terrain.move_state
+            print(self.velocity)
             self.facing = util.string_direction(self.velocity)
         else:
             self.state = self.current_terrain.idle_state

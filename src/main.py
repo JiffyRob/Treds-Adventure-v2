@@ -16,7 +16,7 @@ loader = asset_handler.glob_loader
 import custom_mapper
 import game_state
 import sky
-from bush import asset_handler, joy_cursor, save_state, sound_manager, util, util_load
+from bush import asset_handler, joy_cursor, save_state, util, util_load
 from bush.ai import state
 
 pygame.init()

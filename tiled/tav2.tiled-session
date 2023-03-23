@@ -1,14 +1,5 @@
 {
-    "Map/SizeTest": {
-        "height": 4300,
-        "width": 2
-    },
-    "activeFile": "maps/test_map.tmx",
-    "expandedProjectPaths": [
-        ".",
-        "maps",
-        "tilesets"
-    ],
+    "activeFile": "tilesets/npc.tsx",
     "fileStates": {
         "farmplant_green.tsx": {
             "scaleInDock": 1,
@@ -40,19 +31,11 @@
             "expandedObjectLayers": [
                 3
             ],
-<<<<<<< HEAD
-            "scale": 0.75,
-            "selectedLayer": 1,
-            "viewCenter": {
-                "x": 217.33333333333331,
-                "y": 296
-=======
             "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 158,
-                "y": 44.66666666666666
->>>>>>> main
+                "x": 235.33333333333331,
+                "y": 155.33333333333331
             }
         },
         "maps/trees.tsx": {
@@ -167,6 +150,10 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "tilesets/npc.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 8
+        },
         "tilesets/pipes.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -196,43 +183,25 @@
             "scaleInEditor": 1
         }
     },
-    "frame.defaultDuration": 150,
-    "last.externalTilesetPath": "/home/jack/Python Workspace/Treds-Adventure-v2/tiled/tilesets",
-    "last.imagePath": "/home/jack/Python Workspace/Treds-Adventure-v2/resources/tiles",
-    "last.objectTemplatePath": "/home/jack/Python Workspace/Treds-Adventure-v2/tiled",
-    "last.worldFilePath": "/home/jack/Python Workspace/Treds-Adventure-v2/tiled",
-    "loadedWorlds": [
-    ],
-    "map.height": 20,
-    "map.lastUsedFormat": "tmx",
-    "map.tileHeight": 16,
-    "map.tileWidth": 16,
-    "map.width": 30,
     "openFiles": [
+        "maps/test_map.tmx",
         "maps/windmill.tmx",
         "tilesets/interior_floor.tsx",
         "tilesets/interior.tsx",
-        "maps/test_map.tmx"
+        "tilesets/npc.tsx"
     ],
-    "project": "tav2.tiled-project",
-    "property.type": "string",
     "recentFiles": [
         "maps/test_map.tmx",
         "maps/windmill.tmx",
         "tilesets/interior_floor.tsx",
         "tilesets/interior.tsx",
+        "tilesets/npc.tsx",
         "tilesets/trees.tsx",
         "tilesets/floor.tsx",
         "tilesets/water.tsx",
         "tilesets/house.tsx",
         "maps/bg_forest.tmx",
         "tilesets/pipes.tsx",
-        "tilesets/narrow_house.tsx",
-        "tilesets/hole.tsx"
-    ],
-    "tileset.lastUsedFormat": "tsx",
-    "tileset.tileSize": {
-        "height": 16,
-        "width": 16
-    }
+        "tilesets/narrow_house.tsx"
+    ]
 }
