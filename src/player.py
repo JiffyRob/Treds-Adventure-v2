@@ -8,7 +8,7 @@ SPEED_WALKING = 96
 SPEED_RUNNING = 128
 
 import game_object
-from bush import animation, asset_handler, event_binding, physics, util
+from bush import animation, asset_handler, collision, event_binding, physics, util
 
 loader = asset_handler.AssetHandler("resources/sprites/player")
 
@@ -21,7 +21,7 @@ class Player(game_object.DynamicGameObject):
         id: player's integer id
     """
 
-    def __init__(self, pos, layer, map_env, engine, **__):
+    def __init__(self, pos, layer, map_env, engine, interactable_group, **__):
         tiny_frames = loader.load(
             "tiny.png", loader=asset_handler.load_spritesheet, frame_size=(16, 16)
         )
@@ -66,6 +66,7 @@ class Player(game_object.DynamicGameObject):
             "items",
         )
         self.tiny = True
+        self.interactable_group = interactable_group
         self.load_data()
 
     def save_data(self):
@@ -82,6 +83,8 @@ class Player(game_object.DynamicGameObject):
 
     def command(self, command_name):
         words = command_name.split(" ")
+        if words[0] == "interact":
+            self.interact()
         if words[0] == "start":
             if words[1] == "meandering":
                 self.speeds[words[2]] = SPEED_MEANDERING
@@ -109,6 +112,20 @@ class Player(game_object.DynamicGameObject):
 
         if self.desired_velocity:
             self.desired_velocity.scale_to_length(self.speed)
+
+    def get_interaction_rect(self):
+        interaction_rect = self.rect.copy()
+        interaction_rect.center += (
+            util.string_direction_to_vec(util.round_string_direction(self.facing)) * 16
+        )
+        return interaction_rect
+
+    def interact(self):
+        for sprite in self.interactable_group.sprites():
+            if sprite.rect.colliderect(self.get_interaction_rect()):
+                sprite.interact()
+                print("interacting with sprite", sprite.get_id())
+                break
 
     def change_collision_group(self, collision_group):
         self.physics_data = physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group)

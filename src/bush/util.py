@@ -89,6 +89,20 @@ def round_string_direction(string, method=METHOD_X):
     return (counter_clockwise, clockwise, x, y)[method](string)
 
 
+def string_direction_to_vec(string):
+    return {
+        "up": pygame.Vector2(0, -1),
+        "right_up": pygame.Vector2(1, -1),
+        "right": pygame.Vector2(1, 0),
+        "right_down": pygame.Vector2(1, 1),
+        "down": pygame.Vector2(0, 1),
+        "left_down": pygame.Vector2(-1, 1),
+        "left": pygame.Vector2(-1, 0),
+        "left_up": pygame.Vector2(-1, -1),
+        "still": pygame.Vector2(),
+    }[string]
+
+
 def vec_abs(vec: pygame.Vector2):
     """return the 'absolute value' of the vector"""
     return pygame.Vector2(abs(vec.x).abs(vec.y))

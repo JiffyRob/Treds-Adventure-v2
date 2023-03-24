@@ -44,7 +44,7 @@ class StaticGameObject(entity.Actor):
         if self.interaction_script is not None:
             self.interaction_script.update(dt)
 
-    def interact(self, dt):
+    def interact(self):
         if self.interaction_script is not None:
             self.interaction_script.begin()
 
@@ -60,7 +60,7 @@ class StaticGameObject(entity.Actor):
         player.play(name)
 
     @staticmethod
-    def get_player():
+    def get_sound_player():
         return player
 
     def spawn_particle(self, name, pos):
@@ -120,9 +120,19 @@ class DynamicGameObject(StaticGameObject):
         max_health=12,
         on_death=None,
         script=None,
+        event_group=None,
     ):
         super().__init__(
-            pos, surface, engine, groups, topleft, anim_dict, id, layer, script
+            pos,
+            surface,
+            engine,
+            groups,
+            topleft,
+            anim_dict,
+            id,
+            layer,
+            script,
+            event_group,
         )
         # motion
         self.desired_velocity = pygame.Vector2()

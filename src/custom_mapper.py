@@ -22,6 +22,7 @@ class MapLoader(mapping.MapLoader):
             "player": lambda x: pygame.sprite.GroupSingle(),
             "collision": lambda x: pygame.sprite.Group(),
             "event": lambda x: group.EntityGroup(),
+            "interactable": lambda x: pygame.sprite.Group(),
             "farmplants_green": lambda x: pygame.sprite.Group(),
             "farmplants_orange": lambda x: pygame.sprite.Group(),
             "farmplants": lambda x: pygame.sprite.Group(),
@@ -49,11 +50,13 @@ class MapLoader(mapping.MapLoader):
                 "main",
                 "collision",
                 "event",
+                "interactable",
             ),
             "npc-dynamic": (
                 "main",
                 "collision",
                 "event",
+                "interactable",
             ),
         }
         self.player_groups = ("main", "player")
@@ -172,6 +175,10 @@ class MapLoader(mapping.MapLoader):
             4,
             environment.EnvironmentHandler(self.current_env_masks),
             engine,
+            **{
+                key + "_group": value
+                for key, value in self.current_sprite_groups.items()
+            },
         )
         player_layer = properties.get("player_layer", 0) or self.default_player_layer
         for key in self.player_groups:
