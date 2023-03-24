@@ -34,7 +34,7 @@ class MapLoader(mapping.MapLoader):
             "bush": game_objects.Throwable,
             "teleport": event_objects.Teleport,
             "npc-static": npc.StaticNPC,
-            "npc-dynamc": npc.DynamicNPC,
+            "npc-dynamic": npc.DynamicNPC,
         }
         self.sprite_groups = {
             "bush": (
@@ -52,7 +52,7 @@ class MapLoader(mapping.MapLoader):
             ),
             "npc-dynamic": (
                 "main",
-                "physics",
+                "collision",
                 "event",
             ),
         }
@@ -116,6 +116,7 @@ class MapLoader(mapping.MapLoader):
             self.current_sprite_groups[key]
             for key in self.sprite_groups.get(obj.type, self.default_groups)
         ]
+        print(obj.type, obj.properties)
         self.sprite_classes[obj.type](
             pos=obj.pos,
             layer=obj.layer * 3 + 1,
@@ -123,12 +124,12 @@ class MapLoader(mapping.MapLoader):
                 sprite_group,
                 *groups,
             ),
-            id=obj.name,
+            # id=obj.name,
             surface=obj.image,
             topleft=True,
             engine=self.engine,
-            width=obj.width,
-            height=obj.height,
+            # width=obj.width,
+            # height=obj.height,
             **obj.properties,
             **{
                 f"{key}_group": value

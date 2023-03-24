@@ -2,16 +2,39 @@ import random
 
 import pygame
 
+from bush import timer
 from scripts import base
 
 
 class RandomWalkScript(base.EntityScript):
-    def __init__(self, sprite, engine):
-        super().__init__(sprite, engine)
+    def init(self):
+        self.last_pos = self.sprite.pos
+        self.switch_timer = timer.Timer(1200, self.switch_direc, repeat=True)
+        self.stopped = False
 
-    def update(self, dt):
-        super().update()
-        self.go_direction(
-            self.sprite.desired_velocity
-            + pygame.Vector2(6, 6).rotate(random.random() * 360)
-        )
+    def begin(self):
+        super().begin()
+        self.add_timer(self.switch_timer)
+
+    def switch_direc(self):
+        if random.random() < 0.7:
+            self.sprite.move(
+                pygame.Vector2(1, 0).rotate(
+                    90 * random.choice((random.random() * 3, random.randint(0, 3)))
+                )
+            )
+            self.stopped = False
+        else:
+            self.sprite.stop()
+            self.stopped = True
+
+    def script_update(self, dt):
+        super().script_update(dt)
+        if (
+            not self.stopped
+            and (self.last_pos - self.sprite.pos).length()
+            < self.sprite.speed * dt * 0.5
+        ):
+            self.switch_timer.reset()
+            self.switch_direc()
+        self.last_pos = self.sprite.pos

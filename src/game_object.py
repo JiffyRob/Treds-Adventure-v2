@@ -1,9 +1,11 @@
 import pygame
 
+import environment
 import scripts
-from bush import entity, physics, sound_manager, timer, util
+from bush import animation, asset_handler, entity, physics, sound_manager, timer, util
 
 player = sound_manager.glob_player
+loader = asset_handler.AssetHandler("resources/sprites")
 
 
 class StaticGameObject(entity.Actor):
@@ -21,7 +23,6 @@ class StaticGameObject(entity.Actor):
         interaction_script=None,
         event_group=None,
     ):
-
         super().__init__(pos, surface, groups, id, layer, topleft)
         # scripting
         self.script = scripts.get_script(script, self, engine, event_group)
@@ -106,11 +107,11 @@ class DynamicGameObject(StaticGameObject):
         pos,
         surface,
         engine,
-        environment,
         physics_data,
         weight=10,
-        speed=72,
+        speed=48,
         groups=(),
+        map_env=None,
         topleft=False,
         anim_dict=None,
         id=None,
@@ -127,8 +128,13 @@ class DynamicGameObject(StaticGameObject):
         self.desired_velocity = pygame.Vector2()
         self.weight = weight
         self.speed = speed
-        self.environment = environment
-        self.current_terrain = self.environment.environment_data("default")
+        self.environment = map_env
+        if self.environment is not None:
+            self.current_terrain = self.environment.environment_data("default")
+        else:
+            self.current_terrain = environment.EnvironmentData(
+                **environment.DEFAULT_DATA
+            )
         self.current_terrain_name = "default"
         self.physics_data = physics_data
         self.collision_rect = self.rect
@@ -229,3 +235,19 @@ class DynamicGameObject(StaticGameObject):
         self.update_health()
         # update state
         super().update(dt)
+
+
+def get_anim_dict(path, size):
+    frames = loader.load(
+        path + ".png", loader=asset_handler.load_spritesheet, frame_size=size
+    )
+    return {
+        "walk down": animation.Animation(frames[0:16:4], 150),
+        "walk up": animation.Animation(frames[1:17:4], 150),
+        "walk left": animation.Animation(frames[2:18:4], 150),
+        "walk right": animation.Animation(frames[3:18:4], 150),
+        "idle down": animation.Animation(frames[0:1]),
+        "idle up": animation.Animation(frames[1:2]),
+        "idle left": animation.Animation(frames[2:3]),
+        "idle right": animation.Animation(frames[3:4]),
+    }

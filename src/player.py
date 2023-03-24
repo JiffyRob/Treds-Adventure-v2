@@ -41,6 +41,7 @@ class Player(game_object.DynamicGameObject):
             engine,
             map_env,
             physics.PhysicsData(physics.TYPE_DYNAMIC, pygame.sprite.Group()),
+            speed=72,
             anim_dict=anim_dict,
             id="player",
             layer=layer,

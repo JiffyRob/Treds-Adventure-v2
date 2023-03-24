@@ -32,12 +32,29 @@ class DynamicNPC(game_object.DynamicGameObject):
         groups=(),
         topleft=False,
         anim_name=None,
+        gnome=False,  # gnomes are smaller
         id=None,
         layer=None,
         script=None,
+        collision_group=None,
         **kwargs,
     ):
-        super().__init__(pos, surface, engine, groups, topleft, None, id, layer, script)
-        self.physics_data = physics.PhysicsData(physics.TYPE_STATIC, None)
+        anim_dict = None
+        if anim_name is not None:
+            anim_dict = game_object.get_anim_dict(
+                "npcs/" + anim_name, ((16, 32), (16, 16))[gnome]
+            )
+        super().__init__(
+            pos,
+            surface,
+            engine,
+            physics_data=physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group),
+            groups=groups,
+            topleft=topleft,
+            anim_dict=anim_dict,
+            id=id,
+            layer=layer,
+            script=script,
+        )
         self.mask = pygame.mask.from_surface(self.image)
         # TODO

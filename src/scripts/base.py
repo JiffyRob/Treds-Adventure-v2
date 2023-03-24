@@ -14,6 +14,10 @@ class Script:
         self.timer_list = []
         self.sky = self.engine.sky
         self.running = False
+        self.init()
+
+    def init(self):
+        pass
 
     def begin(self):
         self.running = True
@@ -66,9 +70,9 @@ class Script:
 
 class EntityScript(Script):
     def __init__(self, sprite, engine, entity_group, other_groups=None):
-        super().__init__(engine, entity_group, other_groups)
         self.sprite = sprite
         self.desired_position = None
+        super().__init__(engine, entity_group, other_groups)
 
     def move_to(self, vector):
         self.desired_position = vector

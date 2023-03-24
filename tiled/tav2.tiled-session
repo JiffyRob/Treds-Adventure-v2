@@ -1,5 +1,8 @@
 {
-    "activeFile": "tilesets/npc.tsx",
+    "activeFile": "maps/test_map.tmx",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "farmplant_green.tsx": {
             "scaleInDock": 1,
@@ -34,8 +37,8 @@
             "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 235.33333333333331,
-                "y": 155.33333333333331
+                "x": 240,
+                "y": 159.99999999999997
             }
         },
         "maps/trees.tsx": {
@@ -48,8 +51,8 @@
             "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 62.5,
-                "y": 63.5
+                "x": 64,
+                "y": 64
             }
         },
         "master.tsx": {
@@ -151,7 +154,7 @@
             "scaleInEditor": 1
         },
         "tilesets/npc.tsx": {
-            "scaleInDock": 1,
+            "scaleInDock": 5.5,
             "scaleInEditor": 8
         },
         "tilesets/pipes.tsx": {
@@ -183,18 +186,20 @@
             "scaleInEditor": 1
         }
     },
+    "frame.defaultDuration": 150,
     "openFiles": [
         "maps/test_map.tmx",
         "maps/windmill.tmx",
         "tilesets/interior_floor.tsx",
-        "tilesets/interior.tsx",
-        "tilesets/npc.tsx"
+        "tilesets/interior.tsx"
     ],
+    "project": "tav2.tiled-project",
+    "property.type": "bool",
     "recentFiles": [
-        "maps/test_map.tmx",
-        "maps/windmill.tmx",
-        "tilesets/interior_floor.tsx",
         "tilesets/interior.tsx",
+        "tilesets/interior_floor.tsx",
+        "maps/windmill.tmx",
+        "maps/test_map.tmx",
         "tilesets/npc.tsx",
         "tilesets/trees.tsx",
         "tilesets/floor.tsx",

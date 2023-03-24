@@ -26,6 +26,6 @@ class Timer:
         if now - self.start >= self.wait and not self.ran_ending:
             self.on_finish()
             if self.repeat:
-                self.restart()
+                self.reset()
             else:
                 self.ran_ending = True
