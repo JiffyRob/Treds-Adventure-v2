@@ -108,7 +108,7 @@ class Game:
 
     def run(self):
         self.screen = pygame.display.set_mode(
-            util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE, vsync=True
+            util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE, vsync=0
         )
         pygame.display.set_caption(self.caption)
 
