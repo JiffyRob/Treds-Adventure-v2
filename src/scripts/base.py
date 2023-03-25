@@ -86,31 +86,10 @@ class Script:
 class EntityScript(Script):
     def __init__(self, sprite, engine, entity_group, other_groups=None):
         self.sprite = sprite
-        self.desired_position = None
         super().__init__(engine, entity_group, other_groups)
 
-    def move_to(self, vector):
-        self.desired_position = vector
-
-    def go_direction(self, vector):
-        self.sprite.desired_velocity = vector
-
-    def set_anim(self, name):
-        self.sprite.set_anim(name)
-
-    def get_state(self):
-        return self.sprite.state  # may change later TODO
-
-    def script_update(self, dt):
-        super().script_update(dt)
-        if self.desired_position:
-            self.sprite.desired_velocity = (
-                self.desired_position - self.sprite.pos
-            ).clamp(0, self.sprite.speed)
-            if (
-                self.sprite.pos - self.desired_position
-            ).lenth_squared() <= pygame.Vector2(1):
-                self.desired_position = None
+    def get_sprite_state(self):
+        return self.sprite.state  # TODO?
 
     def is_finished(self):
         return True

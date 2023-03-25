@@ -35,7 +35,7 @@ def rvec(vec: pygame.Vector2):
     return [round(vec.x), round(vec.y)]
 
 
-def direction(vec: pygame.Vector2):
+def sign(vec: pygame.Vector2):
     """return a tuple of 1s or 0s signed to vector values - eg < -8, 7> -> (-1, 1) or <0, 3> -> (0, 1)"""
     x = 0
     if vec.x:
@@ -43,6 +43,14 @@ def direction(vec: pygame.Vector2):
     y = 0
     if vec.y:
         y = int(vec.y / abs(vec.y))
+    return x, y
+
+
+def direction(vec: pygame.Vector2):
+    """return a tuple of 1s or 0s rounded to match the direction of a vector"""
+    x, y = 0, 0
+    if vec:
+        x, y = round(vec.normalize())
     return x, y
 
 

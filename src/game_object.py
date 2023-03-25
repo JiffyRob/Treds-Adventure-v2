@@ -25,6 +25,7 @@ class StaticGameObject(entity.Actor):
     ):
         super().__init__(pos, surface, groups, id, layer, topleft)
         # scripting
+        self.engine = engine
         self.script = scripts.get_script(script, self, engine, event_group)
         if self.script is not None:
             self.script.begin()
@@ -143,6 +144,7 @@ class DynamicGameObject(StaticGameObject):
         )
         # motion
         self.desired_velocity = pygame.Vector2()
+        self.desired_position = None
         self.weight = weight
         self.speed = speed
         self.environment = map_env
@@ -166,6 +168,10 @@ class DynamicGameObject(StaticGameObject):
         self.poison_stop_timer = timer.Timer(0)
 
     # scripting commands
+    def interact(self):
+        self.face(self.engine.player.pos)
+        super().interact()
+
     def move(self, direction):
         self.desired_velocity = direction
 
@@ -173,8 +179,18 @@ class DynamicGameObject(StaticGameObject):
         if (self.pos - dest).length_squared() > 0.5:
             self.desired_velocity = (dest - self.pos).scale_to_length(self.speed)
 
-    def stop(self):
+    def move_to(self, dest):
+        self.desired_position = dest
+
+    def stop(self, force=False):
         self.desired_velocity *= 0
+        # here are two fun ways to avoid branching!
+        self.velocity *= not force
+        self.desired_position = (None, self.desired_position)[force]
+
+    def face(self, pos):
+        self.stop(True)
+        self.facing = util.round_string_direction(util.string_direction(pos - self.pos))
 
     def terrain_allows_move(self, move):
         return move in self.current_terrain.moves
@@ -232,6 +248,9 @@ class DynamicGameObject(StaticGameObject):
     def update(self, dt):
         # calculate and update self.current_terrain
         self.update_terrain()
+        # go to desired position
+        if self.desired_position is not None:
+            self.move_toward(self.desired_position)
         # modify speed
         if self.desired_velocity:
             self.desired_velocity.scale_to_length(
