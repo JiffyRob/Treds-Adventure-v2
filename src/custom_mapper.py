@@ -143,6 +143,9 @@ class MapLoader(mapping.MapLoader):
         try:
             self.current_sprite_groups, properties = self.aux_cache[tmx_path]
             sprite_group = self.current_sprite_groups["main"]
+            self.current_env_masks = self.current_sprite_groups[
+                "player"
+            ].sprite.environment.env_masks
             self.current_sprite_groups["player"].sprite.kill()
         except KeyError:
             tmx_map = self.loader.load(tmx_path)

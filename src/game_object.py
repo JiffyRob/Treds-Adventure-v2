@@ -201,6 +201,7 @@ class DynamicGameObject(StaticGameObject):
     def update_terrain(self):
         if self.environment is None:
             return
+        print("terrain update")
         self.current_terrain_name = self.environment.get_environment_at(
             self.mask, self.rect.topleft
         )

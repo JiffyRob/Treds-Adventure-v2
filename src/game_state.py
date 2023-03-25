@@ -12,7 +12,7 @@ from bush.ai import state
 loader = asset_handler.glob_loader
 # Don't make a new music player.  Only 1 should exist
 music_player = sound_manager.music_player
-EXT = ".sav"
+EXT = ".json"
 
 
 class GameState(state.StackState):
