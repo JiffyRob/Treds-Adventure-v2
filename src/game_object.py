@@ -37,6 +37,7 @@ class StaticGameObject(entity.Actor):
         self.state = "idle"
         self.pushed_state = None
         self.anim_dict = anim_dict
+        self.interacting = False
 
     # scripting
     def update_script(self, dt):
@@ -47,10 +48,12 @@ class StaticGameObject(entity.Actor):
             if self.interaction_script.complete:
                 self.script.unpause()
                 self.interaction_script.reset()
+                self.interacting = False
 
     def interact(self):
         if self.interaction_script is not None:
             self.interaction_script.begin()
+            self.interacting = True
             if self.script is not None:
                 self.script.pause()
 

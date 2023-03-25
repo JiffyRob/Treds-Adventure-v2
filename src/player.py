@@ -67,6 +67,8 @@ class Player(game_object.DynamicGameObject):
         )
         self.tiny = True
         self.interactable_group = interactable_group
+        self.interactor = None
+        self.input_locked = False
         self.load_data()
 
     def save_data(self):
@@ -78,7 +80,7 @@ class Player(game_object.DynamicGameObject):
             setattr(self, field, self.save_state.get(field, "player"))
 
     def event(self, event):
-        if event.type == event_binding.BOUND_EVENT:
+        if event.type == event_binding.BOUND_EVENT and not self.input_locked:
             self.command(event.name)
 
     def command(self, command_name):
@@ -125,6 +127,8 @@ class Player(game_object.DynamicGameObject):
             if sprite.rect.colliderect(self.get_interaction_rect()):
                 sprite.interact()
                 print("interacting with sprite", sprite.get_id())
+                self.interactor = sprite
+                self.stop(True)
                 break
 
     def change_collision_group(self, collision_group):
@@ -142,6 +146,12 @@ class Player(game_object.DynamicGameObject):
         super().update_state()
         if self.tiny:
             self.state = "tiny " + self.state
+        if self.interactor is not None:
+            if self.interactor.interacting:
+                self.input_locked = True
+            else:
+                self.input_locked = False
+                self.interactor = None
 
     def update(self, dt):
         self.current_mana = min(self.current_mana + (dt * 0.1), self.mana_capacity)
