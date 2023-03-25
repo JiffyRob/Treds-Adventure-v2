@@ -14,16 +14,28 @@ class Script:
         self.timer_list = []
         self.sky = self.engine.sky
         self.running = False
+        self.complete = False
         self.init()
 
     def init(self):
         pass
 
+    def reset(self):
+        self.complete = False
+
     def begin(self):
         self.running = True
+        self.complete = False
 
     def end(self):
         self.running = False
+        self.complete = True
+
+    def pause(self):
+        self.running = False
+
+    def unpause(self):
+        self.running = True
 
     def get_entity(self, name):
         self.entity_group.get_by_id(name)
@@ -36,6 +48,9 @@ class Script:
 
     def add_timer(self, new_timer):
         self.timer_list.append(new_timer)
+
+    def clear_timers(self):
+        self.timer_list = []
 
     def say(self, text, on_finish=lambda: None):
         self.engine.dialog(text, on_finish)

@@ -16,8 +16,19 @@ class RandomWalkScript(base.EntityScript):
         super().begin()
         self.add_timer(self.switch_timer)
 
+    def pause(self):
+        super().pause()
+        self.sprite.stop()
+        self.switch_timer.finish()
+
+    def unpause(self):
+        super().unpause()
+        print("unpause")
+        self.switch_timer.reset()
+        self.switch_direc()
+
     def switch_direc(self):
-        if random.random() < 0.7:
+        if random.random() < 0.9:
             self.sprite.move(
                 pygame.Vector2(1, 0).rotate(
                     90 * random.choice((random.random() * 3, random.randint(0, 3)))
@@ -35,6 +46,7 @@ class RandomWalkScript(base.EntityScript):
             and (self.last_pos - self.sprite.pos).length()
             < self.sprite.speed * dt * 0.5
         ):
+            print("bump")
             self.switch_timer.reset()
             self.switch_direc()
         self.last_pos = self.sprite.pos

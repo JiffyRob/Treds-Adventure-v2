@@ -43,10 +43,15 @@ class StaticGameObject(entity.Actor):
             self.script.update(dt)
         if self.interaction_script is not None:
             self.interaction_script.update(dt)
+            if self.interaction_script.complete:
+                self.script.unpause()
+                self.interaction_script.reset()
 
     def interact(self):
         if self.interaction_script is not None:
             self.interaction_script.begin()
+            if self.script is not None:
+                self.script.pause()
 
     # scripting commands
     def push_state(self, state):
