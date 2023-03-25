@@ -36,6 +36,7 @@ class DynamicNPC(game_object.DynamicGameObject):
         id=None,
         layer=None,
         script=None,
+        interaction_script=None,
         collision_group=None,
         **kwargs,
     ):
@@ -55,6 +56,7 @@ class DynamicNPC(game_object.DynamicGameObject):
             id=id,
             layer=layer,
             script=script,
+            interaction_script=interaction_script,
         )
         self.mask = pygame.mask.from_surface(self.image)
         # TODO

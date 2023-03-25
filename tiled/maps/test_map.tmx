@@ -72,6 +72,7 @@
    <properties>
     <property name="anim_name" value="green_ninja"/>
     <property name="gnome" type="bool" value="true"/>
+    <property name="interaction_script" value="test-script"/>
     <property name="script" value="random-walk"/>
    </properties>
   </object>

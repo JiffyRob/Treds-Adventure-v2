@@ -120,6 +120,7 @@ class DynamicGameObject(StaticGameObject):
         max_health=12,
         on_death=None,
         script=None,
+        interaction_script=None,
         event_group=None,
     ):
         super().__init__(
@@ -132,6 +133,7 @@ class DynamicGameObject(StaticGameObject):
             id,
             layer,
             script,
+            interaction_script,
             event_group,
         )
         # motion

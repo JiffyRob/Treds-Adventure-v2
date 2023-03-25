@@ -37,8 +37,8 @@
             "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 240,
-                "y": 159.99999999999997
+                "x": 239.99999999999997,
+                "y": 159.66666666666666
             }
         },
         "maps/trees.tsx": {
@@ -51,8 +51,8 @@
             "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 64,
-                "y": 64
+                "x": 22,
+                "y": 64.25
             }
         },
         "master.tsx": {
@@ -194,7 +194,7 @@
         "tilesets/interior.tsx"
     ],
     "project": "tav2.tiled-project",
-    "property.type": "bool",
+    "property.type": "string",
     "recentFiles": [
         "tilesets/interior.tsx",
         "tilesets/interior_floor.tsx",
