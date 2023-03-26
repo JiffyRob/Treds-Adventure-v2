@@ -137,6 +137,7 @@ class MapState(GameState):
             self.dialog_box = None
             interrupted = True
         self.dialog_kill_callback(interrupted)
+        self.dialog_kill_callback = lambda interrupted: None
 
     def update(self, dt=0.03):
         super().update(dt)
