@@ -15,6 +15,7 @@ class Script:
         self.sky = self.engine.sky
         self.running = False
         self.complete = False
+        self.talking = False
         self.init()
 
     def init(self):
@@ -52,11 +53,11 @@ class Script:
     def clear_timers(self):
         self.timer_list = []
 
-    def say(self, text, on_finish=lambda: None):
+    def say(self, text, on_finish=lambda interrupted: None):
         self.engine.dialog(text, on_finish)
 
-    def ask(self, question, *answers, on_finish=lambda: None):
-        self.engine.dialog(question, *answers, on_finish=on_finish)
+    def ask(self, question, *answers):
+        self.engine.dialog(question, *answers)
 
     def play_sound(self, sound_name):
         player.play(sound_name)

@@ -68,6 +68,15 @@ class Game:
         self.player = None
         self.stack.push(game_state.MainMenu(self))
 
+    def dialog(self, text, on_finish=lambda interrupted: None):
+        try:
+            self.stack.get_current().dialog(text, on_finish)
+        except AttributeError:
+            print(
+                "Warning: current state does not support dialogs.  Aborting saying",
+                text,
+            )
+
     def load_new_state(self, _):
         map_path = self.state.get("map", "engine")
         self.stack.clear()

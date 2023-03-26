@@ -17,6 +17,7 @@ class Timer:
 
     def reset(self):
         self.start = pygame.time.get_ticks()
+        self.ran_ending = False
 
     def finish(self):
         self.start = (pygame.time.get_ticks() - self.wait) - 1
