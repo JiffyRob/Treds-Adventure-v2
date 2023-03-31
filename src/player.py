@@ -25,6 +25,26 @@ class Player(game_object.DynamicGameObject):
         tiny_frames = loader.load(
             "tiny.png", loader=asset_handler.load_spritesheet, frame_size=(16, 16)
         )
+        foot_frames = loader.load(
+            "feet-default.png",
+            loader=asset_handler.load_spritesheet,
+            frame_size=(16, 32),
+        )
+        torso_frames = loader.load(
+            "torso-default.png",
+            loader=asset_handler.load_spritesheet,
+            frame_size=(16, 32),
+        )
+        arm_frames = loader.load(
+            "arms-default.png",
+            loader=asset_handler.load_spritesheet,
+            frame_size=(16, 32),
+        )
+        head_frames = loader.load(
+            "head-default.png",
+            loader=asset_handler.load_spritesheet,
+            frame_size=(16, 32),
+        )
         anim_dict = {
             "tiny walk down": animation.Animation(tiny_frames[0:16:4], 150),
             "tiny walk up": animation.Animation(tiny_frames[1:17:4], 150),
@@ -34,6 +54,70 @@ class Player(game_object.DynamicGameObject):
             "tiny idle up": animation.Animation(tiny_frames[1:2]),
             "tiny idle left": animation.Animation(tiny_frames[2:3]),
             "tiny idle right": animation.Animation(tiny_frames[3:4]),
+            "walk down": animation.MultiAnimation(
+                (
+                    animation.Animation(foot_frames[0:8], 70),
+                    animation.Animation(torso_frames[0:8], 70),
+                    animation.Animation(arm_frames[0:8], 70),
+                    animation.Animation(head_frames[0:8], 70),
+                )
+            ),
+            "walk up": animation.MultiAnimation(
+                (
+                    animation.Animation(foot_frames[8:16], 70),
+                    animation.Animation(torso_frames[8:16], 70),
+                    animation.Animation(arm_frames[8:16], 70),
+                    animation.Animation(head_frames[8:16], 70),
+                )
+            ),
+            "walk right": animation.MultiAnimation(
+                (
+                    animation.Animation(foot_frames[16:24], 70),
+                    animation.Animation(torso_frames[16:24], 70),
+                    animation.Animation(arm_frames[16:24], 70),
+                    animation.Animation(head_frames[16:24], 70),
+                )
+            ),
+            "walk left": animation.MultiAnimation(
+                (
+                    animation.Animation(foot_frames[16:24], 70, mirror_x=True),
+                    animation.Animation(torso_frames[16:24], 70, mirror_x=True),
+                    animation.Animation(arm_frames[16:24], 70, mirror_x=True),
+                    animation.Animation(head_frames[16:24], 70, mirror_x=True),
+                )
+            ),
+            "idle down": animation.MultiAnimation(
+                (
+                    animation.Animation(foot_frames[7:8], 70),
+                    animation.Animation(torso_frames[7:8], 70),
+                    animation.Animation(arm_frames[7:8], 70),
+                    animation.Animation(head_frames[7:8], 70),
+                )
+            ),
+            "idle up": animation.MultiAnimation(
+                (
+                    animation.Animation(foot_frames[15:16], 70),
+                    animation.Animation(torso_frames[15:16], 70),
+                    animation.Animation(arm_frames[15:16], 70),
+                    animation.Animation(head_frames[15:16], 70),
+                )
+            ),
+            "idle right": animation.MultiAnimation(
+                (
+                    animation.Animation(foot_frames[23:24], 70),
+                    animation.Animation(torso_frames[23:24], 70),
+                    animation.Animation(arm_frames[23:24], 70),
+                    animation.Animation(head_frames[23:24], 70),
+                )
+            ),
+            "idle left": animation.MultiAnimation(
+                (
+                    animation.Animation(foot_frames[23:24], 70, mirror_x=True),
+                    animation.Animation(torso_frames[23:24], 70, mirror_x=True),
+                    animation.Animation(arm_frames[23:24], 70, mirror_x=True),
+                    animation.Animation(head_frames[23:24], 70, mirror_x=True),
+                )
+            ),
         }
         super().__init__(
             pos,
@@ -67,7 +151,7 @@ class Player(game_object.DynamicGameObject):
             "health_capacity",
             "items",
         )
-        self.tiny = True
+        self.tiny = False
         self.interactable_group = interactable_group
         self.interactor = None
         self.input_locked = False
@@ -140,7 +224,7 @@ class Player(game_object.DynamicGameObject):
         self._layer = layer
 
     def update_rects(self):
-        self.rect.center = self.pos
+        self.rect = self.image.get_rect(center=self.pos)
         self.collision_rect = pygame.Rect(0, 0, 10, 10)
         self.collision_rect.midbottom = self.rect.midbottom
 

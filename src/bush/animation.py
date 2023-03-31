@@ -4,11 +4,11 @@ import pygame
 
 
 class Animation:
-    def __init__(self, images, length=250):
+    def __init__(self, images, length=250, mirror_x=False, mirror_y=False):
         self.lengths = length
         if isinstance(length, int):
             self.lengths = [length for _ in images]
-        self.images = list(images)
+        self.images = [pygame.transform.flip(image, mirror_x, mirror_y).convert_alpha() for image in images]
         self.index = 0
         self.last_start_time = 0
 
@@ -70,3 +70,44 @@ class OnceAnimation(Animation):
 
     def done(self):
         return self.hit_end
+
+
+class MultiAnimation:
+    def __init__(self, animations, positions=None, size=None):
+        self.animations = list(animations)
+        self.positions = positions
+        if self.positions is None:
+            self.positions = [(0, 0) for i in self.animations]
+        self.size = size
+        if self.size is None:
+            width = 0
+            height = 0
+            for animation in self.animations:
+                size = animation.image().get_size()
+                width = max(width, size[0])
+                height = max(height, size[1])
+            self.size = width, height
+        print("MultiData", self.size, self.animations, self.positions)
+
+    def __len__(self):
+        return len(self.animations)
+
+    def reset(self):
+        for anim in self.animations:
+            anim.reset()
+
+    def increment(self):
+        pass
+
+    def image(self):
+        surface = pygame.Surface(self.size).convert_alpha()
+        surface.fill((0, 0, 0, 0))
+        for anim, pos in zip(self.animations, self.positions):
+            surface.blit(anim.image(), pos)
+        return surface
+
+    def done(self):
+        for anim in self.animations:
+            if not anim.done():
+                return False
+        return True

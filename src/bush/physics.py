@@ -72,7 +72,7 @@ def static_collision(dynamic, static, axis, stop_on_collision):
         pygame.Vector2(direction) * 0.6,
     )
     # start position of entity
-    start_pos = pygame.Vector2(dynamic.pos)
+    start_pos = pygame.Vector2(dynamic.collision_rect.center)
     # position to check
     check_pos = pygame.Vector2(start_pos)
     # how long to walk in each direction
@@ -95,9 +95,9 @@ def static_collision(dynamic, static, axis, stop_on_collision):
         direction_index = (direction_index + 1) % 3
         check_rect.center = check_pos
     if collided:
-        dynamic.pos = check_pos
-    else:
-        dynamic.pos = dynamic.rect.center = check_pos
+        print(check_pos - start_pos, dynamic.pos)
+        dynamic.pos += check_pos - start_pos
+        dynamic.pos = pygame.Vector2(int(dynamic.pos.x), int(dynamic.pos.y))
     if collided and stop_on_collision:
         dynamic.velocity[axis] = 0
     return collided
