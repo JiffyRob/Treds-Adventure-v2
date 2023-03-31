@@ -2,10 +2,9 @@
 Main - runs game and holds game loop.
 Has Access to all other modules
 """
-import bush.sound_manager
-
 import pygame
 
+import bush.sound_manager
 from bush import asset_handler
 
 loader = asset_handler.glob_loader

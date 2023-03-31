@@ -8,7 +8,10 @@ class Animation:
         self.lengths = length
         if isinstance(length, int):
             self.lengths = [length for _ in images]
-        self.images = [pygame.transform.flip(image, mirror_x, mirror_y).convert_alpha() for image in images]
+        self.images = [
+            pygame.transform.flip(image, mirror_x, mirror_y).convert_alpha()
+            for image in images
+        ]
         self.index = 0
         self.last_start_time = 0
 
