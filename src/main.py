@@ -2,12 +2,8 @@
 Main - runs game and holds game loop.
 Has Access to all other modules
 """
-import os
-import sys
-
 import bush.sound_manager
 
-sys.path.insert(1, os.path.abspath("."))
 import pygame
 
 from bush import asset_handler
@@ -139,6 +135,7 @@ class Game:
             pygame.display.flip()
             dt = self.tick()
 
+        print("exiting game")
         pygame.quit()
         self.screen = None
 
@@ -147,4 +144,6 @@ class Game:
         self.running = False
 
 
-Game().run()
+if __name__ == "__main__":
+    Game().run()
+
