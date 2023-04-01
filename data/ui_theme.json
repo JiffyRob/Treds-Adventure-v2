@@ -34,7 +34,7 @@
   "button": {
     "prototype": "#silver"
   },
-  "text_box": {
+  "text_entry_line": {
     "prototype": "#silver"
   }
 }
