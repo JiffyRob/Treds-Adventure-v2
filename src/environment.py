@@ -23,6 +23,7 @@ EnvironmentData = namedtuple(
 TERRAIN_DATA = loader.load("data/terrain.json")
 DEFAULT_DATA = TERRAIN_DATA["default"]
 TERRAIN_ORDER = TERRAIN_DATA.pop("order")
+TERRAIN_ORDER.reverse()
 for key, value in TERRAIN_DATA.items():
     TERRAIN_DATA[key] = EnvironmentData(**{**DEFAULT_DATA, **value})
 del key, value  # don't want those cluttering up the namespace

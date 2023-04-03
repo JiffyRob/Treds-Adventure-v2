@@ -118,7 +118,9 @@ class MapLoader(mapping.MapLoader):
             self.current_sprite_groups[key]
             for key in self.sprite_groups.get(obj.type, self.default_groups)
         ]
-        print(obj.type, obj.properties)
+        print(obj.type, obj.width, obj.height, obj.properties)
+        obj.properties.pop("width", None)
+        obj.properties.pop("height", None)
         self.sprite_classes[obj.type](
             pos=obj.pos,
             layer=obj.layer * 3 + 1,
@@ -130,8 +132,8 @@ class MapLoader(mapping.MapLoader):
             surface=obj.image,
             topleft=True,
             engine=self.engine,
-            # width=obj.width,
-            # height=obj.height,
+            width=obj.width,
+            height=obj.height,
             **obj.properties,
             **{
                 f"{key}_group": value

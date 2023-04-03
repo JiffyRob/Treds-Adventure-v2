@@ -1,8 +1,8 @@
 {
     "activeFile": "maps/test_map.tmx",
     "expandedProjectPaths": [
-        "maps",
-        "."
+        ".",
+        "maps"
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -36,10 +36,10 @@
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 1.5,
+            "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 236.66666666666663,
+                "x": 239.33333333333331,
                 "y": 159.99999999999997
             }
         },

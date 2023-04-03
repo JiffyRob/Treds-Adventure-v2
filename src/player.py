@@ -227,6 +227,11 @@ class Player(game_object.DynamicGameObject):
         self.rect = self.image.get_rect(center=self.pos)
         self.collision_rect = pygame.Rect(0, 0, 10, 10)
         self.collision_rect.midbottom = self.rect.midbottom
+        self.mask = pygame.Mask(self.rect.size, False)
+        self.mask.draw(
+            pygame.Mask(self.collision_rect.size, True),
+            self.collision_rect.topleft - pygame.Vector2(self.rect.topleft),
+        )
 
     def update_state(self):
         super().update_state()
