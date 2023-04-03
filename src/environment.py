@@ -2,7 +2,7 @@ from collections import namedtuple
 
 import pygame
 
-from bush import asset_handler, entity, physics, util
+from bush import asset_handler
 
 loader = asset_handler.glob_loader
 EnvironmentData = namedtuple(

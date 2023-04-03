@@ -1,14 +1,9 @@
-import os
-
 import pygame
 
 import environment
-import event_objects
-import npc
-import player
-import static_sprite
 from bush import asset_handler, entity, physics
 from bush.mapping import group, mapping
+from game_objects import npc, plant, player, teleport
 
 
 class MapLoader(mapping.MapLoader):
@@ -31,16 +26,11 @@ class MapLoader(mapping.MapLoader):
         self.current_player = None
         self.engine = engine
         self.sprite_classes = {
-            "bush": static_sprite.Throwable,
-            "teleport": event_objects.Teleport,
+            "teleport": teleport.Teleport,
             "npc-static": npc.StaticNPC,
             "npc-dynamic": npc.DynamicNPC,
         }
         self.sprite_groups = {
-            "bush": (
-                "main",
-                "collision",
-            ),
             "teleport": (
                 "main",
                 "collision",
