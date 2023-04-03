@@ -4,16 +4,16 @@ from bush import asset_handler, autotile, entity, physics, util_load
 
 loader = asset_handler.glob_loader
 TREE_MASK = pygame.mask.from_surface(
-    loader.load("resources/tiles/trees.png").subsurface((0, 0, 32, 64))
+    loader.load("tiles/trees.png").subsurface((0, 0, 32, 64))
 )
 FARMPLANT_IMAGES = {
     "green": loader.load(
-        "resources/tiles/farmplant_green.png",
+        "tiles/farmplant_green.png",
         loader=util_load.load_spritesheet,
         frame_size=(16, 16),
     ),
     "orange": loader.load(
-        "resources/tiles/farmplant_orange.png",
+        "tiles/farmplant_orange.png",
         loader=util_load.load_spritesheet,
         frame_size=(16, 16),
     ),

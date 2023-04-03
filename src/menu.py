@@ -3,7 +3,7 @@ import math
 import pygame
 import pygame_gui
 
-THEME_PATH = "data/ui_theme.json"
+THEME_PATH = "resources/data/ui_theme.json"
 
 
 class HeartMeter(pygame_gui.elements.UIImage):

@@ -54,7 +54,7 @@ class MapLoader(mapping.MapLoader):
         self.mask_loader = asset_handler.AssetHandler("resources/masks")
         self.aux_cache = {}
         super().__init__(
-            "tiled/maps",
+            "resources/tiled/maps",
             sprite_creator=self.create_sprite,
             tile_handler=self.handle_tile,
         )

@@ -357,7 +357,7 @@ class MainMenu(MenuState):
                 "Load Game": self.run_loadmenu,
                 "Quit": engine.quit,
             },
-            screen_surf=loader.load("resources/hud/bg_forest.png"),
+            screen_surf=loader.load("hud/bg_forest.png"),
         )
 
     def rebuild(self):

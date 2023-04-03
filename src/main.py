@@ -8,6 +8,7 @@ import bush.sound_manager
 from bush import asset_handler
 
 loader = asset_handler.glob_loader
+loader.base = "./resources"
 import custom_mapper
 import game_state
 import sky
@@ -17,7 +18,9 @@ from bush.ai import state
 pygame.init()
 START_SPOTS = loader.load("data/player_start_positions.json")
 bush.sound_manager.music_player.add_tracks(
-    util_load.load_json("data/music_tracks.json")
+    loader.load(
+        "data/music_tracks.json", cache=False
+    )  # This file will only be loaded once
 )
 
 
@@ -35,7 +38,7 @@ class Game:
             util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE
         )
         cursor_images = loader.load(
-            "resources/hud/cursor.png",
+            "hud/cursor.png",
             loader=asset_handler.load_spritesheet,
             frame_size=(16, 16),
         )
@@ -49,7 +52,7 @@ class Game:
         # game control state
         self.stack = state.StateStack()
         self.state = save_state.LeveledGameState(
-            "data/saves",
+            "resources/data/saves",
             "test_level.tmx",
             save_hook=self.save_state,
             load_hook=self.load_new_state,
