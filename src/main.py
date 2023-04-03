@@ -71,8 +71,18 @@ class Game:
             self.stack.get_current().dialog(text, on_finish)
         except AttributeError:
             print(
-                "Warning: current state does not support dialogs.  Aborting saying",
+                "Warning: current state does not support dialogs.  Aborting saying ",
                 text,
+            )
+
+    def prompt(self, prompt, choices, on_finish=lambda interrupted, answer: None):
+        try:
+            self.stack.get_current().prompt(prompt, choices, on_finish)
+        except AttributeError:
+            print(
+                "Warning: current state does not support dialogs.  Aborting asking ",
+                prompt,
+                choices,
             )
 
     def load_new_state(self, _):

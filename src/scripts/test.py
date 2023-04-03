@@ -5,7 +5,15 @@ from scripts import base
 class TestScript(base.EntityScript):
     def begin(self):
         super().begin()
-        self.say("Here is some TEST text", lambda x: self.end())
+        self.ask(
+            "How silly of a goober are you?",
+            (
+                "A little silly.",
+                "Pretty silly...",
+                "So very ridiculously silly that this answer had to overflow a line or two!!!",
+            ),
+            self.end,
+        )
 
     def end(self):
         print("Goodbye, you silly goober")

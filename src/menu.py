@@ -3,6 +3,8 @@ import math
 import pygame
 import pygame_gui
 
+from bush import event_binding
+
 THEME_PATH = "resources/data/ui_theme.json"
 
 
@@ -59,6 +61,66 @@ class HeartMeter(pygame_gui.elements.UIImage):
         self.set_dimensions(size)
         self.set_image(surface)
         super().update(time_delta)
+
+
+class ChoiceBox(pygame_gui.elements.UITextBox):
+    def __init__(
+        self, html_prompt, html_choices, relative_rect, manager, *args, **kwargs
+    ):
+        self.prompt = html_prompt
+        self.choices = html_choices
+        self.answer_index = 0
+        self.chosen_index = None
+        self.prompt_done = False
+        super().__init__(self.get_html_text(), relative_rect, manager, *args, **kwargs)
+        self.set_active_effect(pygame_gui.TEXT_EFFECT_TYPING_APPEAR)
+
+    def update_html(self):
+        self.html_text = self.get_html_text()
+        self.rebuild()
+
+    def get_html_text(self):
+        # apply text effect to prompt
+        text = (
+            f"<effect id={pygame_gui.TEXT_EFFECT_TYPING_APPEAR}>{self.prompt}</effect>"
+        )
+        # add all of the choices
+        if self.prompt_done:
+            for i, choice in enumerate(self.choices):
+                text += "\n"
+                if i == self.answer_index:
+                    # put a dash before selected answer
+                    text += f"-{choice}"
+                else:
+                    text += f" {choice}"
+        return text
+
+    def process_event(self, event: pygame.event.Event):
+        if not super().process_event(event):
+            if self.prompt_done and event.type == event_binding.BOUND_EVENT:
+                if event.name == "choice pointer up":
+                    self.answer_index = max(self.answer_index - 1, 0)
+                    self.update_html()
+                if event.name == "choice pointer down":
+                    self.answer_index = min(
+                        self.answer_index + 1, len(self.choices) - 1
+                    )
+                    self.update_html()
+                if event.name == "choice picked":
+                    self.choose()
+            if event.type == pygame_gui.UI_TEXT_EFFECT_FINISHED:
+                if event.ui_element is self:
+                    self.prompt_done = True
+                    self.update_html()
+
+    def choose(self):
+        self.kill()
+        self.chosen_index = self.answer_index
+
+    def get_answer(self):
+        if self.chosen_index is None:
+            return None
+        return self.choices[self.chosen_index]
 
 
 def create_menu(

@@ -97,11 +97,12 @@ class MapState(GameState):
         self.dialog_kill_callback = lambda interrupted: None
         self.dialog_kill_timer = timer.Timer(2500, self.kill_dialog)
         self.dialog_kill_timer.finish()
+        self.dialog_is_question = None
         if self.soundtrack is not None:
             music_player.play(self.soundtrack)
         gui = pygame_gui.UIManager(engine.screen_size, menu.THEME_PATH)
         heart_images = loader.load(
-            "resources/hud/heart.png",
+            "hud/heart.png",
             loader=asset_handler.load_spritesheet,
             frame_size=(16, 16),
         )
@@ -129,6 +130,21 @@ class MapState(GameState):
         rect.centerx = self.engine.screen_size.x // 2
         self.dialog_box = pygame_gui.elements.UITextBox(text, rect, self.gui)
         self.dialog_box.set_active_effect(pygame_gui.TEXT_EFFECT_TYPING_APPEAR)
+        self.dialog_is_question = False
+
+    def prompt(self, prompt, choices, on_finish=lambda interrupted, answer: None):
+        self.kill_dialog()
+        print(on_finish)
+        rect = pygame.Rect(
+            0, 0, self.engine.screen_size.x * 0.75, self.engine.screen_size.y * 0.3
+        )
+        rect.bottom = self.engine.screen_size.y - 4
+        rect.centerx = self.engine.screen_size.x // 2
+        self.dialog_box = menu.ChoiceBox(prompt, choices, rect, self.gui)
+        self.dialog_kill_callback = lambda interrupted: on_finish(
+            interrupted, self.dialog_box.get_answer()
+        )
+        self.dialog_is_question = True
 
     def kill_dialog(self):
         interrupted = False
@@ -149,7 +165,10 @@ class MapState(GameState):
         for event in pygame.event.get():
             super().handle_event(event)
             self.player.event(event)
-            if event.type == pygame_gui.UI_TEXT_EFFECT_FINISHED:
+            if (
+                event.type == pygame_gui.UI_TEXT_EFFECT_FINISHED
+                and not self.dialog_is_question
+            ):
                 self.dialog_kill_timer.reset()
 
     def draw(self, surface):
