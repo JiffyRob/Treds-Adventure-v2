@@ -60,6 +60,7 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 ---I'd love to stop and chat, but I have to keep rolling these credits until you die.---
 
 The Silver Font is licensed by PoppyWorks - please see their page at https://poppyworks.itch.io/silver
+The font "Teeny Tiny Pixls" used for numbering the items is by Chequered Ink on FontSpace.  See https://www.fontspace.com/teeny-tiny-pixls-font-f30095 for more information
 
 All images and sound effects are licensed under a Creative Commons Attribution-ShareAlike 4.0 International License. (CC BY-SA 4.0)
 
