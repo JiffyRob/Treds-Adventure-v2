@@ -2,13 +2,10 @@ import math
 
 import pygame
 import pygame_gui
-from pygame_gui.core.drawable_shapes import RectDrawableShape, RoundedRectangleShape
-from pygame_gui.core.utility import basic_blit
 
-from bush import event_binding
+from bush import event_binding, timer
 
 THEME_PATH = "resources/data/ui_theme.json"
-SK_RETURN = "⒅"  # used for end of prompt
 
 
 class HeartMeter(pygame_gui.elements.UIImage):
@@ -66,34 +63,41 @@ class HeartMeter(pygame_gui.elements.UIImage):
         super().update(time_delta)
 
 
-class ChoiceBox(pygame_gui.elements.UITextBox):
+class Dialog(pygame_gui.elements.UITextBox):
+    STATE_WRITING_PROMPT = 0
+    STATE_GETTING_ANSWER = 2
+    STATE_COMPLETE = 3
+
     def __init__(
-        self, html_prompt, html_choices, relative_rect, manager, *args, **kwargs
+        self,
+        html_prompt,
+        html_choices,
+        on_kill,
+        relative_rect,
+        manager,
+        *args,
+        **kwargs,
     ):
         self.prompt = html_prompt
         self.choices = html_choices
         self.answer_index = 0
         self.chosen_index = None
-        self.prompt_done = False
-        self.needs_advanced = False
-        super().__init__(self.get_html_text(), relative_rect, manager, *args, **kwargs)
-        self.set_active_effect(pygame_gui.TEXT_EFFECT_TYPING_APPEAR)
+        self.state = self.STATE_WRITING_PROMPT
+        self.on_kill = on_kill
+        self.kill_timer = timer.Timer()
+        super().__init__("", relative_rect, manager, *args, **kwargs)
         self.line_spacing = 0.75
-        self.rebuild()
-
-    def advance(self):
-        self.needs_advanced = False
-        if self.prompt in self.html_text:
-            self.prompt_done = True
+        self.update_html()
+        self.set_active_effect(
+            pygame_gui.TEXT_EFFECT_TYPING_APPEAR, {"time_per_letter": 0.02}
+        )
 
     def rebuild(self):
         super().rebuild()
+        # no scroll bar, stay at the bottom
         if self.scroll_bar is not None:
-            # self.scroll_bar.set_scroll_from_start_percentage(1)
-            self.needs_advanced = True
+            self.scroll_bar.set_scroll_from_start_percentage(1)
             self.scroll_bar.hide()
-            if self.html_text[-1] != SK_RETURN:
-                self.update_html()
 
     def update_html(self):
         self.html_text = self.get_html_text()
@@ -105,7 +109,7 @@ class ChoiceBox(pygame_gui.elements.UITextBox):
             f"<effect id={pygame_gui.TEXT_EFFECT_TYPING_APPEAR}>{self.prompt}</effect>"
         )
         # add all of the choices
-        if self.prompt_done:
+        if self.state == self.STATE_GETTING_ANSWER:
             for i, choice in enumerate(self.choices):
                 text += "\n"
                 if i == self.answer_index:
@@ -113,39 +117,50 @@ class ChoiceBox(pygame_gui.elements.UITextBox):
                     text += f"-<u>{choice}</u>"
                 else:
                     text += f" {choice}"
-        if self.needs_advanced:
-            text += SK_RETURN
         return text
 
     def process_event(self, event: pygame.event.Event):
         if not super().process_event(event):
-            if event.type == event_binding.BOUND_EVENT:
-                print(event.name)
-                if event.name == "choice pointer up" and self.prompt_done:
-                    self.answer_index = max(self.answer_index - 1, 0)
-                    self.update_html()
-                if event.name == "choice pointer down" and self.prompt_done:
-                    self.answer_index = min(
-                        self.answer_index + 1, len(self.choices) - 1
-                    )
-                    self.update_html()
-                if event.name == "choice picked":
-                    self.choose()
-                if event.name == "dialog advance" and self.needs_advanced:
-                    self.advance()
-            if event.type == pygame_gui.UI_TEXT_EFFECT_FINISHED:
-                if event.ui_element is self:
-                    self.needs_advanced = True
-                    self.update_html()
+            if self.state == self.STATE_WRITING_PROMPT:
+                if event.type == pygame_gui.UI_TEXT_EFFECT_FINISHED:
+                    if event.ui_element is self:
+                        self.state = self.STATE_GETTING_ANSWER
+                        self.update_html()
+                        if not self.choices:
+                            print("I soon will die")
+                            self.kill_timer = timer.Timer(1500, self.choose)
+                            self.state = self.STATE_COMPLETE
+            if self.state == self.STATE_GETTING_ANSWER:
+                if event.type == event_binding.BOUND_EVENT:
+                    if event.name == "dialog pointer up":
+                        self.answer_index = max(self.answer_index - 1, 0)
+                        self.update_html()
+                    if event.name == "dialog pointer down":
+                        self.answer_index = min(
+                            self.answer_index + 1, len(self.choices) - 1
+                        )
+                        self.update_html()
+                    if event.name == "dialog select":
+                        self.choose()
+            if self.state == self.STATE_COMPLETE:
+                if event.type == event_binding.BOUND_EVENT:
+                    if event.name == "dialog select":
+                        self.choose()
 
     def choose(self):
-        self.kill()
         self.chosen_index = self.answer_index
+        self.state = self.STATE_COMPLETE
+        self.kill()
+        self.on_kill(self.get_answer())
 
     def get_answer(self):
-        if self.chosen_index is None:
+        if not self.choices or self.chosen_index is None:
             return None
         return self.choices[self.chosen_index]
+
+    def update(self, time_delta: float):
+        super().update(time_delta)
+        self.kill_timer.update()
 
 
 def create_menu(
@@ -184,3 +199,10 @@ def create_menu(
     if len(return_values) == 1:
         return return_values[0]
     return return_values
+
+
+def get_dialog_rect(screen_size):
+    rect = pygame.Rect(0, 0, screen_size.x * 0.75, screen_size.y * 0.3)
+    rect.bottom = screen_size.y - 4
+    rect.centerx = screen_size.x // 2
+    return rect

@@ -1,4 +1,4 @@
-from bush import timer
+from bush import lorum_ipsum
 from scripts import base
 
 
@@ -6,16 +6,14 @@ class TestScript(base.EntityScript):
     def begin(self):
         super().begin()
         self.ask(
-            "How silly of a goober are you?",
-            (
-                "A little silly.",
-                "Pretty silly...",
-                "No comment.",
-                "So very ridiculously silly that this answer had to over flow a line or two!!!",
-            ),
-            self.end,
+            lorum_ipsum.lorum_ipsum + "  You're a silly goober.",
+            ("A", "B"),
+            self.reply,
         )
 
-    def end(self):
+    def reply(self, answer):
+        self.say(f"You said {answer}", self.end)
+
+    def end(self, _=0):
         print("Goodbye, you silly goober")
         super().end()

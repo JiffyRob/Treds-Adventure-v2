@@ -11,6 +11,7 @@ loader = asset_handler.glob_loader
 loader.base = "./resources"
 import custom_mapper
 import game_state
+import menu
 import sky
 from bush import asset_handler, joy_cursor, save_state, util, util_load
 from bush.ai import state
@@ -65,25 +66,23 @@ class Game:
         self.current_map = None
         self.player = None
         self.stack.push(game_state.MainMenu(self))
+        # dialogs
+        self.current_dialog = None
 
-    def dialog(self, text, on_finish=lambda interrupted: None):
-        try:
-            self.stack.get_current().dialog(text, on_finish)
-        except AttributeError:
-            print(
-                "Warning: current state does not support dialogs.  Aborting saying ",
-                text,
-            )
+    def reset_dialog(self):
+        if self.current_dialog is not None:
+            self.current_dialog.kill()
+            self.current_dialog = None
 
-    def prompt(self, prompt, choices, on_finish=lambda interrupted, answer: None):
-        try:
-            self.stack.get_current().prompt(prompt, choices, on_finish)
-        except AttributeError:
-            print(
-                "Warning: current state does not support dialogs.  Aborting asking ",
-                prompt,
-                choices,
-            )
+    def dialog(self, text, answers, on_finish=lambda interrupted: None):
+        self.reset_dialog()
+        self.current_dialog = menu.Dialog(
+            text,
+            answers,
+            on_finish,
+            menu.get_dialog_rect(self.screen_size),
+            self.stack.get_current().gui,
+        )
 
     def load_new_state(self, _):
         map_path = self.state.get("map", "engine")

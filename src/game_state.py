@@ -93,11 +93,6 @@ class MapState(GameState):
         self.main_group = groups["main"]
         self.player = groups["player"].sprite
         self.soundtrack = soundtrack
-        self.dialog_box = None
-        self.dialog_kill_callback = lambda interrupted: None
-        self.dialog_kill_timer = timer.Timer(2500, self.kill_dialog)
-        self.dialog_kill_timer.finish()
-        self.dialog_is_question = None
         if self.soundtrack is not None:
             music_player.play(self.soundtrack)
         gui = pygame_gui.UIManager(engine.screen_size, menu.THEME_PATH)
@@ -119,57 +114,15 @@ class MapState(GameState):
         super().__init__(map_name, engine, gui=gui)
         self.input_handler.update_bindings(loader.load("data/player_bindings.json"))
 
-    def dialog(self, text, on_finish=lambda interrupted: None):
-        self.kill_dialog()
-        self.dialog_kill_callback = on_finish
-        print(on_finish)
-        rect = pygame.Rect(
-            0, 0, self.engine.screen_size.x * 0.75, self.engine.screen_size.y * 0.3
-        )
-        rect.bottom = self.engine.screen_size.y - 4
-        rect.centerx = self.engine.screen_size.x // 2
-        self.dialog_box = pygame_gui.elements.UITextBox(text, rect, self.gui)
-        self.dialog_box.set_active_effect(pygame_gui.TEXT_EFFECT_TYPING_APPEAR)
-        self.dialog_is_question = False
-
-    def prompt(self, prompt, choices, on_finish=lambda interrupted, answer: None):
-        self.kill_dialog()
-        print(on_finish)
-        rect = pygame.Rect(
-            0, 0, self.engine.screen_size.x * 0.75, self.engine.screen_size.y * 0.3
-        )
-        rect.bottom = self.engine.screen_size.y - 4
-        rect.centerx = self.engine.screen_size.x // 2
-        self.dialog_box = menu.ChoiceBox(prompt, choices, rect, self.gui)
-        self.dialog_kill_callback = lambda interrupted: on_finish(
-            interrupted, self.dialog_box.get_answer()
-        )
-        self.dialog_is_question = True
-
-    def kill_dialog(self):
-        interrupted = False
-        if self.dialog_box is not None:
-            self.dialog_box.kill()
-            self.dialog_box = None
-            interrupted = True
-        self.dialog_kill_callback(interrupted)
-        self.dialog_kill_callback = lambda interrupted: None
-
     def update(self, dt=0.03):
         super().update(dt)
         self.sky.update(dt)
         self.main_group.update(dt)
-        self.dialog_kill_timer.update()
 
     def handle_events(self):
         for event in pygame.event.get():
             super().handle_event(event)
             self.player.event(event)
-            if (
-                event.type == pygame_gui.UI_TEXT_EFFECT_FINISHED
-                and not self.dialog_is_question
-            ):
-                self.dialog_kill_timer.reset()
 
     def draw(self, surface):
         self.main_group.draw(surface)
