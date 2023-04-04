@@ -36,5 +36,8 @@
   },
   "text_entry_line": {
     "prototype": "#silver"
+  },
+  "text_box": {
+    "prototype": "#silver"
   }
 }

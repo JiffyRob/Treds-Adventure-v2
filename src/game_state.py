@@ -101,7 +101,7 @@ class MapState(GameState):
             music_player.play(self.soundtrack)
         gui = pygame_gui.UIManager(engine.screen_size, menu.THEME_PATH)
         heart_images = loader.load(
-            "resources/hud/heart.png",
+            "hud/heart.png",
             loader=asset_handler.load_spritesheet,
             frame_size=(16, 16),
         )
