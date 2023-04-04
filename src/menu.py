@@ -2,6 +2,8 @@ import math
 
 import pygame
 import pygame_gui
+from pygame_gui.core.drawable_shapes import RectDrawableShape, RoundedRectangleShape
+from pygame_gui.core.utility import basic_blit
 
 from bush import event_binding, timer
 
@@ -79,35 +81,197 @@ class Dialog(pygame_gui.elements.UITextBox):
         **kwargs,
     ):
         self.prompt = html_prompt
+        self.word_queue = self.prompt.split(" ")
+        self.prompt_so_far = ""
         self.choices = html_choices
         self.answer_index = 0
         self.chosen_index = None
         self.state = self.STATE_WRITING_PROMPT
         self.on_kill = on_kill
         self.kill_timer = timer.Timer()
+        self.add_letter_timer = timer.Timer(10, self.add_letter, True)
         super().__init__("", relative_rect, manager, *args, **kwargs)
         self.line_spacing = 0.75
         self.update_html()
-        self.set_active_effect(
-            pygame_gui.TEXT_EFFECT_TYPING_APPEAR, {"time_per_letter": 0.02}
-        )
+
+    def add_letter(self):
+        if not self.prompt:
+            self.state = self.STATE_GETTING_ANSWER
+            self.update_html()
+            if not self.choices:
+                print("I soon will die")
+                self.kill_timer = timer.Timer(1500, self.choose)
+                self.state = self.STATE_COMPLETE
+        else:
+            self.prompt_so_far += self.prompt[0]
+            self.prompt = self.prompt[1:]
+            self.update_html()
 
     def rebuild(self):
-        super().rebuild()
-        # no scroll bar, stay at the bottom
+        """
+        Rebuild whatever needs building. (Modified to automatically scroll to the bottom)
+        """
         if self.scroll_bar is not None:
-            self.scroll_bar.set_scroll_from_start_percentage(1)
-            self.scroll_bar.hide()
+            self.scroll_bar.kill()
+            self.scroll_bar = None
+
+        # The text_wrap_area is the part of the text box that we try to keep the text inside
+        # of so that none  of it overlaps. Essentially we start with the containing box,
+        # subtract the border, then subtract the padding, then if necessary subtract the width
+        # of the scroll bar
+        self.rounded_corner_offset = int(
+            self.shape_corner_radius
+            - (math.sin(math.pi / 4) * self.shape_corner_radius)
+        )
+        self.text_wrap_rect = pygame.Rect(
+            (
+                self.rect[0]
+                + self.padding[0]
+                + self.border_width
+                + self.shadow_width
+                + self.rounded_corner_offset
+            ),
+            (
+                self.rect[1]
+                + self.padding[1]
+                + self.border_width
+                + self.shadow_width
+                + self.rounded_corner_offset
+            ),
+            max(
+                1,
+                (
+                    self.rect[2]
+                    - (self.padding[0] * 2)
+                    - (self.border_width * 2)
+                    - (self.shadow_width * 2)
+                    - (2 * self.rounded_corner_offset)
+                ),
+            ),
+            max(
+                1,
+                (
+                    self.rect[3]
+                    - (self.padding[1] * 2)
+                    - (self.border_width * 2)
+                    - (self.shadow_width * 2)
+                    - (2 * self.rounded_corner_offset)
+                ),
+            ),
+        )
+        if self.wrap_to_height or self.rect[3] == -1:
+            self.text_wrap_rect.height = -1
+        if self.rect[2] == -1:
+            self.text_wrap_rect.width = -1
+
+        drawable_area_size = (self.text_wrap_rect[2], self.text_wrap_rect[3])
+
+        # This gives us the height of the text at the 'width' of the text_wrap_area
+        self.parse_html_into_style_data()
+        if self.text_box_layout is not None:
+            if self.wrap_to_height or self.rect[3] == -1 or self.rect[2] == -1:
+                final_text_area_size = self.text_box_layout.layout_rect.size
+                new_dimensions = (
+                    (
+                        final_text_area_size[0]
+                        + (self.padding[0] * 2)
+                        + (self.border_width * 2)
+                        + (self.shadow_width * 2)
+                        + (2 * self.rounded_corner_offset)
+                    ),
+                    (
+                        final_text_area_size[1]
+                        + (self.padding[1] * 2)
+                        + (self.border_width * 2)
+                        + (self.shadow_width * 2)
+                        + (2 * self.rounded_corner_offset)
+                    ),
+                )
+                self.set_dimensions(new_dimensions)
+
+                # need to regen this because it was dynamically generated
+                drawable_area_size = (
+                    max(
+                        1,
+                        (
+                            self.rect[2]
+                            - (self.padding[0] * 2)
+                            - (self.border_width * 2)
+                            - (self.shadow_width * 2)
+                            - (2 * self.rounded_corner_offset)
+                        ),
+                    ),
+                    max(
+                        1,
+                        (
+                            self.rect[3]
+                            - (self.padding[1] * 2)
+                            - (self.border_width * 2)
+                            - (self.shadow_width * 2)
+                            - (2 * self.rounded_corner_offset)
+                        ),
+                    ),
+                )
+
+        theming_parameters = {
+            "normal_bg": self.background_colour,
+            "normal_border": self.border_colour,
+            "border_width": self.border_width,
+            "shadow_width": self.shadow_width,
+            "shape_corner_radius": self.shape_corner_radius,
+        }
+
+        if self.shape == "rectangle":
+            self.drawable_shape = RectDrawableShape(
+                self.rect, theming_parameters, ["normal"], self.ui_manager
+            )
+        elif self.shape == "rounded_rectangle":
+            self.drawable_shape = RoundedRectangleShape(
+                self.rect, theming_parameters, ["normal"], self.ui_manager
+            )
+
+        self.background_surf = self.drawable_shape.get_fresh_surface()
+
+        if self.rect.width <= 0 or self.rect.height <= 0:
+            return
+
+        drawable_area = pygame.Rect((0, 0), drawable_area_size)
+        drawable_area.bottom = self.text_box_layout.layout_rect.height
+        new_image = pygame.surface.Surface(
+            self.rect.size, flags=pygame.SRCALPHA, depth=32
+        )
+        new_image.fill(pygame.Color(0, 0, 0, 0))
+        basic_blit(new_image, self.background_surf, (0, 0))
+
+        basic_blit(
+            new_image,
+            self.text_box_layout.finalised_surface,
+            (
+                self.padding[0]
+                + self.border_width
+                + self.shadow_width
+                + self.rounded_corner_offset,
+                self.padding[1]
+                + self.border_width
+                + self.shadow_width
+                + self.rounded_corner_offset,
+            ),
+            drawable_area,
+        )
+
+        self._set_image(new_image)
+        self.link_hover_chunks = []
+        self.text_box_layout.add_chunks_to_hover_group(self.link_hover_chunks)
+
+        self.should_trigger_full_rebuild = False
+        self.full_rebuild_countdown = self.time_until_full_rebuild_after_changing_size
 
     def update_html(self):
         self.html_text = self.get_html_text()
         self.rebuild()
 
     def get_html_text(self):
-        # apply text effect to prompt
-        text = (
-            f"<effect id={pygame_gui.TEXT_EFFECT_TYPING_APPEAR}>{self.prompt}</effect>"
-        )
+        text = self.prompt_so_far
         # add all of the choices
         if self.state == self.STATE_GETTING_ANSWER:
             for i, choice in enumerate(self.choices):
@@ -121,15 +285,6 @@ class Dialog(pygame_gui.elements.UITextBox):
 
     def process_event(self, event: pygame.event.Event):
         if not super().process_event(event):
-            if self.state == self.STATE_WRITING_PROMPT:
-                if event.type == pygame_gui.UI_TEXT_EFFECT_FINISHED:
-                    if event.ui_element is self:
-                        self.state = self.STATE_GETTING_ANSWER
-                        self.update_html()
-                        if not self.choices:
-                            print("I soon will die")
-                            self.kill_timer = timer.Timer(1500, self.choose)
-                            self.state = self.STATE_COMPLETE
             if self.state == self.STATE_GETTING_ANSWER:
                 if event.type == event_binding.BOUND_EVENT:
                     if event.name == "dialog pointer up":
@@ -161,6 +316,7 @@ class Dialog(pygame_gui.elements.UITextBox):
     def update(self, time_delta: float):
         super().update(time_delta)
         self.kill_timer.update()
+        self.add_letter_timer.update()
 
 
 def create_menu(
