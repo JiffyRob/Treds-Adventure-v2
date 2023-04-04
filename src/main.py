@@ -58,7 +58,7 @@ class Game:
             load_hook=self.load_new_state,
         )
         # day/night
-        self.sky = sky.Sky(self.screen_size)
+        self.sky = sky.WeatherCycle(self.screen_size)
         # initial map load
         self.kill_dt = False
         self.map_loader = custom_mapper.MapLoader(self, self.state)

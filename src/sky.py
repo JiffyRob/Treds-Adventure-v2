@@ -1,48 +1,57 @@
 import pygame
 
-from bush import entity, timer
 
-
-class Sky(entity.Entity):
+class WeatherCycle:
     def __init__(self, size):
-        self.increment_speed = 30
-        self.min_darkness, self.max_darkness = self.darkness_range = 10, 120
-        self.day_time = (
-            0.2 * 60000
-        )  # first operand is time in minutes, for easy changing
-        self.night_time = 0.2 * 60000
-        self.current_timer = timer.Timer(0, lambda x=None: None)
-        self.current_increment = 0
-        self.darkness = self.min_darkness
-        self.current_timer = timer.Timer(self.day_time, self.start_night_transition)
-        super().__init__(
-            pygame.Rect((0, 0), size).center, pygame.Surface(size).convert()
-        )
+        self.surface = pygame.Surface(size).convert()
+        self.min_brightness, self.max_brightness = 0, 128
+        self.brightness_increment = 0
+        self.brightness = 255
+        # all units are milliseconds
+        self.time = 0
+        self.time_of_day = 0
+        self.day_length = 10_000
+        self.night_length = 7_000
+        self.transition_length = 2_000
+
+        self.start = pygame.time.get_ticks()
+        self.last_frame_time = self.start
+
+        self.transition_offset = 4_500
+
+    def get_date(self):
+        return (self.time // (self.day_length + self.night_length)) + 1
 
     def update(self, dt):
-        self.image.fill((self.darkness, self.darkness * 0.8, self.darkness * 0.8))
-        self.darkness += self.current_increment * dt
-        if self.darkness < self.min_darkness:
-            self.current_timer = timer.Timer(self.day_time, self.start_night_transition)
-            self.current_increment = 0
-            self.darkness = self.min_darkness
-        if self.darkness > self.max_darkness:
-            self.current_timer = timer.Timer(self.night_time, self.start_day_transition)
-            self.current_increment = 0
-            self.darkness = self.max_darkness
-        self.current_timer.update()
+        self.time += pygame.time.get_ticks() - self.last_frame_time
+        self.time_of_day = self.time % (self.day_length + self.night_length)
+        day_diff = self.time_of_day - self.day_length
+        if day_diff <= 0:
+            # it is daytime
+            # set brightness based on distance from the night point
+            # y=mx+b anyone?
+            self.brightness = (
+                ((self.max_brightness - self.min_brightness) / -self.transition_offset)
+                * day_diff
+            ) + self.min_brightness
+            self.brightness = min(self.max_brightness, self.brightness)
+        else:
+            # it is night time
+            night_diff = self.time_of_day - (self.day_length + self.night_length)
+            # basically what happens for day but in reverse
+            self.brightness = (
+                ((self.min_brightness - self.max_brightness) / -self.transition_offset)
+                * night_diff
+            ) + self.max_brightness
+            self.brightness = max(self.min_brightness, self.brightness)
+        self.last_frame_time = pygame.time.get_ticks()
 
-    def render(self, surface):
-        surface.blit(self.image, (0, 0), None, pygame.BLEND_SUB)
-
-    def stabilize_lighting(self):
-        self.current_increment = 0
-
-    def start_day_transition(self):
-        self.current_increment = -self.increment_speed
-
-    def start_night_transition(self):
-        self.current_increment = self.increment_speed
+    def render(self, surface: pygame.Surface):
+        # invert brightness over itself in order to subtract darkness
+        avg_brightness = (self.min_brightness + self.max_brightness) / 2
+        darkness = round(((avg_brightness - self.brightness) * 2) + self.brightness)
+        self.surface.fill((darkness, darkness, darkness))
+        surface.blit(self.surface, (0, 0), special_flags=pygame.BLEND_SUB)
 
     def is_day(self):
-        return self.darkness == self.min_darkness or self.current_increment > 0
+        return self.brightness < (self.min_brightness + self.max_brightness) / 2
