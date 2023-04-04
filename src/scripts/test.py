@@ -10,7 +10,8 @@ class TestScript(base.EntityScript):
             (
                 "A little silly.",
                 "Pretty silly...",
-                "So very ridiculously silly that this answer had to overflow a line or two!!!",
+                "No comment.",
+                "So very ridiculously silly that this answer had to over flow a line or two!!!",
             ),
             self.end,
         )

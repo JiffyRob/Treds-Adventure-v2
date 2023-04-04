@@ -2,10 +2,13 @@ import math
 
 import pygame
 import pygame_gui
+from pygame_gui.core.drawable_shapes import RectDrawableShape, RoundedRectangleShape
+from pygame_gui.core.utility import basic_blit
 
 from bush import event_binding
 
 THEME_PATH = "resources/data/ui_theme.json"
+SK_RETURN = "⒅"  # used for end of prompt
 
 
 class HeartMeter(pygame_gui.elements.UIImage):
@@ -72,8 +75,25 @@ class ChoiceBox(pygame_gui.elements.UITextBox):
         self.answer_index = 0
         self.chosen_index = None
         self.prompt_done = False
+        self.needs_advanced = False
         super().__init__(self.get_html_text(), relative_rect, manager, *args, **kwargs)
         self.set_active_effect(pygame_gui.TEXT_EFFECT_TYPING_APPEAR)
+        self.line_spacing = 0.75
+        self.rebuild()
+
+    def advance(self):
+        self.needs_advanced = False
+        if self.prompt in self.html_text:
+            self.prompt_done = True
+
+    def rebuild(self):
+        super().rebuild()
+        if self.scroll_bar is not None:
+            # self.scroll_bar.set_scroll_from_start_percentage(1)
+            self.needs_advanced = True
+            self.scroll_bar.hide()
+            if self.html_text[-1] != SK_RETURN:
+                self.update_html()
 
     def update_html(self):
         self.html_text = self.get_html_text()
@@ -90,27 +110,32 @@ class ChoiceBox(pygame_gui.elements.UITextBox):
                 text += "\n"
                 if i == self.answer_index:
                     # put a dash before selected answer
-                    text += f"-{choice}"
+                    text += f"-<u>{choice}</u>"
                 else:
                     text += f" {choice}"
+        if self.needs_advanced:
+            text += SK_RETURN
         return text
 
     def process_event(self, event: pygame.event.Event):
         if not super().process_event(event):
-            if self.prompt_done and event.type == event_binding.BOUND_EVENT:
-                if event.name == "choice pointer up":
+            if event.type == event_binding.BOUND_EVENT:
+                print(event.name)
+                if event.name == "choice pointer up" and self.prompt_done:
                     self.answer_index = max(self.answer_index - 1, 0)
                     self.update_html()
-                if event.name == "choice pointer down":
+                if event.name == "choice pointer down" and self.prompt_done:
                     self.answer_index = min(
                         self.answer_index + 1, len(self.choices) - 1
                     )
                     self.update_html()
                 if event.name == "choice picked":
                     self.choose()
+                if event.name == "dialog advance" and self.needs_advanced:
+                    self.advance()
             if event.type == pygame_gui.UI_TEXT_EFFECT_FINISHED:
                 if event.ui_element is self:
-                    self.prompt_done = True
+                    self.needs_advanced = True
                     self.update_html()
 
     def choose(self):
