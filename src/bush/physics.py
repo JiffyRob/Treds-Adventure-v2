@@ -111,6 +111,6 @@ def dynamic_collision(dynamic1, dynamic2, dt, _):
 def trigger_collision(dynamic, trigger, axis, _):
     # TODO
     if collision.collide_rect_mask(
-        dynamic.rect.move(-trigger.rect.left, -trigger.rect.top), trigger.mask
+        dynamic.collision_rect.move(-trigger.rect.left, -trigger.rect.top), trigger.mask
     ):
         trigger.on_collision(dynamic, axis)
