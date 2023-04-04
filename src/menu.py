@@ -99,9 +99,9 @@ class Dialog(pygame_gui.elements.UITextBox):
             self.state = self.STATE_GETTING_ANSWER
             self.update_html()
             if not self.choices:
-                print("I soon will die")
                 self.kill_timer = timer.Timer(1500, self.choose)
                 self.state = self.STATE_COMPLETE
+            self.add_letter_timer = timer.Timer()
         else:
             self.prompt_so_far += self.prompt[0]
             self.prompt = self.prompt[1:]
