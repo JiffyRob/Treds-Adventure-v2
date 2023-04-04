@@ -11,7 +11,11 @@ class MapLoader(mapping.MapLoader):
         self.collision_group = pygame.sprite.Group()
         self.group_creators = {
             "main": lambda map_size: group.TopDownGroup(
-                engine.screen_size, map_size, (0, 0), self.get_player()
+                engine.screen_size,
+                map_size,
+                (0, 0),
+                self.get_player(),
+                debug_physics=True,
             ),
             "player": lambda x: pygame.sprite.GroupSingle(),
             "collision": lambda x: pygame.sprite.Group(),

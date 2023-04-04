@@ -24,6 +24,7 @@ class Teleport(entity.Entity):
         self.physics_data = physics.PhysicsData(physics.TYPE_TRIGGER, collision_group)
         self.rect.size = (width, height)
         self.rect.topleft = pos
+        self.pos = pygame.Vector2(self.rect.center)
         self.mask = pygame.Mask(self.rect.size, True)
 
     def on_collision(self, collided, axis):

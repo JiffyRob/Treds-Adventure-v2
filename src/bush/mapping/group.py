@@ -48,6 +48,7 @@ class CameraGroup(pygame.sprite.LayeredUpdates):
         follow=None,
         only_upate_visible_sprites=True,
         border_overshoot=0,
+        debug_physics=False,
         *sprites
     ):
         super().__init__(*sprites)
@@ -60,6 +61,7 @@ class CameraGroup(pygame.sprite.LayeredUpdates):
         self.visible_rect = self.cam_rect.inflate(
             self.border_overshoot * 2, self.border_overshoot * 2
         )
+        self.debug_physics = debug_physics
 
     def is_visible(self, sprite):
         if sprite in self:
@@ -92,6 +94,14 @@ class CameraGroup(pygame.sprite.LayeredUpdates):
             if self.is_visible(sprite) or self.update_all:
                 pos = pygame.Vector2(sprite.rect.topleft) - offset
                 surface.blit(sprite.image, pos)
+        if self.debug_physics:
+            for sprite in self.sprites():
+                if self.is_visible(sprite) or self.update_all:
+                    pygame.draw.rect(surface, (0, 255, 0), sprite.rect.move(offset), 1)
+                    if hasattr(sprite, "collision_rect"):
+                        pygame.draw.rect(
+                            surface, (0, 0, 255), sprite.collision_rect.move(offset), 1
+                        )
 
     def limit(self):
         if self.cam_rect.height < self.map_rect.height:
