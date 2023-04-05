@@ -3,6 +3,7 @@ import os
 import pygame
 import pygame_gui
 
+import items
 import menu
 from bush import asset_handler, event_binding, sound_manager, timer
 from bush.ai import state
@@ -224,6 +225,14 @@ class PauseMenu(MenuState):
 
     def run_loadsave_menu(self):
         self.run_submenu(LoadSaveMenu)
+
+
+class ItemMenuState(MenuState):
+    def __init__(self, engine, supermenu):
+        super().__init__("ItemMenu", engine, supermenu=supermenu)
+
+    def rebuild(self):
+        self.gui = items.create_item_menu(self.engine.player.items)
 
 
 class LoadSaveMenu(MenuState):

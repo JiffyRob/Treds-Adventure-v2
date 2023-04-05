@@ -13,10 +13,13 @@ loader = asset_handler.glob_loader
 loader.base = "./resources"
 import custom_mapper
 import game_state
+import items
 import menu
 import sky
 from bush import asset_handler, joy_cursor, save_state, util, util_load
 from bush.ai import state
+
+raise SystemExit
 
 pygame.init()
 START_SPOTS = loader.load("data/player_start_positions.json")
