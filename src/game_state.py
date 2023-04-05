@@ -126,6 +126,14 @@ class MapState(GameState):
 
     def draw(self, surface):
         self.main_group.draw(surface)
+        pygame.draw.rect(
+            surface,
+            (255, 0, 0),
+            self.engine.player.get_interaction_rect().move(
+                self.main_group.cam_rect.topleft
+            ),
+            1,
+        )
         self.sky.render(surface)
         super().draw(surface)
 

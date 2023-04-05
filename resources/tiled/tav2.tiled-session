@@ -1,8 +1,8 @@
 {
     "activeFile": "maps/test_map.tmx",
     "expandedProjectPaths": [
-        ".",
-        "maps"
+        "maps",
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -36,11 +36,11 @@
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 0.75,
+            "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 239.33333333333331,
-                "y": 159.99999999999997
+                "x": 207.5,
+                "y": 236
             }
         },
         "maps/trees.tsx": {
@@ -53,7 +53,7 @@
             "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 21.75,
+                "x": 22,
                 "y": 64
             }
         },
@@ -199,6 +199,10 @@
     "project": "tav2.tiled-project",
     "property.type": "string",
     "recentFiles": [
+        "tilesets/interior.tsx",
+        "tilesets/interior_floor.tsx",
+        "maps/windmill.tmx",
+        "maps/test_map.tmx",
         "tilesets/boat.tsx",
         "tilesets/crane.tsx",
         "tilesets/dungeon.tsx",
@@ -206,10 +210,6 @@
         "tilesets/farmplant_orange.tsx",
         "tilesets/fish_net.tsx",
         "tilesets/flag.tsx",
-        "tilesets/floor_detail.tsx",
-        "tilesets/floor.tsx",
-        "tilesets/floorb.tsx",
-        "tilesets/hole.tsx",
-        "tilesets/interior_elements.tsx"
+        "tilesets/floor_detail.tsx"
     ]
 }

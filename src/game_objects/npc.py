@@ -15,9 +15,21 @@ class StaticNPC(base.StaticGameObject):
         id=None,
         layer=None,
         script=None,
+        interaction_script=None,
         **kwargs,
     ):
-        super().__init__(pos, surface, engine, groups, topleft, None, id, layer, script)
+        super().__init__(
+            pos,
+            surface,
+            engine,
+            groups,
+            topleft,
+            None,
+            id,
+            layer,
+            script,
+            interaction_script,
+        )
         self.physics_data = physics.PhysicsData(physics.TYPE_STATIC, None)
         self.mask = pygame.mask.from_surface(self.image)
         # TODO

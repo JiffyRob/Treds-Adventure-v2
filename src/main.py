@@ -15,7 +15,7 @@ import custom_mapper
 import game_state
 import menu
 import sky
-from bush import asset_handler, joy_cursor, save_state, util, util_load
+from bush import asset_handler, joy_cursor, save_state, util
 from bush.ai import state
 
 pygame.init()

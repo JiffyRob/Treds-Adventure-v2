@@ -203,6 +203,8 @@ class Player(base.DynamicGameObject):
 
     def get_interaction_rect(self):
         interaction_rect = self.rect.copy()
+        interaction_rect.height = interaction_rect.width
+        interaction_rect.midbottom = self.rect.midbottom
         interaction_rect.center += (
             util.string_direction_to_vec(util.round_string_direction(self.facing)) * 16
         )
