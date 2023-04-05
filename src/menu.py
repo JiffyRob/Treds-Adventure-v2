@@ -89,7 +89,7 @@ class Dialog(pygame_gui.elements.UITextBox):
         self.state = self.STATE_WRITING_PROMPT
         self.on_kill = on_kill
         self.kill_timer = timer.Timer()
-        self.add_letter_timer = timer.Timer(10, self.add_letter, True)
+        self.add_letter_timer = timer.Timer(20, self.add_letter, True)
         super().__init__("", relative_rect, manager, *args, **kwargs)
         self.line_spacing = 0.75
         self.update_html()
@@ -297,12 +297,13 @@ class Dialog(pygame_gui.elements.UITextBox):
                         self.update_html()
                     if event.name == "dialog select":
                         self.choose()
-            if self.state == self.STATE_COMPLETE:
+            if self.state == self.STATE_COMPLETE and not self.choices:
                 if event.type == event_binding.BOUND_EVENT:
                     if event.name == "dialog select":
                         self.choose()
 
     def choose(self):
+        print("chosen")
         self.chosen_index = self.answer_index
         self.state = self.STATE_COMPLETE
         self.kill()
