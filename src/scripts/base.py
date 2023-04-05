@@ -54,10 +54,10 @@ class Script:
         self.timer_list = []
 
     def say(self, text, on_finish=lambda interrupted: None):
-        self.engine.dialog(text, on_finish)
+        self.engine.dialog(text, (), on_finish)
 
-    def ask(self, question, *answers):
-        self.engine.dialog(question, *answers)
+    def ask(self, question, answers, on_finish=lambda interrupted, answer: None):
+        self.engine.dialog(question, answers, on_finish)
 
     def play_sound(self, sound_name):
         player.play(sound_name)

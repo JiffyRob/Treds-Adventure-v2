@@ -2,6 +2,8 @@
 Main - runs game and holds game loop.
 Has Access to all other modules
 """
+import queue
+
 import pygame
 
 import bush.sound_manager
@@ -11,6 +13,7 @@ loader = asset_handler.glob_loader
 loader.base = "./resources"
 import custom_mapper
 import game_state
+import menu
 import sky
 from bush import asset_handler, joy_cursor, save_state, util, util_load
 from bush.ai import state
@@ -65,15 +68,12 @@ class Game:
         self.current_map = None
         self.player = None
         self.stack.push(game_state.MainMenu(self))
+        # dialogs
+        self.dialog_queue = queue.Queue()
+        self.current_dialog = None
 
-    def dialog(self, text, on_finish=lambda interrupted: None):
-        try:
-            self.stack.get_current().dialog(text, on_finish)
-        except AttributeError:
-            print(
-                "Warning: current state does not support dialogs.  Aborting saying",
-                text,
-            )
+    def dialog(self, text, answers, on_finish=lambda interrupted: None):
+        self.dialog_queue.put((text, answers, on_finish))
 
     def load_new_state(self, _):
         map_path = self.state.get("map", "engine")
@@ -128,6 +128,17 @@ class Game:
                 print("Quitting due to stack emptiness")
                 self.quit()
                 continue
+            if self.current_dialog is not None and not self.current_dialog.alive():
+                self.current_dialog = None
+            if not self.dialog_queue.empty() and self.current_dialog is None:
+                text, answers, on_kill = self.dialog_queue.get()
+                self.current_dialog = menu.Dialog(
+                    text,
+                    answers,
+                    on_kill,
+                    menu.get_dialog_rect(self.screen_size),
+                    current_state.gui,
+                )
             current_state.update(dt)
             self.cursor_group.update(dt)
             self.screen.fill(self.bgcolor)
