@@ -10,13 +10,14 @@ Welcome to the development team!  Here is how to set things up to get coding.  T
    - Microsoft Visual Studio Code
    - Jetbrains Pycharm
 7. Run `pre-commit install` to setup pre-commit hooks.  Git commits will now fail if not properly formatted.
-8. Run `python main.py` and see if it runs.  If it does not contact me (@JiffyRob)
+8. Run `python run_game.py` and see if it runs.  If it does not contact me (@JiffyRob)
 
 # Dependency List
 For those of you who want to know what all these libraries do, here is a list:
  - pygame-ce (https://pyga.me) video, audio, vector math, sprites, etc
  - pytmx (https://pytmx.readthedocs.io/en/latest/) python map loading for .tmx maps
  - pygame-gui widgets for the ui and HUD
+ - 
 
 ...which reminds me:
 Maps are done with the Tiled Map Editor (https://www.mapeditor.org/).  You can open the project from the tiled directory in the repository.  It should have all the tilesets and object templtates you need to make maps.
