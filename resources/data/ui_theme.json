@@ -34,6 +34,27 @@
   "button": {
     "prototype": "#silver"
   },
+  "@item_button": {
+    "images": {
+      "normal_image": {
+        "package": "resources.hud",
+        "resource": "empty.png"
+      },
+      "hovered_image": {
+        "package": "resources.hud",
+        "resource": "empty-hovered.png"
+      },
+      "selected_image": {
+        "package": "resources.hud",
+        "resource": "empty-selected.png"
+      },
+      "disabled_image": {
+        "package": "resources.hud",
+        "resource": "empty.png"
+      }
+    }
+  },
+  "#item_button": {},
   "text_entry_line": {
     "prototype": "#silver"
   },

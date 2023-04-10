@@ -210,6 +210,7 @@ class PauseMenu(MenuState):
             engine,
             button_bindings={
                 "Resume": self.pop,
+                "Items": self.run_item_menu,
                 "Load/Save": self.run_loadsave_menu,
                 "Quit": engine.quit,
             },
@@ -219,20 +220,26 @@ class PauseMenu(MenuState):
     def rebuild(self):
         self.gui = menu.create_menu(
             "PauseMenu",
-            ["Resume", "Load/Save", "Quit"],
+            ["Resume", "Items", "Load/Save", "Quit"],
             self.engine.screen_size,
         )
+
+    def run_item_menu(self):
+        self.run_submenu(ItemMenu)
 
     def run_loadsave_menu(self):
         self.run_submenu(LoadSaveMenu)
 
 
-class ItemMenuState(MenuState):
+class ItemMenu(MenuState):
     def __init__(self, engine, supermenu):
         super().__init__("ItemMenu", engine, supermenu=supermenu)
+        self.button_dict = {}
 
     def rebuild(self):
-        self.gui = items.create_item_menu(self.engine.player.items)
+        self.gui, self.button_dict = items.create_item_menu(
+            self.engine.player.items, self.engine
+        )
 
 
 class LoadSaveMenu(MenuState):

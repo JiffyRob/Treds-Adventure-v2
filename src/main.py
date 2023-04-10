@@ -19,8 +19,6 @@ import sky
 from bush import asset_handler, joy_cursor, save_state, util, util_load
 from bush.ai import state
 
-raise SystemExit
-
 pygame.init()
 START_SPOTS = loader.load("data/player_start_positions.json")
 bush.sound_manager.music_player.add_tracks(
