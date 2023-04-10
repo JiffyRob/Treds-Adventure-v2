@@ -2,7 +2,10 @@
 Main - runs game and holds game loop.
 Has Access to all other modules
 """
+import os
 import queue
+
+os.chdir("..")
 
 import pygame
 
