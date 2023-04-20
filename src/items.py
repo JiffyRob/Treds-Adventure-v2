@@ -58,7 +58,7 @@ class ItemButton(pygame.sprite.DirtySprite):
         self.image = self.bg_images[self.state].copy()
         self.image.blit(self.item_image, (0, 0))
         if self.count:
-            number_pos = pygame.Vector2(self.rect.size) - (7, 8)
+            number_pos = pygame.Vector2(self.rect.size) - (5, 7)
             self.image.blit(self.count_image, number_pos)
         # self.dirty = 1  # redraw
 
@@ -164,7 +164,7 @@ def create_item_menu(player, engine, rebuild_callback):
     def get_item_button_data(items, rows=6, size=(32, 32), n=24):
         item_iter = iter(items.items())
         index = pygame.Vector2()
-        padding = 3
+        padding = 0
         w, h = size
         for _ in range(n):
             try:
@@ -179,7 +179,7 @@ def create_item_menu(player, engine, rebuild_callback):
                 index.x = 0
                 index.y += 1
 
-    menu_rect = pygame.Rect((0, 0), engine.screen_size - (192, 64))
+    menu_rect = pygame.Rect((0, 0), engine.screen_size - (192, 128))
     menu_rect.center = engine.screen_size / 2
     gui = ItemGUIGroup()
     bg = BGRect(menu_rect, 1, gui)
