@@ -163,6 +163,13 @@ class Player(base.DynamicGameObject):
         self.input_locked = False
         self.load_data()
 
+    def heal_mp(self, mp):
+        self.current_mana += mp
+
+    def equip(self, name):
+        # TODO
+        print("equipping", name, "but not really, coz that's not implemented yet!")
+
     def save_data(self):
         for field in self.save_fields:
             self.save_state.set(field, getattr(self, field), "player")

@@ -34,7 +34,7 @@
   "button": {
     "prototype": "#silver"
   },
-  "@item_button": {
+  "@item_buttons": {
     "images": {
       "normal_image": {
         "package": "resources.hud",
@@ -54,7 +54,6 @@
       }
     }
   },
-  "#item_button": {},
   "text_entry_line": {
     "prototype": "#silver"
   },

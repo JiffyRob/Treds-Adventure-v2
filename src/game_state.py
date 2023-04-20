@@ -237,9 +237,7 @@ class ItemMenu(MenuState):
         self.button_dict = {}
 
     def rebuild(self):
-        self.gui, self.button_dict = items.create_item_menu(
-            self.engine.player.items, self.engine
-        )
+        self.gui = items.create_item_menu(self.engine.player, self.engine, self.rebuild)
 
 
 class LoadSaveMenu(MenuState):
