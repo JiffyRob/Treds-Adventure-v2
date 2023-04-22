@@ -26,7 +26,8 @@ def create_menu(
     height = 30
     rect = pygame.Rect(0, 10, 100, height)
     rect.centerx = container_rect.width / 2
-    # pygame_gui.elements.UILabel(rect, menu_name, menu, container)
+    rect.topleft += pygame.Vector2(container_rect.topleft)
+    gui.Text(menu_name, gui.ANCHOR_MIDTOP, rect, 2, menu)
     skipped = []
     for i, button_name, on_click in zip(
         range(len(button_names)), button_names, button_functions

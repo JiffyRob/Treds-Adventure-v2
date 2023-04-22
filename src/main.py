@@ -17,7 +17,6 @@ loader.base = "./resources"
 import custom_mapper
 import game_state
 import gui
-import items
 import menu
 import sky
 from bush import asset_handler, joy_cursor, save_state, util

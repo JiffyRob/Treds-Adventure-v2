@@ -33,6 +33,25 @@ STATE_NEEDS_ADVNCED = 1
 STATE_GETTING_ANSWER = 2
 STATE_COMPLETE = 3
 
+# colors (based on ninja adventure palette)
+BLACK = (20, 27, 27)
+WHITE = (242, 234, 241)
+LIGHT_GREY = (171, 194, 188)
+LIGHT_BLUISH_GREY = (184, 220, 229)
+DARK_GREY = (78, 82, 74)
+BLUISH_GREEN = (74, 82, 112)
+
+BUTTON_BACKGROUND_COLORS = (LIGHT_GREY, LIGHT_BLUISH_GREY, DARK_GREY)
+BUTTON_TEXT_COLOR = BLACK
+BG_COLOR = BLACK
+BORDER_COLOR = BLUISH_GREEN
+TEXT_COLOR = WHITE
+COLORKEY = (0, 255, 0)
+
+# anchor constants for the Text object
+ANCHOR_TOPLEFT = 0
+ANCHOR_MIDTOP = 1
+
 
 class UIGroup(pygame.sprite.LayeredDirty):
     def draw_ui(self, surface):
@@ -51,7 +70,8 @@ class UIElement(pygame.sprite.DirtySprite):
         self.layer = layer
         self.add(group)  # have to add to group after setting layer
         self.image = pygame.Surface(self.rect.size).convert()
-        self.image.set_colorkey((0, 0, 0))
+        self.image.fill(COLORKEY)
+        self.image.set_colorkey(COLORKEY)
         self.dirty = 2  # dirty sprite function not currently implemented
 
     def pass_event(self, event):
@@ -68,8 +88,30 @@ class BGRect(UIElement):
     def __init__(self, rect, layer, group):
         super().__init__(rect, layer, group)
         self.image = pygame.Surface(self.rect.size).convert()
-        self.image.fill((20, 27, 27))
-        pygame.draw.rect(self.image, (74, 82, 112), ((0, 0), self.rect.size), 1)
+        self.image.fill(BG_COLOR)
+        pygame.draw.rect(self.image, BORDER_COLOR, ((0, 0), self.rect.size), 1)
+
+
+class Text(UIElement):
+    def __init__(self, text, anchor, rect, layer, group):
+        super().__init__(rect, layer, group)
+        self.text = text
+        self.anchor = anchor
+        self.rebuild()
+
+    def set_text(self, text):
+        self.text = text
+        self.rebuild()
+
+    def rebuild(self):
+        self.image.fill(COLORKEY)
+        text_surface = UI_FONT.render(
+            self.text, False, TEXT_COLOR, COLORKEY, self.rect.width
+        )
+        text_rect = text_surface.get_rect()
+        if self.anchor:
+            text_rect.centerx = self.rect.centerx - self.rect.left
+        self.image.blit(text_surface, text_rect.topleft)
 
 
 class Descriptionbox(UIElement):
@@ -87,10 +129,10 @@ class Descriptionbox(UIElement):
         pass
 
     def rebuild(self):
-        self.image.fill((0, 0, 0))
-        pygame.draw.rect(self.image, (74, 82, 112), ((0, 0), self.rect.size), 1)
+        self.image.fill(COLORKEY)
+        pygame.draw.rect(self.image, BORDER_COLOR, ((0, 0), self.rect.size), 1)
         text_surface = UI_FONT.render(
-            self.text, False, (242, 234, 241), (20, 27, 27), self.rect.width - 2
+            self.text, False, TEXT_COLOR, BG_COLOR, self.rect.width - 2
         )
         self.image.blit(text_surface, (1, 1))
         self.last_text = self.text
@@ -109,7 +151,7 @@ class ItemButton(UIElement):
         self.item_image = pygame.transform.scale(
             ITEM_IMAGES.get(self.name, "bug net"), self.rect.size
         )
-        self.count_image = NUMBER_FONT.render(str(self.count), False, (242, 234, 241))
+        self.count_image = NUMBER_FONT.render(str(self.count), False, TEXT_COLOR)
         self.state = STATE_NORMAL
         self.bg_images = [pygame.transform.scale(i, self.rect.size) for i in BG_IMAGES]
         self.image = None
@@ -153,18 +195,17 @@ class Button(UIElement):
     def __init__(self, text, on_click, rect, layer, group):
         super().__init__(rect, layer, group)
         self.text = text
-        self.text_surf = UI_FONT.render(self.text, False, (20, 27, 27))
+        self.text_surf = UI_FONT.render(self.text, False, BUTTON_TEXT_COLOR)
         self.text_rect = self.text_surf.get_rect(
             center=pygame.Vector2(self.rect.center) - self.rect.topleft
         )
         self.state = STATE_NORMAL
         self.on_click = on_click
-        self.bg_colors = ((171, 194, 188), (184, 220, 229), (121, 184, 206))
         self.rebuild()
 
     def rebuild(self):
-        self.image.fill(self.bg_colors[self.state])
-        pygame.draw.rect(self.image, (74, 82, 112), ((0, 0), self.rect.size), 1)
+        self.image.fill(BUTTON_BACKGROUND_COLORS[self.state])
+        pygame.draw.rect(self.image, BORDER_COLOR, ((0, 0), self.rect.size), 1)
         self.image.blit(self.text_surf, self.text_rect.topleft)
 
     def pass_event(self, event):
@@ -206,9 +247,9 @@ class TextInput(UIElement):
         self.rebuild()
 
     def rebuild(self):
-        self.image.fill((20, 27, 27))
+        self.image.fill(BLACK)
         text_surf = UI_FONT.render(
-            self.text + ("|" * self.cursor_on), False, (242, 234, 241)
+            self.text + ("|" * self.cursor_on), False, TEXT_COLOR
         )
         text_rect = text_surf.get_rect(left=1, centery=self.rect.height / 2)
         self.image.blit(text_surf, text_rect.topleft)
@@ -276,7 +317,7 @@ class MagicMeter(UIElement):
         self.rebuild()
 
     def rebuild(self):
-        self.image.fill((20, 27, 27))
+        self.image.fill(BLACK)
         pygame.draw.rect(self.image, (156, 101, 70), ((0, 0), self.rect.size), 1)
         percent_full = (
             self.sprite_to_monitor.current_mana / self.sprite_to_monitor.mana_capacity
@@ -311,7 +352,7 @@ class Dialog(UIElement):
         self.on_kill = on_kill
         self.add_letter_timer = timer.Timer(20, self.add_text, True)
         self.kill_timer = timer.Timer()
-        self.image.set_colorkey((0, 0, 0))
+        self.image.set_colorkey(COLORKEY)
         self.state = STATE_WRITING_PROMPT
         self.rebuild()
 
@@ -346,11 +387,11 @@ class Dialog(UIElement):
         return text
 
     def rebuild(self):
-        self.image.fill((0, 0, 0))
-        pygame.draw.rect(self.image, (74, 82, 112), ((0, 0), self.rect.size), 1)
+        self.image.fill(COLORKEY)
+        pygame.draw.rect(self.image, BORDER_COLOR, ((0, 0), self.rect.size), 1)
         text = self.get_full_text()
         text_surface = UI_FONT.render(
-            text, False, (242, 234, 241), None, self.rect.width - 2
+            text, False, TEXT_COLOR, None, self.rect.width - 2
         )
         text_rect = text_surface.get_rect(
             bottomleft=pygame.Vector2(self.rect.bottomleft)
