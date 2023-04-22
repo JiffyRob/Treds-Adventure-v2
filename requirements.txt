@@ -1,3 +1,2 @@
-pygame-gui
 pytmx
 pygame-ce

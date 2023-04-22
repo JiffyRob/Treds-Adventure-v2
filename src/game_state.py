@@ -2,7 +2,6 @@ import os
 from functools import partial
 
 import pygame
-import pygame_gui
 
 import gui
 import items
