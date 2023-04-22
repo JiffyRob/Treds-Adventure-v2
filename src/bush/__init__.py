@@ -9,6 +9,10 @@ But mostly because why not.
 Copyright 2022 - 2023 John Robinson and Zachary Matzek
 Distributed under MIT License
 """
+import pygame
+
+pygame.init()
+
 from bush import (
     ai,
     animation,
