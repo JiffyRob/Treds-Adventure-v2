@@ -2,7 +2,10 @@
 Main - runs game and holds game loop.
 Has Access to all other modules
 """
+import os
 import queue
+
+os.chdir("..")
 
 import pygame
 
@@ -13,6 +16,7 @@ loader = asset_handler.glob_loader
 loader.base = "./resources"
 import custom_mapper
 import game_state
+import items
 import menu
 import sky
 from bush import asset_handler, joy_cursor, save_state, util

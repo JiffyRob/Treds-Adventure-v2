@@ -39,8 +39,13 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
+<<<<<<< HEAD
                 "x": 207.5,
                 "y": 236
+=======
+                "x": 237.99999999999997,
+                "y": 158.66666666666663
+>>>>>>> items
             }
         },
         "maps/trees.tsx": {
@@ -53,8 +58,13 @@
             "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
+<<<<<<< HEAD
                 "x": 22,
                 "y": 64
+=======
+                "x": 71.25,
+                "y": 63.5
+>>>>>>> items
             }
         },
         "master.tsx": {

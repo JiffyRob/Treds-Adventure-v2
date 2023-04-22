@@ -142,7 +142,13 @@ class Player(base.DynamicGameObject):
         }
         self.current_mana = 6
         self.mana_capacity = 12
-        self.items = []
+        self.items = {
+            "sword": 1,
+            "cheddar": 3,
+            "empty bottle": 2,
+            "bug net": 1,
+            "key": 5,
+        }
         self.save_state = self.engine.state
         self.save_fields = (
             "current_mana",
@@ -156,6 +162,13 @@ class Player(base.DynamicGameObject):
         self.interactor = None
         self.input_locked = False
         self.load_data()
+
+    def heal_mp(self, mp):
+        self.current_mana += mp
+
+    def equip(self, name):
+        # TODO
+        print("equipping", name, "but not really, coz that's not implemented yet!")
 
     def save_data(self):
         for field in self.save_fields:

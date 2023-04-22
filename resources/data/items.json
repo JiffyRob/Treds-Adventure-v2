@@ -1,1 +1,109 @@
-{}
+{
+  "metadata": {
+    "max_stack_count": 10
+  },
+  "image_order": [
+    "empty",
+    "sword",
+    "bow",
+    "cheddar",
+    "white cheddar",
+    "empty bottle",
+    "green stuff",
+    "red stuff",
+    "yellow stuff",
+    "lead boots",
+    "bug net",
+    "key"
+  ],
+  "hud_order": [
+    "sword",
+    "bow",
+    "cheddar",
+    "white cheddar",
+    "key",
+    "empty bottle",
+    "green stuff",
+    "red stuff",
+    "yellow stuff",
+    "lead boots",
+    "but net"
+  ],
+  "data": {
+    "default": {
+      "type": "default",
+      "stack_count": 1,
+      "consume_to": null,
+      "params": {}
+    },
+    "tool": {},
+    "food": {
+      "consume_to": "empty",
+      "stack_count": 10,
+      "params": {
+        "hp": 0,
+        "mp": 0,
+        "hp_aftereffect": [0, 0, 0]
+      }
+    },
+    "empty": {},
+    "sword": {
+      "type": "tool",
+      "params": {
+        "tool_id": "sword"
+      }
+    },
+    "bow": {
+      "type": "tool",
+      "params": {
+        "tool_id": "bow"
+      }
+    },
+    "cheddar": {
+      "type": "food",
+      "params": {
+        "hp": 4
+      }
+    },
+    "white cheddar": {
+      "type": "food",
+      "params": {
+        "hp": 6
+      }
+    },
+    "green stuff": {
+      "type": "food",
+      "consume_to": "empty bottle",
+      "params": {
+        "mp": 1000
+      }
+    },
+    "red stuff": {
+      "type": "food",
+      "consume_to": "empty bottle",
+      "params": {
+        "hp": 1000
+      }
+    },
+    "yellow stuff": {
+      "type": "food",
+      "consume_to": "empty bottle",
+      "params": {
+        "hp_aftereffect": [1, 5, 45]
+      }
+    },
+    "empty bottle": {},
+    "lead boots": {
+      "type": "event"
+    },
+    "bug net": {
+      "type": "tool",
+      "params": {
+        "tool_id": "bug net"
+      }
+    },
+    "key": {
+      "type": "event"
+    }
+  }
+}

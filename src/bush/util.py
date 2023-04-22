@@ -13,8 +13,10 @@ METHOD_X = 2
 METHOD_Y = 3
 
 
-def debug_view(img):
+def debug_view(img, scale=False):
     screen = pygame.display.set_mode(img.get_size())
+    if scale:
+        screen = pygame.display.set_mode(img.get_size(), pygame.SCALED)
     clock = pygame.time.Clock()
     running = True
     while True:

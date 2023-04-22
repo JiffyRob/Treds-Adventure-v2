@@ -7,6 +7,12 @@
     "mana_capacity": 12,
     "current_health": 8,
     "health_capacity": 12,
-    "items": []
+    "items": {
+      "sword": 1,
+      "cheddar": 3,
+      "empty bottle": 2,
+      "bug net": 1,
+      "key": 5
+    }
   }
 }
