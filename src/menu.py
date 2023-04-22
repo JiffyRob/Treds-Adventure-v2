@@ -1,11 +1,6 @@
-import math
-
 import pygame
 
 import gui
-from bush import event_binding, timer
-
-THEME_PATH = "resources/data/ui_theme.json"
 
 
 def create_menu(

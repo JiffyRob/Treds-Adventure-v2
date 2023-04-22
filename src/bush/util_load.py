@@ -9,16 +9,18 @@ import pytmx
 
 ENCODING = "UTF-8"
 
+join = os.path.join
+
 
 def load_image(path):
     print("loading", path)
-    return pygame.image.load(os.path.join(path))
+    return pygame.image.load(join(path))
 
 
 def load_image_folder(path):
     img_extensions = "png", "jpg", "jpeg", "bmp"
     img_dict = {}
-    for entry in os.scandir(os.path.join(path)):
+    for entry in os.scandir(join(path)):
         if entry.is_file():
             *fname, extension = entry.name.split(".")
             if extension in img_extensions:
@@ -73,32 +75,32 @@ def save_image(image, path, extension=".png"):
 def load_audio(path):
     if not pygame.mixer.get_init():
         pygame.mixer.init()
-    return pygame.mixer.Sound(os.path.join(path))
+    return pygame.mixer.Sound(join(path))
 
 
 def load_text(path):
-    with open(os.path.join(path)) as file:
+    with open(join(path)) as file:
         return file.read()
 
 
 def save_text(text, path):
-    with open(os.path.join(path), "w") as file:
+    with open(join(path), "w") as file:
         file.write(text)
 
 
 def load_json(path):
-    with open(os.path.join(path)) as file:
+    with open(join(path)) as file:
         return json.load(file)
 
 
 def save_json(data, path):
-    with open(os.path.join(path), "w") as file:
+    with open(join(path), "w") as file:
         json.dump(data, file)
 
 
 def load_csv(path, delimiter=",", quotechar='"', escapechar=""):
     grid = []
-    with open(os.path.join(path)) as file:
+    with open(join(path)) as file:
         reader = csv.reader(
             file, delimiter=delimiter, quotechar=quotechar, escapechar=escapechar
         )
@@ -108,7 +110,7 @@ def load_csv(path, delimiter=",", quotechar='"', escapechar=""):
 
 
 def save_csv(grid, path, delimiter=",", quotechar='"', escapechar=""):
-    with open(os.path.join(path)) as file:
+    with open(join(path)) as file:
         writer = csv.writer(
             file, delimiter=delimiter, quotechar=quotechar, escapechar=escapechar
         )
@@ -120,7 +122,7 @@ def save_csv(grid, path, delimiter=",", quotechar='"', escapechar=""):
 
 def load_csv_simple(path, delimiter=","):
     grid = []
-    with open(os.path.join(path)) as file:
+    with open(join(path)) as file:
         for item in file.read().split(delimiter):
             grid.append(item.strip())
     return grid
@@ -128,27 +130,27 @@ def load_csv_simple(path, delimiter=","):
 
 def save_csv_simple(data, path, delimiter=", "):
     string = delimiter.join(data)
-    with open(os.path.join(path), "w") as file:
+    with open(join(path), "w") as file:
         file.write(string)
 
 
 def load_pickle(path):
-    with open(os.path.join(path), "rb") as file:
+    with open(join(path), "rb") as file:
         return pickle.load(file)
 
 
 def save_pickle(data, path):
-    with open(os.path.join(path), "wb") as file:
+    with open(join(path), "wb") as file:
         pickle.dump(data, file)
 
 
 def load_pickle_secure(path):
-    with open(os.path.join(path)) as file:
+    with open(join(path)) as file:
         return json.loads(pickle.load(file))
 
 
 def save_pickle_secure(data, path):
-    with open(os.path.join(path), "w") as file:
+    with open(join(path), "w") as file:
         pickle.dump(json.dumps(data), file)
 
 
@@ -157,12 +159,12 @@ def load_map(path):
 
 
 def load_world(path):
-    with open(os.path.join(path)) as file:
+    with open(join(path)) as file:
         world_data = json.loads(file.read())
     maps = world_data["maps"]
     export_data = {}
     for map_data in maps:
-        map_path = os.path.join(os.path.dirname(path), map_data["fileName"])
+        map_path = join(os.path.dirname(path), map_data["fileName"])
         tmx_map = load_map(map_path)
         rect = (
             map_data["x"],
