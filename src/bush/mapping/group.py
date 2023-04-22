@@ -97,10 +97,10 @@ class CameraGroup(pygame.sprite.LayeredUpdates):
         if self.debug_physics:
             for sprite in self.sprites():
                 if self.is_visible(sprite) or self.update_all:
-                    pygame.draw.rect(surface, (0, 255, 0), sprite.rect.move(offset), 1)
+                    pygame.draw.rect(surface, (0, 255, 0), sprite.rect.move(-offset), 1)
                     if hasattr(sprite, "collision_rect"):
                         pygame.draw.rect(
-                            surface, (0, 0, 255), sprite.collision_rect.move(offset), 1
+                            surface, (0, 0, 255), sprite.collision_rect.move(-offset), 1
                         )
 
     def limit(self):

@@ -82,7 +82,7 @@ class Game:
         self.stack.clear()
         self.stack.push(game_state.MainMenu(self))
         self.player = None
-        self.load_map(map_path, START_SPOTS[map_path], push=True)
+        self.load_map(map_path, START_SPOTS.get(map_path, (0, 0)), push=True)
 
     def save_state(self, _):
         self.player.save_data()

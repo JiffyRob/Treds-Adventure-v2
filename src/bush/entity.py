@@ -10,7 +10,7 @@ import pygame
 from bush import animation
 
 
-class Entity(pygame.sprite.Sprite):
+class Entity(pygame.sprite.DirtySprite):
     """Basic Entity"""
 
     def __init__(
@@ -35,6 +35,7 @@ class Entity(pygame.sprite.Sprite):
         if layer is not None:
             self._layer = layer
         self._id = id
+        self.dirty = 2
 
     def get_id(self):
         return deepcopy(self._id)

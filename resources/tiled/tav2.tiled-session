@@ -1,4 +1,8 @@
 {
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
     "activeFile": "",
     "expandedProjectPaths": [
     ],
@@ -10,8 +14,36 @@
                 "x": 240.14408645187115,
                 "y": 160.89653792275365
             }
+        },
+        "maps/big_map.tmx": {
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 0.78078125,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 320.1921152691615,
+                "y": 320.83249949969985
+            }
+        },
+        "maps/test_map.tmx": {
+            "expandedObjectLayers": [
+                3,
+                7
+            ],
+            "scale": 1,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 215,
+                "y": 103.5
+            }
         }
     },
+    "map.height": 40,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 40,
     "openFiles": [
     ],
     "project": "tav2.tiled-project",
