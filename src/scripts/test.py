@@ -1,4 +1,4 @@
-from bush import lorum_ipsum
+from bush import text_util
 from scripts import base
 
 

@@ -1,6 +1,6 @@
 import pygame
 
-from bush import util_load
+from bush import timer, util_load
 
 ITEM_GLOB = util_load.load_json("resources/data/items.json")
 ITEM_IMAGES = dict(
@@ -138,3 +138,82 @@ class ItemButton(UIElement):
                 else:
                     self.state = STATE_NORMAL
                     self.rebuild()
+
+
+class Button(UIElement):
+    def __init__(self, text, on_click, rect, layer, group):
+        super().__init__(rect, layer, group)
+        self.text = text
+        self.text_surf = UI_FONT.render(self.text, False, (20, 27, 27))
+        self.text_rect = self.text_surf.get_rect(
+            center=pygame.Vector2(self.rect.center) - self.rect.topleft
+        )
+        self.state = STATE_NORMAL
+        self.on_click = on_click
+        self.bg_colors = ((171, 194, 188), (184, 220, 229), (121, 184, 206))
+        self.rebuild()
+
+    def rebuild(self):
+        self.image.fill(self.bg_colors[self.state])
+        pygame.draw.rect(self.image, (74, 82, 112), ((0, 0), self.rect.size), 1)
+        self.image.blit(self.text_surf, self.text_rect.topleft)
+
+    def pass_event(self, event):
+        if event.type == pygame.MOUSEMOTION:
+            if self.rect.collidepoint(event.pos):
+                if self.state == STATE_NORMAL:
+                    self.state = STATE_HOVERED
+                    self.rebuild()
+            elif self.state == STATE_HOVERED:
+                self.state = STATE_NORMAL
+                self.rebuild()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if self.rect.collidepoint(event.pos) and event.button == 1:
+                self.state = STATE_CLICKED
+                self.on_click()
+                self.rebuild()
+
+        if event.type == pygame.MOUSEBUTTONUP:
+            if event.button == 1:
+                if self.rect.collidepoint(event.pos):
+                    self.state = STATE_HOVERED
+                    self.rebuild()
+                else:
+                    self.state = STATE_NORMAL
+                    self.rebuild()
+
+
+class TextInput(UIElement):
+    def __init__(self, initial_text, allowed_characters, rect, layer, group):
+        super().__init__(rect, layer, group)
+        self.text = initial_text
+        self.allowed_characters = allowed_characters
+        self.cursor_on = True
+        self.cursor_timer = timer.Timer(500, self.toggle_cursor, True)
+        self.rebuild()
+
+    def toggle_cursor(self):
+        self.cursor_on = not self.cursor_on
+        self.rebuild()
+
+    def rebuild(self):
+        self.image.fill((20, 27, 27))
+        text_surf = UI_FONT.render(
+            self.text + ("|" * self.cursor_on), False, (242, 234, 241)
+        )
+        text_rect = text_surf.get_rect(left=1, centery=self.rect.height / 2)
+        self.image.blit(text_surf, text_rect.topleft)
+
+    def update(self, dt):
+        self.cursor_timer.update()
+
+    def pass_event(self, event):
+        if event.type == pygame.TEXTINPUT:
+            for char in event.text:
+                if char in self.allowed_characters:
+                    self.text += char
+            self.rebuild()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_BACKSPACE:
+                self.text = self.text[:-1]
+                self.rebuild()

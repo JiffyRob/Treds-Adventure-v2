@@ -5,6 +5,7 @@ import pygame_gui
 from pygame_gui.core.drawable_shapes import RectDrawableShape, RoundedRectangleShape
 from pygame_gui.core.utility import basic_blit
 
+import gui
 from bush import event_binding, timer
 
 THEME_PATH = "resources/data/ui_theme.json"
@@ -321,33 +322,35 @@ class Dialog(pygame_gui.elements.UITextBox):
 
 
 def create_menu(
-    menu_name, button_names, screen_size, return_container=False, return_skipped=False
+    menu_name,
+    button_names,
+    button_functions,
+    screen_size,
+    return_container=False,
+    return_skipped=False,
 ):
-    menu = pygame_gui.UIManager(screen_size, theme_path=THEME_PATH)
+    menu = gui.UIGroup()
     container_rect = pygame.Rect(
         (0, 0),
         (screen_size.x * 0.4, screen_size.y * 0.7),
     )
     container_rect.center = screen_size / 2
-    container = pygame_gui.elements.UIPanel(container_rect, 3, menu)
+    container = gui.BGRect(container_rect, 1, menu)
     height = 30
     rect = pygame.Rect(0, 10, 100, height)
     rect.centerx = container_rect.width / 2
-    pygame_gui.elements.UILabel(rect, menu_name, menu, container)
+    # pygame_gui.elements.UILabel(rect, menu_name, menu, container)
     skipped = []
-    for i, button_name in enumerate(button_names):
+    for i, button_name, on_click in zip(
+        range(len(button_names)), button_names, button_functions
+    ):
         rect = pygame.Rect((0, (i + 1) * (height + 2) + 10, 100, 30))
         rect.centerx = container_rect.width / 2
+        rect.topleft += pygame.Vector2(container_rect.topleft)
         if button_name == ":SKIP":
             skipped.append(rect)
             continue
-        pygame_gui.elements.UIButton(
-            rect,
-            button_name,
-            menu,
-            container,
-            generate_click_events_from=(pygame.BUTTON_LEFT, pygame.BUTTON_RIGHT),
-        )
+        gui.Button(button_name, on_click, rect, 2, menu)
     return_values = [menu]
     if return_container:
         return_values.append(container)
