@@ -1,3 +1,5 @@
+import math
+
 import pygame
 
 from bush import timer, util_load
@@ -15,7 +17,7 @@ BG_IMAGES = [
     util_load.load_image(f"resources/hud/{i}.png")
     for i in ("empty", "empty-hovered", "empty-selected")
 ]
-
+HEART_IMAGES = util_load.load_spritesheet("resources/hud/heart.png", (16, 16))
 UI_FONT = pygame.font.Font("resources/hud/silver.ttf")
 
 NUMBER_FONT = pygame.font.Font("resources/hud/TeenyTinyPixls.ttf", 5)
@@ -217,3 +219,75 @@ class TextInput(UIElement):
             if event.key == pygame.K_BACKSPACE:
                 self.text = self.text[:-1]
                 self.rebuild()
+
+
+class HeartMeter(UIElement):
+    def __init__(self, sprite, rect, layer, group):
+        super().__init__(rect, layer, group)
+        self.sprite_to_monitor = sprite
+        self.current_data = None
+        self.last_data = None
+        self.heart_size = pygame.Vector2(HEART_IMAGES[0].get_size())
+        self.rebuild()
+
+    def rebuild(self):
+        heart_count = math.ceil(
+            self.sprite_to_monitor.health_capacity / len(HEART_IMAGES)
+        )
+        self.image = pygame.Surface(
+            self.heart_size.elementwise() * (heart_count, 1), pygame.SRCALPHA
+        )
+        health_consumed = 0
+        for i in range(heart_count):
+            heart_index = min(
+                self.sprite_to_monitor.health_capacity - health_consumed,
+                len(HEART_IMAGES) - 1,
+            )
+            self.image.blit(HEART_IMAGES[heart_index], (i * self.heart_size.y, 0))
+        self.rect.size = self.image.get_size()
+        self.last_data = (
+            self.sprite_to_monitor.current_health,
+            self.sprite_to_monitor.health_capacity,
+        )
+
+    def update(self, dt):
+        super().update(dt)
+        self.current_data = (
+            self.sprite_to_monitor.current_health,
+            self.sprite_to_monitor.health_capacity,
+        )
+        if self.current_data != self.last_data:
+            self.rebuild()
+
+
+class MagicMeter(UIElement):
+    def __init__(self, sprite, rect, layer, group):
+        super().__init__(rect, layer, group)
+        self.sprite_to_monitor = sprite
+        self.current_data = None
+        self.last_data = None
+        self.rebuild()
+
+    def rebuild(self):
+        self.image.fill((20, 27, 27))
+        pygame.draw.rect(self.image, (156, 101, 70), ((0, 0), self.rect.size), 1)
+        percent_full = (
+            self.sprite_to_monitor.current_mana / self.sprite_to_monitor.mana_capacity
+        )
+        fill_rect = pygame.Rect(
+            1, 1, percent_full * (self.rect.width - 2), self.rect.height - 2
+        )
+        pygame.draw.rect(self.image, (116, 163, 52), fill_rect)
+        self.last_data = (
+            self.sprite_to_monitor.current_mana,
+            self.sprite_to_monitor.mana_capacity,
+        )
+
+    def update(self, dt):
+        super().update(dt)
+        self.current_data = (
+            self.sprite_to_monitor.current_mana,
+            self.sprite_to_monitor.mana_capacity,
+        )
+        if self.current_data != self.last_data:
+            self.rebuild()

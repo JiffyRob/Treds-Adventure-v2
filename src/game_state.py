@@ -98,23 +98,23 @@ class MapState(GameState):
         self.soundtrack = soundtrack
         if self.soundtrack is not None:
             music_player.play(self.soundtrack)
-        gui = pygame_gui.UIManager(engine.screen_size, menu.THEME_PATH)
-        heart_images = loader.load(
-            "hud/heart.png",
-            loader=asset_handler.load_spritesheet,
-            frame_size=(16, 16),
-        )
-        menu.HeartMeter(pygame.Rect(8, 8, -1, -1), heart_images, engine.player, gui)
+        hud = gui.UIGroup()
+        gui.HeartMeter(engine.player, pygame.Rect(8, 8, 1, 1), 1, hud)
         get_player_mana = (
             lambda: engine.player.current_mana / engine.player.mana_capacity
         )
+        """
         pygame_gui.elements.UIStatusBar(
             pygame.Rect(-68, 4, 64, 9),
-            gui,
+            hud,
             percent_method=get_player_mana,
             anchors={"top": "top", "right": "right"},
         )
-        super().__init__(map_name, engine, gui=gui)
+        """
+        rect = pygame.Rect(0, 4, 64, 9)
+        rect.right = engine.screen_size.x - 4
+        gui.MagicMeter(engine.player, rect, 1, hud)
+        super().__init__(map_name, engine, gui=hud)
         self.input_handler.update_bindings(loader.load("data/player_bindings.json"))
 
     def update(self, dt=0.03):
