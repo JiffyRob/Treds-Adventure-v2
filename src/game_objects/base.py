@@ -5,7 +5,9 @@ import scripts
 from bush import animation, asset_handler, entity, physics, sound_manager, timer, util
 
 player = sound_manager.glob_player
-loader = asset_handler.AssetHandler("resources/sprites")
+loader = asset_handler.AssetHandler(
+    asset_handler.join(asset_handler.glob_loader.base, "sprites")
+)
 
 
 class StaticGameObject(entity.Actor):

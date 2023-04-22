@@ -10,7 +10,9 @@ SPEED_RUNNING = 128
 from bush import animation, asset_handler, event_binding, physics, util
 from game_objects import base
 
-loader = asset_handler.AssetHandler("resources/sprites/player")
+loader = asset_handler.AssetHandler(
+    asset_handler.join(asset_handler.glob_loader.base, "sprites/player")
+)
 
 
 class Player(base.DynamicGameObject):

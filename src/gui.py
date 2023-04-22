@@ -2,25 +2,28 @@ import math
 
 import pygame
 
-from bush import event_binding, timer, util_load
+from bush import asset_handler, event_binding, timer
 
-ITEM_GLOB = util_load.load_json("resources/data/items.json")
+loader = asset_handler.glob_loader
+
+ITEM_GLOB = loader.load("data/items.json", cache=False)
 ITEM_IMAGES = dict(
     zip(
         ITEM_GLOB["image_order"],
-        util_load.load_spritesheet("resources/hud/items.png", (16, 16)),
+        loader.load_spritesheet("hud/items.png", (16, 16)),
     )
 )
 ITEM_DATA = ITEM_GLOB["data"]
 
 BG_IMAGES = [
-    util_load.load_image(f"resources/hud/{i}.png")
-    for i in ("empty", "empty-hovered", "empty-selected")
+    loader.load(f"hud/{i}.png") for i in ("empty", "empty-hovered", "empty-selected")
 ]
-HEART_IMAGES = util_load.load_spritesheet("resources/hud/heart.png", (16, 16))
-UI_FONT = pygame.font.Font("resources/hud/silver.ttf")
+HEART_IMAGES = loader.load_spritesheet("hud/heart.png", (16, 16))
+UI_FONT = pygame.font.Font(asset_handler.join(loader.base, "hud/silver.ttf"), 18)
 
-NUMBER_FONT = pygame.font.Font("resources/hud/TeenyTinyPixls.ttf", 5)
+NUMBER_FONT = pygame.font.Font(
+    asset_handler.join(loader.base, "hud/TeenyTinyPixls.ttf"), 5
+)
 
 # button states
 STATE_NORMAL = 0

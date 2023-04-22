@@ -2,10 +2,7 @@
 Main - runs game and holds game loop.
 Has Access to all other modules
 """
-import os
 import queue
-
-os.chdir("..")
 
 import pygame
 
@@ -13,7 +10,7 @@ import bush.sound_manager
 from bush import asset_handler
 
 loader = asset_handler.glob_loader
-loader.base = "./resources"
+loader.base = "../resources"
 import custom_mapper
 import game_state
 import gui
@@ -25,9 +22,10 @@ from bush.ai import state
 pygame.init()
 START_SPOTS = loader.load("data/player_start_positions.json")
 bush.sound_manager.music_player.add_tracks(
-    loader.load(
-        "data/music_tracks.json", cache=False
-    )  # This file will only be loaded once
+    {
+        key: asset_handler.join(loader.base, path)
+        for key, path in loader.load("data/music_tracks.json", cache=False).items()
+    }
 )
 
 
@@ -59,7 +57,7 @@ class Game:
         # game control state
         self.stack = state.StateStack()
         self.state = save_state.LeveledGameState(
-            "resources/data/saves",
+            asset_handler.join(loader.base, "data/saves"),
             "test_level.tmx",
             save_hook=self.save_state,
             load_hook=self.load_new_state,

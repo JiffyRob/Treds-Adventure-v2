@@ -55,10 +55,13 @@ class MapLoader(mapping.MapLoader):
         self.player_groups = ("main", "player")
         self.default_groups = ("main",)
         self.default_player_layer = 4  # second layer (default sub)
-        self.mask_loader = asset_handler.AssetHandler("resources/masks")
+        loader = asset_handler.glob_loader
+        self.mask_loader = asset_handler.AssetHandler(
+            asset_handler.join(loader.base, "masks")
+        )
         self.aux_cache = {}
         super().__init__(
-            "resources/tiled/maps",
+            asset_handler.join(loader.base, "tiled/maps"),
             sprite_creator=self.create_sprite,
             tile_handler=self.handle_tile,
         )

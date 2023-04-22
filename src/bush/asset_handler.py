@@ -98,5 +98,17 @@ class AssetHandler:
             self.type_dict[key] = {}
         gc.collect()
 
+    def load_spritesheet(
+        self, path, frame_size=(16, 16), margin=(0, 0), spacing=0, cache=True
+    ):
+        return self.load(
+            path,
+            loader=load_spritesheet,
+            frame_size=frame_size,
+            margin=margin,
+            spacing=spacing,
+            cache=cache,
+        )
+
 
 glob_loader = AssetHandler()
