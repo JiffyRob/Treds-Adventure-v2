@@ -357,6 +357,7 @@ class Dialog(UIElement):
         self.kill_timer = timer.Timer()
         self.image.set_colorkey(COLORKEY)
         self.state = STATE_WRITING_PROMPT
+        self.pad = 3
         self.rebuild()
 
     def update_text(self):
@@ -391,17 +392,17 @@ class Dialog(UIElement):
 
     def rebuild(self):
         self.image.fill(COLORKEY)
-        pygame.draw.rect(self.image, BORDER_COLOR, ((0, 0), self.rect.size), 1)
         text = self.get_full_text()
         text_surface = UI_FONT.render(
-            text, False, TEXT_COLOR, None, self.rect.width - 2
+            text, False, TEXT_COLOR, None, self.rect.width - (self.pad * 2)
         )
         text_rect = text_surface.get_rect(
             bottomleft=pygame.Vector2(self.rect.bottomleft)
-            + (0, -1)
+            + (self.pad, -self.pad)
             - self.rect.topleft
         )
         self.image.blit(text_surface, text_rect.topleft)
+        pygame.draw.rect(self.image, BORDER_COLOR, ((0, 0), self.rect.size), 1)
 
     def choose(self):
         print("chosen")
