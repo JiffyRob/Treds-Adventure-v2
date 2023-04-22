@@ -1,4 +1,5 @@
 import pygame
+import pygame.sprite
 
 import menu
 from bush import entity, util_load
@@ -18,6 +19,7 @@ BG_IMAGES = [
     for i in ("empty", "empty-hovered", "empty-selected")
 ]
 NUMBER_FONT = pygame.font.Font("resources/hud/TeenyTinyPixls.ttf", 5)
+UI_FONT = pygame.font.Font("resources/hud/silver.ttf")
 
 STATE_NORMAL = 0
 STATE_HOVERED = 1
@@ -34,11 +36,14 @@ class ItemGUIGroup(pygame.sprite.LayeredDirty):
 
 
 class ItemButton(pygame.sprite.DirtySprite):
-    def __init__(self, item_name, item_count, on_click, rect, layer, gui_group):
+    def __init__(
+        self, item_name, item_count, on_click, description_box, rect, layer, gui_group
+    ):
         super().__init__()
         self.name = item_name
         self.count = item_count
         self.on_click = on_click
+        self.description_box = description_box
         self.rect = rect
         self.layer = layer
         # the bug net is not implemented (as of writing this comment), so it will be the debug item image
@@ -67,6 +72,7 @@ class ItemButton(pygame.sprite.DirtySprite):
             if self.rect.collidepoint(event.pos):
                 if self.state == STATE_NORMAL:
                     self.state = STATE_HOVERED
+                    self.description_box.set_text(self.name)
                     self.rebuild()
             elif self.state == STATE_HOVERED:
                 self.state = STATE_NORMAL
@@ -85,6 +91,36 @@ class ItemButton(pygame.sprite.DirtySprite):
                 else:
                     self.state = STATE_NORMAL
                     self.rebuild()
+
+
+class Descriptionbox(pygame.sprite.DirtySprite):
+    def __init__(self, rect, layer, gui_group):
+        super().__init__()
+        self.text = ""
+        self.last_text = None
+        self.rect = rect
+        self.layer = layer
+        self.image = pygame.Surface(self.rect.size).convert()
+        self.image.set_colorkey((0, 0, 0))
+        self.rebuild()
+        self.dirty = 2
+        self.add(gui_group)
+
+    def set_text(self, text):
+        self.text = text
+        self.rebuild()
+
+    def pass_event(self, event):
+        pass
+
+    def rebuild(self):
+        self.image.fill((0, 0, 0))
+        pygame.draw.rect(self.image, (74, 82, 112), ((0, 0), self.rect.size), 1)
+        text_surface = UI_FONT.render(
+            self.text, False, (242, 234, 241), (20, 27, 27), self.rect.width - 2
+        )
+        self.image.blit(text_surface, (1, 1))
+        self.last_text = self.text
 
 
 class BGRect(pygame.sprite.DirtySprite):
@@ -111,15 +147,15 @@ class ItemCallback:
             **ITEM_DATA["default"],  # default item data
             **ITEM_DATA.get(
                 item_data.get("type", "default"), {}
-            ),  # default item data from item's type
+            ),  # default item data based off item type
             **item_data,  # item data
-        }
-        self.item_data["params"] = {
-            **ITEM_DATA["default"].get("params", {}),  # default item data
-            **ITEM_DATA.get(item_data.get("type", "default"), {}).get(
-                "params", {}
-            ),  # default item data from item's type
-            **item_data.get("params", {}),  # item data
+            "params": {
+                **ITEM_DATA["default"].get("params", {}),  # default item params
+                **ITEM_DATA.get(item_data.get("type", "default"), {}).get(
+                    "params", {}
+                ),  # default item params based on type
+                **item_data.get("params", {}),  # item params
+            },
         }
         # print(self.item_name, self.item_data)
         self.item_callback = {
@@ -172,7 +208,7 @@ def create_item_menu(player, engine, rebuild_callback):
             except StopIteration:
                 item, amount = "empty", 0
             position = index.elementwise() * (w + padding, h + padding)
-            position += (padding, padding)
+            position += (1, 1)
             yield item, amount, position
             index.x += 1
             if index.x >= rows:
@@ -183,14 +219,29 @@ def create_item_menu(player, engine, rebuild_callback):
     menu_rect.center = engine.screen_size / 2
     gui = ItemGUIGroup()
     bg = BGRect(menu_rect, 1, gui)
+
+    bottom_rect = pygame.Rect(menu_rect.left, 0, menu_rect.width, 100)
+    dbox = Descriptionbox(bottom_rect, 1, gui)
+
+    bottom = 0
     for name, amount, pos in get_item_button_data(player.items):
+        button_rect = pygame.Rect(pos + menu_rect.topleft, (32, 32))
         ItemButton(
             name,
             amount,
             ItemCallback(player, rebuild_callback, name),
-            pygame.Rect(pos + menu_rect.topleft, (32, 32)),
+            dbox,
+            button_rect,
             2,
             gui,
         )
+        bottom = button_rect.bottom
 
+    dbox.rect = pygame.Rect(
+        bottom_rect.left,
+        bottom,
+        bottom_rect.width,
+        menu_rect.top + (menu_rect.height - bottom),
+    )
+    dbox.rebuild()
     return gui
