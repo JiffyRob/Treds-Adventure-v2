@@ -10,6 +10,7 @@
   "KeyDown-left shift": "start running x",
   "KeyUp-left shift": "start walking x",
   "KeyDown-left ctrl": "interact",
+  "KeyDown-space": "tool",
 
   "JoyAxisMotion-1-back": "go up",
   "JoyAxisMotion-1-center": ["stop up", "stop down"],

@@ -7,6 +7,7 @@ SPEED_MEANDERING = 32
 SPEED_WALKING = 96
 SPEED_RUNNING = 128
 
+import tool
 from bush import animation, asset_handler, event_binding, physics, util
 from game_objects import base
 
@@ -164,13 +165,15 @@ class Player(base.DynamicGameObject):
         self.interactor = None
         self.input_locked = False
         self.load_data()
+        self.tool = None
 
     def heal_mp(self, mp):
         self.current_mana += mp
 
     def equip(self, name):
         # TODO
-        print("equipping", name, "but not really, coz that's not implemented yet!")
+        print("equipping", name)
+        self.tool = tool.get_tool(self, name)
 
     def save_data(self):
         for field in self.save_fields:
@@ -188,6 +191,8 @@ class Player(base.DynamicGameObject):
         words = command_name.split(" ")
         if words[0] == "interact":
             self.interact()
+        if words[0] == "tool" and self.tool is not None:
+            self.tool.use()
         if words[0] == "start":
             if words[1] == "meandering":
                 self.speeds[words[2]] = SPEED_MEANDERING
