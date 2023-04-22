@@ -267,10 +267,6 @@ class Dialog(pygame_gui.elements.UITextBox):
         self.should_trigger_full_rebuild = False
         self.full_rebuild_countdown = self.time_until_full_rebuild_after_changing_size
 
-    def update_html(self):
-        self.html_text = self.get_html_text()
-        self.rebuild()
-
     def get_html_text(self):
         text = self.prompt_so_far
         # add all of the choices

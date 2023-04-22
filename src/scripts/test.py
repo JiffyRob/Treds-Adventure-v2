@@ -7,7 +7,7 @@ class TestScript(base.EntityScript):
         super().begin()
         self.ask(
             "I have come to the conclusion that "
-            + lorum_ipsum.lorum_ipsum
+            + text_util.lorum_ipsum
             + "  You're a silly goober.",
             ("Am Not!", "Sure am."),
             self.reply,

@@ -16,6 +16,7 @@ loader = asset_handler.glob_loader
 loader.base = "./resources"
 import custom_mapper
 import game_state
+import gui
 import items
 import menu
 import sky
@@ -136,12 +137,13 @@ class Game:
                 self.current_dialog = None
             if not self.dialog_queue.empty() and self.current_dialog is None:
                 text, answers, on_kill = self.dialog_queue.get()
-                self.current_dialog = menu.Dialog(
+                self.current_dialog = gui.Dialog(
                     text,
                     answers,
                     on_kill,
                     menu.get_dialog_rect(self.screen_size),
-                    current_state.gui,
+                    1,
+                    self.stack.get_current().gui,
                 )
             current_state.update(dt)
             self.cursor_group.update(dt)

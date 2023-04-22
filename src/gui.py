@@ -2,7 +2,7 @@ import math
 
 import pygame
 
-from bush import timer, util_load
+from bush import event_binding, timer, util_load
 
 ITEM_GLOB = util_load.load_json("resources/data/items.json")
 ITEM_IMAGES = dict(
@@ -22,9 +22,16 @@ UI_FONT = pygame.font.Font("resources/hud/silver.ttf")
 
 NUMBER_FONT = pygame.font.Font("resources/hud/TeenyTinyPixls.ttf", 5)
 
+# button states
 STATE_NORMAL = 0
 STATE_HOVERED = 1
 STATE_CLICKED = 2
+
+# dialog states
+STATE_WRITING_PROMPT = 0
+STATE_NEEDS_ADVNCED = 1
+STATE_GETTING_ANSWER = 2
+STATE_COMPLETE = 3
 
 
 class UIGroup(pygame.sprite.LayeredDirty):
@@ -291,3 +298,99 @@ class MagicMeter(UIElement):
         )
         if self.current_data != self.last_data:
             self.rebuild()
+
+
+class Dialog(UIElement):
+    def __init__(self, text, answers, on_kill, rect, layer, group):
+        super().__init__(rect, layer, group)
+        self.text = text
+        self.displayed_text = ""
+        self.answers = answers
+        self.answer_index = 0
+        self.chosen_index = None
+        self.on_kill = on_kill
+        self.add_letter_timer = timer.Timer(20, self.add_text, True)
+        self.kill_timer = timer.Timer()
+        self.image.set_colorkey((0, 0, 0))
+        self.state = STATE_WRITING_PROMPT
+        self.rebuild()
+
+    def update_text(self):
+        self.rebuild()
+
+    def add_text(self):
+        if not self.text:
+            self.state = STATE_GETTING_ANSWER
+            self.update_text()
+            if not self.answers:
+                self.kill_timer = timer.Timer(1500, self.choose)
+                self.state = STATE_COMPLETE
+            self.add_letter_timer = timer.Timer()
+        else:
+            self.displayed_text += self.text[0]
+            self.text = self.text[1:]
+            self.update_text()
+
+    def get_full_text(self):
+        # beginning prompt
+        text = self.displayed_text
+        # add all of the choices
+        if self.state == STATE_GETTING_ANSWER:
+            for i, choice in enumerate(self.answers):
+                text += "\n"
+                if i == self.answer_index:
+                    # put a dash before selected answer
+                    text += f"-<u>{choice}</u>"
+                else:
+                    text += f" {choice}"
+        return text
+
+    def rebuild(self):
+        self.image.fill((0, 0, 0))
+        pygame.draw.rect(self.image, (74, 82, 112), ((0, 0), self.rect.size), 1)
+        text = self.get_full_text()
+        text_surface = UI_FONT.render(
+            text, False, (242, 234, 241), None, self.rect.width - 2
+        )
+        text_rect = text_surface.get_rect(
+            bottomleft=pygame.Vector2(self.rect.bottomleft)
+            + (0, -1)
+            - self.rect.topleft
+        )
+        self.image.blit(text_surface, text_rect.topleft)
+
+    def choose(self):
+        print("chosen")
+        self.chosen_index = self.answer_index
+        self.state = STATE_COMPLETE
+        self.kill()
+        self.on_kill(self.get_answer())
+
+    def get_answer(self):
+        if not self.answers or self.chosen_index is None:
+            return None
+        return self.answers[self.chosen_index]
+
+    def update(self, time_delta: float):
+        super().update(time_delta)
+        self.kill_timer.update()
+        self.add_letter_timer.update()
+        # print(self.text, self.displayed_text)
+
+    def pass_event(self, event):
+        if self.state == STATE_GETTING_ANSWER:
+            if event.type == event_binding.BOUND_EVENT:
+                if event.name == "dialog pointer up":
+                    self.answer_index = max(self.answer_index - 1, 0)
+                    self.update_text()
+                if event.name == "dialog pointer down":
+                    self.answer_index = min(
+                        self.answer_index + 1, len(self.answers) - 1
+                    )
+                    self.update_text()
+                if event.name == "dialog select":
+                    self.choose()
+        if self.state == STATE_COMPLETE and not self.answers:
+            if event.type == event_binding.BOUND_EVENT:
+                if event.name == "dialog select":
+                    self.choose()

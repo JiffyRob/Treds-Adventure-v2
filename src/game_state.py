@@ -103,14 +103,6 @@ class MapState(GameState):
         get_player_mana = (
             lambda: engine.player.current_mana / engine.player.mana_capacity
         )
-        """
-        pygame_gui.elements.UIStatusBar(
-            pygame.Rect(-68, 4, 64, 9),
-            hud,
-            percent_method=get_player_mana,
-            anchors={"top": "top", "right": "right"},
-        )
-        """
         rect = pygame.Rect(0, 4, 64, 9)
         rect.right = engine.screen_size.x - 4
         gui.MagicMeter(engine.player, rect, 1, hud)
