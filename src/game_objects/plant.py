@@ -1,6 +1,7 @@
 import pygame
 
-from bush import asset_handler, autotile, entity, physics, util_load
+from bush import asset_handler, autotile, collision, entity, physics, util, util_load
+from game_objects import base
 
 loader = asset_handler.glob_loader
 TREE_MASK = pygame.mask.from_surface(
@@ -19,6 +20,11 @@ FARMPLANT_IMAGES = {
     ),
 }
 
+# bush states
+STATE_GROUND = 0
+STATE_HELD = 1
+STATE_THROWN = 2
+
 
 def green_farmplant(*args, **kwargs):
     return FarmPlant("green", *args, **kwargs)
@@ -33,7 +39,7 @@ class FarmPlant(entity.Entity):
         self,
         color,
         pos,
-        image,
+        surface,
         collision_group=None,
         layer=5,
         farmplants_orange_group=None,
@@ -44,8 +50,8 @@ class FarmPlant(entity.Entity):
     ):
         self.color = color
         self.physics_data = physics.PhysicsData(physics.TYPE_STATIC, collision_group)
-        super().__init__(pos, image, layer=layer, id=id)
-        self.mask = pygame.mask.from_surface(image)
+        super().__init__(pos, surface, layer=layer, id=id)
+        self.mask = pygame.mask.from_surface(surface)
         self.autotile = autotile.BinaryAutotile(self.get_neighbors)
         self.farmplants_group = {
             "orange": farmplants_orange_group,
@@ -76,3 +82,76 @@ class FarmPlant(entity.Entity):
     def update(self, dt):
         super().update(dt)
         self.image = FARMPLANT_IMAGES[self.color][self.autotile.calculate()]
+
+
+class Throwable(base.StaticGameObject):
+    def __init__(
+        self,
+        pos,
+        surface,
+        engine,
+        layer=5,
+        id=None,
+        groups=(),
+        main_group=None,
+        *_,
+        **__
+    ):
+        super().__init__(pos, surface, engine, groups, True, id=id, layer=layer)
+        self.state = STATE_GROUND
+        self.velocity = pygame.Vector2()
+        self.dest_height = None
+        self.accum_height = 0
+        self.speed = 400
+        self.weight = 10
+        self.main_group = main_group
+
+    def pick_up(self):
+        if self.state == STATE_GROUND:
+            self.state = STATE_HELD
+            self.engine.player.carrying = self
+
+    def throw(self):
+        self.speed = 250
+        self.weight = 15
+        self.accum_height = 0
+        self.state = STATE_THROWN
+        self.engine.player.carrying = None
+        self.velocity = (
+            util.string_direction_to_vec(self.engine.player.facing) * self.speed
+        )
+        self.dest_height = self.engine.player.rect.bottom - self.rect.bottom
+        self.dest_height += self.engine.player.rect.height
+        if self.velocity.y > 0:
+            self.dest_height += 5
+
+    def position(self):
+        self.pos.update(self.engine.player.rect.midtop)
+
+    def update(self, dt):
+        super().update(dt)
+        if self.state == STATE_THROWN:
+            self.velocity += (0, self.weight)
+            self.velocity.scale_to_length(self.speed)
+            veloc = self.velocity * dt
+            self.pos += veloc
+            self.accum_height += self.accum_height + (self.weight * dt)
+            print(veloc)
+            if self.accum_height >= self.dest_height:
+                self.kill()
+            for sprite in self.main_group.sprites():
+                if collision.collides(self.rect, sprite.rect) and sprite not in {
+                    self.engine.player,
+                    self,
+                }:
+                    if hasattr(sprite, "mask"):
+                        if collision.collide_rect_mask(
+                            self.rect, sprite.mask, sprite.rect.topleft
+                        ):
+                            print("smash")
+                            self.kill()
+
+    def limit(self, map_rect):
+        if super().limit(map_rect):
+            return
+            self.kill()

@@ -24,6 +24,7 @@ class MapLoader(mapping.MapLoader):
             "farmplants_green": lambda x: pygame.sprite.Group(),
             "farmplants_orange": lambda x: pygame.sprite.Group(),
             "farmplants": lambda x: pygame.sprite.Group(),
+            "throwable": lambda x: pygame.sprite.Group(),
         }
         self.current_sprite_groups = None
         self.current_env_masks = None
@@ -33,6 +34,7 @@ class MapLoader(mapping.MapLoader):
             "teleport": teleport.Teleport,
             "npc-static": npc.StaticNPC,
             "npc-dynamic": npc.DynamicNPC,
+            "throwable": plant.Throwable,
         }
         self.sprite_groups = {
             "teleport": (
@@ -50,6 +52,10 @@ class MapLoader(mapping.MapLoader):
                 "collision",
                 "event",
                 "interactable",
+            ),
+            "throwable": (
+                "main",
+                "throwable",
             ),
         }
         self.player_groups = ("main", "player")
@@ -115,10 +121,9 @@ class MapLoader(mapping.MapLoader):
             self.current_sprite_groups[key]
             for key in self.sprite_groups.get(obj.type, self.default_groups)
         ]
-        print(obj.name, obj.type, obj.width, obj.height, obj.properties)
         obj.properties.pop("width", None)
         obj.properties.pop("height", None)
-        if obj.name != None:
+        if obj.name is not None:
             obj.properties["id"] = obj.name
         self.sprite_classes[obj.type](
             pos=obj.pos,

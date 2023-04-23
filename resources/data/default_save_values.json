@@ -1,6 +1,6 @@
 {
   "engine": {
-    "map": "big_map.tmx"
+    "map": "test_map.tmx"
   },
   "player": {
     "current_mana": 0,

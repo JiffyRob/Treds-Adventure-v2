@@ -46,7 +46,6 @@ class RandomWalkScript(base.EntityScript):
             and (self.last_pos - self.sprite.pos).length()
             < self.sprite.speed * dt * 0.5
         ):
-            print("bump")
             self.switch_timer.reset()
             self.switch_direc()
         self.last_pos = self.sprite.pos

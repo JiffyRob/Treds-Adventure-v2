@@ -24,7 +24,9 @@ class Player(base.DynamicGameObject):
         id: player's integer id
     """
 
-    def __init__(self, pos, layer, map_env, engine, interactable_group, **__):
+    def __init__(
+        self, pos, layer, map_env, engine, interactable_group, throwable_group, **__
+    ):
         tiny_frames = loader.load(
             "tiny.png", loader=asset_handler.load_spritesheet, frame_size=(16, 16)
         )
@@ -162,10 +164,12 @@ class Player(base.DynamicGameObject):
         )
         self.tiny = False
         self.interactable_group = interactable_group
+        self.throwable_group = throwable_group
         self.interactor = None
         self.input_locked = False
         self.load_data()
         self.tool = None
+        self.carrying = None
 
     def heal_mp(self, mp):
         self.current_mana += mp
@@ -193,6 +197,10 @@ class Player(base.DynamicGameObject):
             self.interact()
         if words[0] == "tool" and self.tool is not None:
             self.tool.use()
+        if words[0] == "lift":
+            self.pick_up()
+        if words[0] == "throw":
+            self.throw()
         if words[0] == "start":
             if words[1] == "meandering":
                 self.speeds[words[2]] = SPEED_MEANDERING
@@ -239,6 +247,17 @@ class Player(base.DynamicGameObject):
                 self.stop(True)
                 break
 
+    def pick_up(self):
+        for sprite in self.throwable_group.sprites():
+            if sprite.rect.colliderect(self.get_interaction_rect()):
+                sprite.pick_up()
+                break
+
+    def throw(self):
+        if self.carrying is not None:
+            self.carrying.throw()
+        self.carrying = None
+
     def change_collision_group(self, collision_group):
         self.physics_data = physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group)
 
@@ -266,6 +285,11 @@ class Player(base.DynamicGameObject):
                 self.input_locked = False
                 self.interactor = None
 
+    def update_throwable(self):
+        if self.carrying is not None:
+            self.carrying.position()
+
     def update(self, dt):
         self.current_mana = min(self.current_mana + (dt * 0.1), self.mana_capacity)
         super().update(dt)
+        self.update_throwable()

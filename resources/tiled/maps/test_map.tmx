@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="git" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="21">
+<map version="1.8" tiledversion="git" orientation="orthogonal" renderorder="right-down" width="30" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="25">
  <properties>
   <property name="track" value="old_theme"/>
  </properties>
@@ -8,6 +8,7 @@
  <tileset firstgid="8" source="../tilesets/floor.tsx"/>
  <tileset firstgid="580" source="../tilesets/trees.tsx"/>
  <tileset firstgid="592" source="../tilesets/npc.tsx"/>
+ <tileset firstgid="600" source="../tilesets/nature.tsx"/>
  <layer id="1" name="ground" width="30" height="20">
   <data encoding="csv">
 283,284,283,283,283,283,283,286,285,287,284,284,285,284,284,287,285,283,286,287,287,287,286,287,283,286,284,286,283,284,
@@ -76,6 +77,10 @@
     <property name="script" value="random-walk"/>
    </properties>
   </object>
+  <object id="21" type="throwable" gid="620" x="80" y="128" width="16" height="16"/>
+  <object id="22" type="throwable" gid="620" x="96" y="128" width="16" height="16"/>
+  <object id="23" type="throwable" gid="620" x="112" y="128" width="16" height="16"/>
+  <object id="24" type="throwable" gid="620" x="128" y="128" width="16" height="16"/>
  </objectgroup>
  <objectgroup id="7" name="objectsB">
   <object id="12" gid="4" x="0" y="0" width="64" height="128"/>

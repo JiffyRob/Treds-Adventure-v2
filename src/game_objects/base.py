@@ -41,6 +41,9 @@ class StaticGameObject(entity.Actor):
         self.anim_dict = anim_dict
         self.interacting = False
 
+    def update_rects(self):
+        self.rect.center = self.pos
+
     # scripting
     def update_script(self, dt):
         if self.script is not None:
@@ -86,8 +89,6 @@ class StaticGameObject(entity.Actor):
     def update_state(self):
         if self.pushed_state:
             self.state = self.pushed_state
-        else:
-            self.state = None
 
     # rendering
     def update_image(self):
