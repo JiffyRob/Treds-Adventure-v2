@@ -16,7 +16,7 @@ loader = asset_handler.AssetHandler(
 )
 
 
-class Player(base.DynamicGameObject):
+class Player(base.GameObject):
     """main player of the game
 
     Args:

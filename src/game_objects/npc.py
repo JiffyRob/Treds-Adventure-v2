@@ -4,7 +4,7 @@ from bush import physics
 from game_objects import base
 
 
-class StaticNPC(base.StaticGameObject):
+class StaticNPC(base.GameObject):
     def __init__(
         self,
         pos,
@@ -32,10 +32,15 @@ class StaticNPC(base.StaticGameObject):
         )
         self.physics_data = physics.PhysicsData(physics.TYPE_STATIC, None)
         self.mask = pygame.mask.from_surface(self.image)
-        # TODO
+        self.normal_script = script
+        self.interaction_script = interaction_script
+        self.run_script(self.normal_script)
+
+    def interact(self):
+        self.run_script(self.interaction_script)
 
 
-class DynamicNPC(base.DynamicGameObject):
+class DynamicNPC(base.GameObject):
     def __init__(
         self,
         pos,

@@ -84,7 +84,7 @@ class FarmPlant(entity.Entity):
         self.image = FARMPLANT_IMAGES[self.color][self.autotile.calculate()]
 
 
-class Throwable(base.StaticGameObject):
+class Throwable(base.GameObject):
     def __init__(
         self,
         pos,
