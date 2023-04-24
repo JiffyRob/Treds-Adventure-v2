@@ -16,25 +16,25 @@ class StaticNPC(base.GameObject):
         layer=None,
         script=None,
         interaction_script=None,
+        entity_group=None,
         **kwargs,
     ):
         super().__init__(
             pos,
-            surface,
             engine,
-            groups,
-            topleft,
-            None,
-            id,
-            layer,
-            script,
-            interaction_script,
+            surface,
+            groups=groups,
+            id=id,
+            layer=layer,
+            topleft=topleft,
+            entity_group=entity_group,
         )
         self.physics_data = physics.PhysicsData(physics.TYPE_STATIC, None)
         self.mask = pygame.mask.from_surface(self.image)
         self.normal_script = script
         self.interaction_script = interaction_script
-        self.run_script(self.normal_script)
+        if self.normal_script:
+            self.run_script(self.normal_script)
 
     def interact(self):
         self.run_script(self.interaction_script)
@@ -64,16 +64,18 @@ class DynamicNPC(base.GameObject):
             )
         super().__init__(
             pos,
-            surface,
             engine,
+            surface,
             physics_data=physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group),
             groups=groups,
             topleft=topleft,
             anim_dict=anim_dict,
             id=id,
             layer=layer,
-            script=script,
-            interaction_script=interaction_script,
         )
         self.mask = pygame.mask.from_surface(self.image)
+        self.normal_script = script
+        self.interaction_script = interaction_script
+        self.run_script(self.normal_script)
+        self.speed = 72
         # TODO

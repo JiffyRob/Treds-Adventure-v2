@@ -36,7 +36,7 @@ class RandomWalkScript(base.EntityScript):
             )
             self.stopped = False
         else:
-            self.sprite.stop()
+            self.sprite.velocity *= 0
             self.stopped = True
 
     def script_update(self, dt):

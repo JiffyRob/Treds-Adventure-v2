@@ -16,7 +16,7 @@ loader = asset_handler.AssetHandler(
 )
 
 
-class Player(base.GameObject):
+class Player(base.MobileGameObject):
     """main player of the game
 
     Args:
@@ -126,13 +126,10 @@ class Player(base.GameObject):
         }
         super().__init__(
             pos,
-            pygame.Surface((16, 16)),
             engine,
-            map_env=map_env,
             physics_data=physics.PhysicsData(
                 physics.TYPE_DYNAMIC, pygame.sprite.Group()
             ),
-            speed=72,
             anim_dict=anim_dict,
             id="player",
             layer=layer,
@@ -162,6 +159,7 @@ class Player(base.GameObject):
             "health_capacity",
             "items",
         )
+        self.map_env = map_env
         self.tiny = False
         self.interactable_group = interactable_group
         self.throwable_group = throwable_group
@@ -170,6 +168,12 @@ class Player(base.GameObject):
         self.load_data()
         self.tool = None
         self.carrying = None
+        self.facing = "down"
+        self.speed = 72
+
+    def kill(self):
+        print("game over")
+        super().kill()
 
     def heal_mp(self, mp):
         self.current_mana += mp
@@ -268,14 +272,10 @@ class Player(base.GameObject):
         self.rect = self.image.get_rect(center=self.pos)
         self.collision_rect = pygame.Rect(0, 0, 10, 10)
         self.collision_rect.midbottom = self.rect.midbottom
-        self.mask = pygame.Mask(self.rect.size, False)
-        self.mask.draw(
-            pygame.Mask(self.collision_rect.size, True),
-            self.collision_rect.topleft - pygame.Vector2(self.rect.topleft),
-        )
+        self.mask = pygame.Mask(self.rect.size, True)
 
-    def update_state(self):
-        super().update_state()
+    def update_state(self, dt):
+        super().update_state(dt)
         if self.tiny:
             self.state = "tiny " + self.state
         if self.interactor is not None:
@@ -290,6 +290,7 @@ class Player(base.GameObject):
             self.carrying.position()
 
     def update(self, dt):
+        print("player update")
         self.current_mana = min(self.current_mana + (dt * 0.1), self.mana_capacity)
         super().update(dt)
         self.update_throwable()

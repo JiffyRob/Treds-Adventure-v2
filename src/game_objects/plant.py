@@ -94,10 +94,11 @@ class Throwable(base.GameObject):
         id=None,
         groups=(),
         main_group=None,
+        topleft=False,
         *_,
         **__
     ):
-        super().__init__(pos, surface, engine, groups, True, id=id, layer=layer)
+        super().__init__(pos, engine, surface, None, groups, id, layer, topleft)
         self.state = STATE_GROUND
         self.velocity = pygame.Vector2()
         self.dest_height = None
