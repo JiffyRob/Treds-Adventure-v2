@@ -40,7 +40,7 @@ class StaticNPC(base.GameObject):
         self.run_script(self.interaction_script)
 
 
-class DynamicNPC(base.GameObject):
+class DynamicNPC(base.MobileGameObject):
     def __init__(
         self,
         pos,
@@ -79,3 +79,6 @@ class DynamicNPC(base.GameObject):
         self.run_script(self.normal_script)
         self.speed = 72
         # TODO
+
+    def get_anim_key(self):
+        return f"{self.state} {self.facing}"

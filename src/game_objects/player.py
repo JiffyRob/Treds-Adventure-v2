@@ -135,6 +135,7 @@ class Player(base.MobileGameObject):
             layer=layer,
             start_health=6,
             max_health=12,
+            initial_state="idle",
         )
         self.collision_rect = self.rect
         self.engine = engine
@@ -170,10 +171,6 @@ class Player(base.MobileGameObject):
         self.carrying = None
         self.facing = "down"
         self.speed = 72
-
-    def kill(self):
-        print("game over")
-        super().kill()
 
     def heal_mp(self, mp):
         self.current_mana += mp
@@ -272,12 +269,12 @@ class Player(base.MobileGameObject):
         self.rect = self.image.get_rect(center=self.pos)
         self.collision_rect = pygame.Rect(0, 0, 10, 10)
         self.collision_rect.midbottom = self.rect.midbottom
-        self.mask = pygame.Mask(self.rect.size, True)
+
+    def get_anim_key(self):
+        return ("tiny " * self.tiny) + f"{self.state} {self.facing}"
 
     def update_state(self, dt):
         super().update_state(dt)
-        if self.tiny:
-            self.state = "tiny " + self.state
         if self.interactor is not None:
             if self.interactor.interacting:
                 self.input_locked = True
@@ -290,7 +287,6 @@ class Player(base.MobileGameObject):
             self.carrying.position()
 
     def update(self, dt):
-        print("player update")
         self.current_mana = min(self.current_mana + (dt * 0.1), self.mana_capacity)
         super().update(dt)
         self.update_throwable()

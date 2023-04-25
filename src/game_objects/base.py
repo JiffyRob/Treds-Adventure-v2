@@ -1,7 +1,7 @@
 import pygame
 
 import scripts
-from bush import animation, asset_handler, entity, physics
+from bush import animation, asset_handler, entity, physics, util
 
 loader = asset_handler.AssetHandler(
     asset_handler.join(asset_handler.glob_loader.base, "sprites")
@@ -19,7 +19,7 @@ class GameObject(entity.Actor):
         id=None,
         layer=None,
         topleft=False,
-        beginning_state=None,
+        initial_state=None,
         entity_group=None,
         physics_data=None,
         start_health=1,
@@ -30,10 +30,10 @@ class GameObject(entity.Actor):
         self.anim_dict = {}
         if anim_dict is not None:
             self.anim_dict = anim_dict
-        if beginning_state is not None:
-            self.state = beginning_state
+        if initial_state is not None:
+            self.state = initial_state
         elif self.anim_dict:
-            self.state = next(iter(self.anim_dict.keys()))
+            self.state = "idle"
         else:
             self.state = None
         self.entity_group = entity_group
@@ -48,6 +48,8 @@ class GameObject(entity.Actor):
         self.current_health = start_health
         self.health_capacity = max_health
         self.desired_velocity = pygame.Vector2()
+        self.move_state = "walk"
+        self.idle_state = "idle"
 
     def get_anim_key(self):
         return self.state
@@ -91,12 +93,22 @@ class GameObject(entity.Actor):
         self.script_queue[-1].begin()
 
     def update_state(self, dt):
+        if self.desired_velocity:
+            if self.state == self.idle_state:
+                self.state = self.move_state
+            self.facing = util.round_string_direction(
+                util.string_direction(self.desired_velocity)
+            )
+        if not self.desired_velocity and self.state == self.move_state:
+            self.state = self.idle_state
         if self.pushed_state:
             self.state = self.pushed_state
 
     def update_image(self, dt):
         if self.anim_dict:
             self.anim = self.anim_dict[self.get_anim_key()]
+        if self.anim:
+            self.image = self.anim.image()
 
     def update_physics(self, dt):
         self.pos += self.velocity * dt
@@ -131,7 +143,7 @@ class MobileGameObject(GameObject):
         id=None,
         layer=None,
         topleft=False,
-        beginning_state=None,
+        initial_state=None,
         entity_group=None,
         physics_data=None,
         start_health=1,
@@ -146,7 +158,7 @@ class MobileGameObject(GameObject):
             id,
             layer,
             topleft,
-            beginning_state,
+            initial_state,
             entity_group,
             physics_data,
             start_health,
@@ -157,11 +169,17 @@ class MobileGameObject(GameObject):
             self.physics_data = physics.PhysicsData(
                 physics.TYPE_STATIC, pygame.sprite.Group()
             )
+        self.collision_rect = self.rect.copy()
+
+    def update_rects(self):
+        self.collision_rect.center = self.pos
+        self.rect.center = self.pos
 
     def get_anim_key(self):
         return f"{self.state} {self.facing}"
 
     def update_physics(self, dt):
+        self.velocity = self.desired_velocity  # TODO: add environment
         physics.dynamic_update(self, dt)
         self.update_rects()
 

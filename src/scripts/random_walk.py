@@ -23,14 +23,13 @@ class RandomWalkScript(base.EntityScript):
 
     def unpause(self):
         super().unpause()
-        print("unpause")
         self.switch_timer.reset()
         self.switch_direc()
 
     def switch_direc(self):
         if random.random() < 0.9:
             self.sprite.move(
-                pygame.Vector2(1, 0).rotate(
+                pygame.Vector2(self.sprite.speed, 0).rotate(
                     90 * random.choice((random.random() * 3, random.randint(0, 3)))
                 )
             )

@@ -65,7 +65,10 @@ class CameraGroup(pygame.sprite.LayeredUpdates):
 
     def is_visible(self, sprite):
         if sprite in self:
-            return sprite.rect.colliderect(self.visible_rect)
+            return sprite.rect.colliderect(self.visible_rect) or (
+                sprite.rect.size == (0, 0)
+                and self.visible_rect.collidepoint(sprite.rect.topleft)
+            )
         return False
 
     def update(self, *args, **kwargs):
