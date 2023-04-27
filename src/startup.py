@@ -13,5 +13,5 @@ pygame.display.flip()
 
 # load assets
 loader = asset_handler.glob_loader
-loader.base = "../resources"
+loader.base = "assets"
 loader.cache_folder()

@@ -36,7 +36,7 @@ class Game:
         self.caption = "Tred's Adventure"
         self.screen = None
         self.clock = pygame.time.Clock()
-        self.fps = 30
+        self.fps = 30 * (not util.is_pygbag())  # no framerate limiting on browser
         self.running = False
         self.bgcolor = (20, 27, 27)
         self.screen = pygame.display.set_mode(
@@ -104,7 +104,8 @@ class Game:
             )
 
     def toggle_fullscreen(self):
-        pygame.display.toggle_fullscreen()
+        if not util.is_pygbag():
+            pygame.display.toggle_fullscreen()
 
     def tick(self):
         dt = self.clock.tick(self.fps) / 1000
@@ -146,8 +147,8 @@ class Game:
             self.cursor_group.draw(self.screen)
             current_state.handle_events()
             pygame.display.flip()
-            dt = self.tick()
             await asyncio.sleep(0)
+            dt = self.tick()
 
         print("exiting game")
         pygame.quit()

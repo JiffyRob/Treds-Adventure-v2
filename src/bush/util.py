@@ -3,6 +3,8 @@ Bush util
 
 Basic utility module
 """
+import sys
+
 import pygame
 
 # Constants
@@ -150,3 +152,7 @@ class IDHandler:
     def reset(self, start: int):
         """Reset counter back to start"""
         self._current_id = start - 1
+
+
+def is_pygbag():
+    return sys.platform == "emscripten"
