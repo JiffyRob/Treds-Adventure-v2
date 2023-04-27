@@ -6,6 +6,7 @@ import startup
 
 print("assets loaded")
 
+import asyncio
 import queue
 
 import pygame
@@ -112,7 +113,7 @@ class Game:
         self.kill_dt = False
         return dt
 
-    def run(self):
+    async def run(self):
         self.screen = pygame.display.set_mode(
             util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE, vsync=0
         )
@@ -146,6 +147,7 @@ class Game:
             current_state.handle_events()
             pygame.display.flip()
             dt = self.tick()
+            await asyncio.sleep(0)
 
         print("exiting game")
         pygame.quit()
@@ -156,5 +158,5 @@ class Game:
         self.running = False
 
 
-def main():
-    Game().run()
+if __name__ == "__main__":
+    asyncio.run(Game().run())

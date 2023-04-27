@@ -15,7 +15,3 @@ pygame.display.flip()
 loader = asset_handler.glob_loader
 loader.base = "../resources"
 loader.cache_folder()
-
-# close splash
-pygame.quit()
-pygame.init()
