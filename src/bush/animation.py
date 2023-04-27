@@ -90,7 +90,6 @@ class MultiAnimation:
                 width = max(width, size[0])
                 height = max(height, size[1])
             self.size = width, height
-        print("MultiData", self.size, self.animations, self.positions)
 
     def __len__(self):
         return len(self.animations)

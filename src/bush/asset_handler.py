@@ -1,4 +1,5 @@
 import gc
+import os.path
 
 from bush.util_load import *
 
@@ -65,6 +66,28 @@ class AssetHandler:
         }
         self.base = os.path.join(default_directory)
 
+    def cache_folder(self, path=None):
+        if path is None:
+            path = self.base
+        for dirpath, dirnames, filenames in os.walk(path):
+            for filename in filenames:
+                if filename.split(".")[-1] in self.load_dict:
+                    file_path = join(dirpath, filename)
+                    file_path = os.path.relpath(file_path, self.base)
+                    self.load(file_path)
+
+    def cache_asset_handler(self, other):
+        for key, value in other.type_dict.items():
+            for path, resource in value.items():
+                filedir, filename = os.path.split(path)
+                filepath = join(filedir, filename)
+                if (
+                    os.path.commonpath({filedir, self.base}) == self.base
+                    and filepath not in self.type_dict[key]
+                ):
+                    self.type_dict[key][filepath] = resource
+                    print("caching", filepath)
+
     def set_home(self, path):
         self.base = os.path.join(path)
 
@@ -82,12 +105,17 @@ class AssetHandler:
         if filepath in self.type_dict[filetype]:
             return self.type_dict[filetype][filepath]
         # load file
+        print("loading", filepath)
         loader = loader or self.load_dict[filetype]
         result = loader(filepath, **kwargs)
         # add to cache if needed
         if cache:
             self.type_dict[filetype][filepath] = result
         return result
+
+    def load_sprite_sheet(self, path, size=(16, 16), margin=(0, 0), spacing=0):
+        image = self.load(path)
+        return make_spritesheet(image, size, margin, spacing)
 
     def save(self, data, path):
         filetype = path.split(".")[-1]

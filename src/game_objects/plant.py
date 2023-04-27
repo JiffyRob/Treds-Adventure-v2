@@ -75,7 +75,6 @@ class FarmPlant(entity.Entity):
             pos = tuple(sprite.pos)
             direction = positions.get(pos, None)
             if direction is not None:
-                print(direction, "found", pos)
                 neighbors[direction] = True
         return neighbors
 
@@ -136,7 +135,6 @@ class Throwable(base.StaticGameObject):
             veloc = self.velocity * dt
             self.pos += veloc
             self.accum_height += self.accum_height + (self.weight * dt)
-            print(veloc)
             if self.accum_height >= self.dest_height:
                 self.kill()
             for sprite in self.main_group.sprites():

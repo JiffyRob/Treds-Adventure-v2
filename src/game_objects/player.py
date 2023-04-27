@@ -14,6 +14,7 @@ from game_objects import base
 loader = asset_handler.AssetHandler(
     asset_handler.join(asset_handler.glob_loader.base, "sprites/player")
 )
+loader.cache_asset_handler(asset_handler.glob_loader)
 
 
 class Player(base.DynamicGameObject):
@@ -27,28 +28,22 @@ class Player(base.DynamicGameObject):
     def __init__(
         self, pos, layer, map_env, engine, interactable_group, throwable_group, **__
     ):
-        tiny_frames = loader.load(
-            "tiny.png", loader=asset_handler.load_spritesheet, frame_size=(16, 16)
-        )
-        foot_frames = loader.load(
+        tiny_frames = loader.load_sprite_sheet("tiny.png", (16, 16))
+        foot_frames = loader.load_sprite_sheet(
             "feet-default.png",
-            loader=asset_handler.load_spritesheet,
-            frame_size=(16, 32),
+            (16, 32),
         )
-        torso_frames = loader.load(
+        torso_frames = loader.load_sprite_sheet(
             "torso-default.png",
-            loader=asset_handler.load_spritesheet,
-            frame_size=(16, 32),
+            (16, 32),
         )
-        arm_frames = loader.load(
+        arm_frames = loader.load_sprite_sheet(
             "arms-default.png",
-            loader=asset_handler.load_spritesheet,
-            frame_size=(16, 32),
+            (16, 32),
         )
-        head_frames = loader.load(
+        head_frames = loader.load_sprite_sheet(
             "head-default.png",
-            loader=asset_handler.load_spritesheet,
-            frame_size=(16, 32),
+            (16, 32),
         )
         anim_dict = {
             "tiny walk down": animation.Animation(tiny_frames[0:16:4], 150),

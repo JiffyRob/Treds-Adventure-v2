@@ -23,7 +23,6 @@ def optimize_for_physics(group):
     rects = [None, None, None, None]
     for sprite in group.sprites():
         type = sprite.physics_data.type
-        print(groups[type], type)
         try:
             rects[type].union_ip(sprite.rect)
         except AttributeError:
@@ -95,7 +94,6 @@ def static_collision(dynamic, static, axis, stop_on_collision):
         direction_index = (direction_index + 1) % 3
         check_rect.center = check_pos
     if collided:
-        print(check_pos - start_pos, dynamic.pos)
         dynamic.pos += check_pos - start_pos
         dynamic.pos = pygame.Vector2(int(dynamic.pos.x), int(dynamic.pos.y))
     if collided and stop_on_collision:

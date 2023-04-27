@@ -10,7 +10,7 @@ ITEM_GLOB = loader.load("data/items.json", cache=False)
 ITEM_IMAGES = dict(
     zip(
         ITEM_GLOB["image_order"],
-        loader.load_spritesheet("hud/items.png", (16, 16)),
+        loader.load_sprite_sheet("hud/items.png", (16, 16)),
     )
 )
 ITEM_DATA = ITEM_GLOB["data"]
@@ -18,7 +18,7 @@ ITEM_DATA = ITEM_GLOB["data"]
 BG_IMAGES = [
     loader.load(f"hud/{i}.png") for i in ("empty", "empty-hovered", "empty-selected")
 ]
-HEART_IMAGES = loader.load_spritesheet("hud/heart.png", (16, 16))
+HEART_IMAGES = loader.load_sprite_sheet("hud/heart.png", (16, 16))
 UI_FONT = pygame.font.Font(asset_handler.join(loader.base, "hud/silver.ttf"), 18)
 
 NUMBER_FONT = pygame.font.Font(
