@@ -2,8 +2,8 @@ from collections import namedtuple
 from itertools import chain
 
 import pygame
-import pytmx
 
+import pytmx
 from bush import animation, asset_handler, entity, util
 
 TYPE_TILE = "tile"

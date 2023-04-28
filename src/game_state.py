@@ -284,7 +284,6 @@ class SaveMenu(MenuState):
         pass
 
     def save(self, name):
-        print("Saving", name)
         self.engine.state.save(name + EXT)
 
 
@@ -306,7 +305,6 @@ class LoadMenu(MenuState):
         self.save_names = [i for i in button_names if i != "Back"]
 
     def load(self, name):
-        print("Loading", name)
         path = name + EXT
         self.engine.state.load(path)
 
@@ -355,7 +353,6 @@ class NewSaveMenu(MenuState):
         self.text_input = gui.TextInput("", text_util.filename, skipped[0], 2, self.gui)
 
     def save(self):
-        print("Saving", self.text_input.text)
         path = self.text_input.text + EXT
         self.engine.state.load("../default_save_values.json")
         self.engine.state.save(path)
@@ -364,6 +361,5 @@ class NewSaveMenu(MenuState):
 def get_save_names(path):
     for dir_entry in os.scandir(path):
         name, ext = dir_entry.name.split(".")
-        print(name, ext)
         if ext == EXT[1:]:
             yield name

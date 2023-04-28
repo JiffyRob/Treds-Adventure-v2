@@ -65,6 +65,7 @@ class MapLoader(mapping.MapLoader):
         self.mask_loader = asset_handler.AssetHandler(
             asset_handler.join(loader.base, "masks")
         )
+        self.mask_loader.cache_asset_handler(asset_handler.glob_loader)
         self.aux_cache = {}
         super().__init__(
             asset_handler.join(loader.base, "tiled/maps"),

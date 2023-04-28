@@ -2,26 +2,26 @@
 Main - runs game and holds game loop.
 Has Access to all other modules
 """
+import startup
+
+print("assets loaded")
+
+import asyncio
 import queue
 
 import pygame
 
-import bush.sound_manager
-from bush import asset_handler
-
-loader = asset_handler.glob_loader
-loader.base = "../resources"
 import custom_mapper
 import game_state
 import gui
 import menu
 import sky
-from bush import asset_handler, joy_cursor, save_state, util
+from bush import asset_handler, joy_cursor, save_state, sound_manager, util
 from bush.ai import state
 
-pygame.init()
+loader = asset_handler.glob_loader
 START_SPOTS = loader.load("data/player_start_positions.json")
-bush.sound_manager.music_player.add_tracks(
+sound_manager.music_player.add_tracks(
     {
         key: asset_handler.join(loader.base, path)
         for key, path in loader.load("data/music_tracks.json", cache=False).items()
@@ -36,16 +36,15 @@ class Game:
         self.caption = "Tred's Adventure"
         self.screen = None
         self.clock = pygame.time.Clock()
-        self.fps = 30
+        self.fps = 30 * (not util.is_pygbag())  # no framerate limiting on browser
         self.running = False
         self.bgcolor = (20, 27, 27)
         self.screen = pygame.display.set_mode(
             util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE
         )
-        cursor_images = loader.load(
+        cursor_images = loader.load_sprite_sheet(
             "hud/cursor.png",
-            loader=asset_handler.load_spritesheet,
-            frame_size=(16, 16),
+            (16, 16),
         )
         self.cursor = joy_cursor.JoyCursor(
             pygame.transform.scale2x(cursor_images[0]),
@@ -95,7 +94,6 @@ class Game:
             tmx_path, self, player_pos
         )
         self.player = groups["player"].sprite
-        print(self.stack)
         if push is False or (push is None and self.stack.get_current() != "MainMenu"):
             self.stack.pop()
         self.stack.push(game_state.MapState("game map", groups, self, track))
@@ -106,7 +104,8 @@ class Game:
             )
 
     def toggle_fullscreen(self):
-        pygame.display.toggle_fullscreen()
+        if not util.is_pygbag():
+            pygame.display.toggle_fullscreen()
 
     def tick(self):
         dt = self.clock.tick(self.fps) / 1000
@@ -115,7 +114,7 @@ class Game:
         self.kill_dt = False
         return dt
 
-    def run(self):
+    async def run(self):
         self.screen = pygame.display.set_mode(
             util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE, vsync=0
         )
@@ -127,7 +126,6 @@ class Game:
         while self.running:
             current_state = self.stack.get_current()
             if current_state is None:
-                print("Quitting due to stack emptiness")
                 self.quit()
                 continue
             if self.current_dialog is not None and not self.current_dialog.alive():
@@ -149,6 +147,7 @@ class Game:
             self.cursor_group.draw(self.screen)
             current_state.handle_events()
             pygame.display.flip()
+            await asyncio.sleep(0)
             dt = self.tick()
 
         print("exiting game")
@@ -161,4 +160,4 @@ class Game:
 
 
 if __name__ == "__main__":
-    Game().run()
+    asyncio.run(Game().run())

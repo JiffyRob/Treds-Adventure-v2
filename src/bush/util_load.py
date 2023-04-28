@@ -5,6 +5,7 @@ import pickle
 import zlib
 
 import pygame
+
 import pytmx
 
 ENCODING = "UTF-8"
@@ -13,7 +14,6 @@ join = os.path.join
 
 
 def load_image(path):
-    print("loading", path)
     return pygame.image.load(join(path))
 
 
@@ -31,6 +31,10 @@ def load_image_folder(path):
 def load_spritesheet(path, frame_size, margin=(0, 0), spacing=0):
     # load image
     spritesheet = load_image(path)
+    return make_spritesheet(spritesheet, frame_size, margin, spacing)
+
+
+def make_spritesheet(spritesheet, frame_size, margin=(0, 0), spacing=0):
     # try to optimize the surface for drawing on the screen
     try:
         spritesheet = spritesheet.convert_alpha()

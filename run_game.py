@@ -1,3 +1,4 @@
+import asyncio
 import os
 import sys
 
@@ -6,4 +7,4 @@ sys.path.append("src")
 
 import main
 
-main.Game().run()
+asyncio.run(main.Game().run())

@@ -296,7 +296,6 @@ class EventHandler:
 
 def init_joysticks():
     pygame.joystick.init()
-    print(f"found {pygame.joystick.get_count()} joysticks")
     for i in range(pygame.joystick.get_count()):
         joy = pygame.joystick.Joystick(i)
         joy.init()
