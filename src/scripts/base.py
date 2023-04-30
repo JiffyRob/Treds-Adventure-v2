@@ -1,42 +1,48 @@
 import pygame
 
-from bush import sound_manager, timer
+from bush import sound_manager, util
 
 player = sound_manager.glob_player
+STATE_RUNNING = 0
+STATE_PAUSED = 1
+STATE_FINISHED = 2
 
 
 class Script:
     def __init__(self, engine, entity_group, other_groups):
         self.engine = engine
-        self.player = player
+        self.player = engine.player
         self.entity_group = entity_group
         self.other_groups = other_groups
         self.timer_list = []
         self.sky = self.engine.sky
-        self.running = False
-        self.complete = False
         self.talking = False
+        self.state = STATE_RUNNING
         self.init()
 
     def init(self):
         pass
 
-    def reset(self):
-        self.complete = False
+    def update(self, dt):
+        if self.state == STATE_RUNNING:
+            self.script_update(dt)
 
-    def begin(self):
-        self.running = True
-        self.complete = False
-
-    def end(self):
-        self.running = False
-        self.complete = True
+    def script_update(self, dt):
+        for timer_to_update in self.timer_list:
+            timer_to_update.update()
+        self.timer_list = [i for i in self.timer_list if i.time_left()]
 
     def pause(self):
-        self.running = False
+        self.state = STATE_PAUSED
 
     def unpause(self):
-        self.running = True
+        self.state = STATE_RUNNING
+
+    def finish(self):
+        self.state = STATE_FINISHED
+
+    def finished(self):
+        return self.state == STATE_FINISHED
 
     def get_entity(self, name):
         self.entity_group.get_by_id(name)
@@ -74,14 +80,11 @@ class Script:
         for thing in things:
             self.player.lose(thing)
 
-    def update(self, dt):
-        if self.running:
-            self.script_update(dt)
+    def freeze_player(self):
+        self.player.immobilize()
 
-    def script_update(self, dt):
-        for timer_to_update in self.timer_list:
-            timer_to_update.update()
-        self.timer_list = [i for i in self.timer_list if i.time_left()]
+    def unfreeze_player(self):
+        self.player.unimmobilize()
 
 
 class EntityScript(Script):
@@ -92,5 +95,7 @@ class EntityScript(Script):
     def get_sprite_state(self):
         return self.sprite.state  # TODO?
 
-    def is_finished(self):
-        return True
+    def face(self, sprite):
+        self.sprite.facing = util.round_string_direction(
+            util.string_direction(sprite.pos - self.sprite.pos)
+        )

@@ -159,7 +159,6 @@ class Player(base.MobileGameObject):
         self.tiny = False
         self.interactable_group = interactable_group
         self.throwable_group = throwable_group
-        self.interactor = None
         self.input_locked = False
         self.load_data()
         self.tool = None
@@ -175,6 +174,12 @@ class Player(base.MobileGameObject):
         print("equipping", name)
         self.tool = tool.get_tool(self, name)
 
+    def immobilize(self):
+        self.input_locked = True
+
+    def unimmobilize(self):
+        self.input_locked = False
+
     def save_data(self):
         for field in self.save_fields:
             self.save_state.set(field, getattr(self, field), "player")
@@ -184,10 +189,12 @@ class Player(base.MobileGameObject):
             setattr(self, field, self.save_state.get(field, "player"))
 
     def event(self, event):
-        if event.type == event_binding.BOUND_EVENT and not self.input_locked:
+        if event.type == event_binding.BOUND_EVENT:
             self.command(event.name)
 
     def command(self, command_name):
+        if self.input_locked:
+            return
         words = command_name.split(" ")
         if words[0] == "interact":
             self.interact()
@@ -239,8 +246,7 @@ class Player(base.MobileGameObject):
             if sprite.rect.colliderect(self.get_interaction_rect()):
                 sprite.interact()
                 print("interacting with sprite", sprite.get_id())
-                self.interactor = sprite
-                self.stop(True)
+                self.stop()
                 break
 
     def pick_up(self):
@@ -270,12 +276,6 @@ class Player(base.MobileGameObject):
 
     def update_state(self, dt):
         super().update_state(dt)
-        if self.interactor is not None:
-            if self.interactor.interacting:
-                self.input_locked = True
-            else:
-                self.input_locked = False
-                self.interactor = None
 
     def update_throwable(self):
         if self.carrying is not None:

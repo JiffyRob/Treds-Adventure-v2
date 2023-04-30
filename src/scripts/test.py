@@ -3,8 +3,7 @@ from scripts import base
 
 
 class TestScript(base.EntityScript):
-    def begin(self):
-        super().begin()
+    def init(self):
         self.ask(
             "I have come to the conclusion that "
             + text_util.lorum_ipsum
@@ -12,6 +11,7 @@ class TestScript(base.EntityScript):
             ("Am Not!", "Sure am."),
             self.reply,
         )
+        self.freeze_player()
 
     def reply(self, answer):
         print("reply")
@@ -23,4 +23,5 @@ class TestScript(base.EntityScript):
 
     def end(self, _=0):
         print("Goodbye, you silly goober")
-        super().end()
+        self.state = base.STATE_FINISHED
+        self.unfreeze_player()

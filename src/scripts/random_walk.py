@@ -9,12 +9,8 @@ from scripts import base
 class RandomWalkScript(base.EntityScript):
     def init(self):
         self.last_pos = self.sprite.pos
-        self.switch_timer = timer.Timer(1200, self.switch_direc, repeat=True)
+        self.switch_timer = timer.Timer(1200, self.switch_direc, repeat=False)
         self.stopped = False
-
-    def begin(self):
-        super().begin()
-        self.add_timer(self.switch_timer)
 
     def pause(self):
         super().pause()
@@ -37,9 +33,9 @@ class RandomWalkScript(base.EntityScript):
         else:
             self.sprite.velocity *= 0
             self.stopped = True
+        self.switch_timer = timer.Timer(1200, self.switch_direc)
 
     def script_update(self, dt):
-        super().script_update(dt)
         if (
             not self.stopped
             and (self.last_pos - self.sprite.pos).length()
@@ -48,3 +44,4 @@ class RandomWalkScript(base.EntityScript):
             self.switch_timer.reset()
             self.switch_direc()
         self.last_pos = self.sprite.pos
+        self.switch_timer.update()

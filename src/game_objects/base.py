@@ -91,7 +91,6 @@ class GameObject(entity.Actor):
         self.script_queue.append(
             scripts.get_script(script_name, self, self.engine, self.entity_group)
         )
-        self.script_queue[-1].begin()
 
     def update_state(self, dt):
         if self.desired_velocity:
@@ -118,7 +117,7 @@ class GameObject(entity.Actor):
     def update_script(self, dt):
         if self.script_queue:
             self.script_queue[-1].update(dt)
-            if self.script_queue[-1].complete:
+            if self.script_queue[-1].finished():
                 self.script_queue = self.script_queue[:-1]
                 self.script_queue[-1].unpause()
 
@@ -126,10 +125,10 @@ class GameObject(entity.Actor):
         self.rect.center = self.pos
 
     def update(self, dt):
-        self.update_script(dt)
         self.update_state(dt)
         self.update_physics(dt)
         self.update_image(dt)
+        self.update_script(dt)
         super().update(dt)
 
 
