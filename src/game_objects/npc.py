@@ -1,6 +1,7 @@
 import pygame
 
-from bush import physics
+import globals
+from bush import physics, util
 from game_objects import base
 
 
@@ -9,7 +10,6 @@ class StaticNPC(base.GameObject):
         self,
         pos,
         surface,
-        engine,
         groups=(),
         topleft=False,
         id=None,
@@ -21,7 +21,6 @@ class StaticNPC(base.GameObject):
     ):
         super().__init__(
             pos,
-            engine,
             surface,
             groups=groups,
             id=id,
@@ -45,7 +44,6 @@ class DynamicNPC(base.MobileGameObject):
         self,
         pos,
         surface,
-        engine,
         groups=(),
         topleft=False,
         anim_name=None,
@@ -64,7 +62,6 @@ class DynamicNPC(base.MobileGameObject):
             )
         super().__init__(
             pos,
-            engine,
             surface,
             physics_data=physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group),
             groups=groups,
@@ -81,6 +78,7 @@ class DynamicNPC(base.MobileGameObject):
         # TODO
 
     def interact(self):
+        self.facing = util.string_direction(globals.player.pos - self.pos)
         self.run_script(self.interaction_script)
 
     def get_anim_key(self):

@@ -1,5 +1,4 @@
-import pygame
-
+import globals
 from bush import sound_manager, util
 
 player = sound_manager.glob_player
@@ -9,13 +8,11 @@ STATE_FINISHED = 2
 
 
 class Script:
-    def __init__(self, engine, entity_group, other_groups):
-        self.engine = engine
-        self.player = engine.player
+    def __init__(self, entity_group, other_groups):
         self.entity_group = entity_group
         self.other_groups = other_groups
         self.timer_list = []
-        self.sky = self.engine.sky
+        self.sky = globals.engine.sky
         self.talking = False
         self.state = STATE_RUNNING
         self.init()
@@ -60,10 +57,10 @@ class Script:
         self.timer_list = []
 
     def say(self, text, on_finish=lambda interrupted: None):
-        self.engine.dialog(text, (), on_finish)
+        globals.engine.dialog(text, (), on_finish)
 
     def ask(self, question, answers, on_finish=lambda interrupted, answer: None):
-        self.engine.dialog(question, answers, on_finish)
+        globals.engine.dialog(question, answers, on_finish)
 
     def play_sound(self, sound_name):
         player.play(sound_name)
@@ -74,23 +71,23 @@ class Script:
 
     def give_player(self, *things):
         for thing in things:
-            self.player.get(thing)
+            globals.player.get(thing)
 
     def take_from_player(self, *things):
         for thing in things:
-            self.player.lose(thing)
+            globals.player.lose(thing)
 
     def freeze_player(self):
-        self.player.immobilize()
+        globals.player.immobilize()
 
     def unfreeze_player(self):
-        self.player.unimmobilize()
+        globals.player.unimmobilize()
 
 
 class EntityScript(Script):
-    def __init__(self, sprite, engine, entity_group, other_groups=None):
+    def __init__(self, sprite, entity_group, other_groups=None):
         self.sprite = sprite
-        super().__init__(engine, entity_group, other_groups)
+        super().__init__(entity_group, other_groups)
 
     def get_sprite_state(self):
         return self.sprite.state  # TODO?

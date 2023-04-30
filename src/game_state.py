@@ -3,6 +3,7 @@ from functools import partial
 
 import pygame
 
+import globals
 import gui
 import items
 import menu
@@ -21,14 +22,12 @@ class GameState(state.StackState):
     def __init__(
         self,
         value,
-        engine,
         on_push=lambda: None,
         on_pop=lambda: None,
         gui=None,
         enable_cursor=False,
     ):
-        self.engine = engine
-        self.cursor = engine.cursor
+        self.cursor = globals.engine.cursor
         self.input_handler = event_binding.EventHandler()
         self.input_handler.update_bindings(loader.load("data/game_bindings.json"))
         self.screen_surf = None
@@ -56,15 +55,13 @@ class GameState(state.StackState):
                 print("pop!")
                 self.pop()
             if event.name == "toggle fullscreen":
-                self.engine.toggle_fullscreen()
+                globals.engine.toggle_fullscreen()
             if event.name == "pause":
                 self._stack.push(
-                    PauseMenu(
-                        self.engine, screen_surf=pygame.display.get_surface().convert()
-                    )
+                    PauseMenu(screen_surf=pygame.display.get_surface().convert())
                 )
             if event.name == "quit":
-                self.engine.quit()
+                globals.engine.quit()
             if event.name == "add joystick":
                 self.input_handler.add_joystick(event.original_event.device_index)
             if event.name == "remove joystick":
@@ -89,23 +86,23 @@ class GameState(state.StackState):
 
 
 class MapState(GameState):
-    def __init__(self, map_name, groups, engine, soundtrack=None):
+    def __init__(self, map_name, groups, soundtrack=None):
         self.groups = groups
-        self.sky = engine.sky
+        self.sky = globals.engine.sky
         self.main_group = groups["main"]
         self.player = groups["player"].sprite
         self.soundtrack = soundtrack
         if self.soundtrack is not None:
             music_player.play(self.soundtrack)
         hud = gui.UIGroup()
-        gui.HeartMeter(engine.player, pygame.Rect(8, 8, 1, 1), 1, hud)
+        gui.HeartMeter(globals.player, pygame.Rect(8, 8, 1, 1), 1, hud)
         get_player_mana = (
-            lambda: engine.player.current_mana / engine.player.mana_capacity
+            lambda: globals.player.current_mana / globals.player.mana_capacity
         )
         rect = pygame.Rect(0, 4, 64, 9)
-        rect.right = engine.screen_size.x - 4
-        gui.MagicMeter(engine.player, rect, 1, hud)
-        super().__init__(map_name, engine, gui=hud)
+        rect.right = globals.engine.screen_size.x - 4
+        gui.MagicMeter(globals.player, rect, 1, hud)
+        super().__init__(map_name, gui=hud)
         self.input_handler.update_bindings(loader.load("data/player_bindings.json"))
 
     def update(self, dt=0.03):
@@ -124,7 +121,7 @@ class MapState(GameState):
             pygame.draw.rect(
                 surface,
                 (255, 0, 0),
-                self.engine.player.get_interaction_rect().move(
+                globals.player.get_interaction_rect().move(
                     -pygame.Vector2(self.main_group.cam_rect.topleft)
                 ),
                 1,
@@ -139,7 +136,6 @@ class ScriptedMapState(GameState):
         self.sky = engine.sky
         self.main_group = groups["main"]
         self.player = groups["player"].sprite
-        scripting_api = {"command-player": engine.player_command}
         self.interpreter = None  # TODO
         super().__init__(map_name, engine)
 
@@ -164,7 +160,6 @@ class MenuState(GameState):
     def __init__(
         self,
         value,
-        engine,
         on_push=None,
         on_pop=None,
         supermenu=None,
@@ -177,7 +172,7 @@ class MenuState(GameState):
                 on_pop = lambda: None
             else:
                 on_pop = lambda: supermenu.rebuild()
-        super().__init__(value, engine, on_push, on_pop, enable_cursor=True)
+        super().__init__(value, on_push, on_pop, enable_cursor=True)
         self.screen_surf = screen_surf
         if supermenu is not None and self.screen_surf is None:
             self.screen_surf = supermenu.screen_surf
@@ -198,14 +193,13 @@ class MenuState(GameState):
         super().handle_event(event)
 
     def run_submenu(self, menu_type, **kwargs):
-        self._stack.push(menu_type(engine=self.engine, supermenu=self, **kwargs))
+        self._stack.push(menu_type(supermenu=self, **kwargs))
 
 
 class PauseMenu(MenuState):
-    def __init__(self, engine, screen_surf):
+    def __init__(self, screen_surf):
         super().__init__(
             "PauseMenu",
-            engine,
             screen_surf=screen_surf,
         )
 
@@ -213,8 +207,8 @@ class PauseMenu(MenuState):
         self.gui = menu.create_menu(
             "PauseMenu",
             ["Resume", "Items", "Load/Save", "Quit"],
-            [self.pop, self.run_item_menu, self.run_loadsave_menu, self.engine.quit],
-            self.engine.screen_size,
+            [self.pop, self.run_item_menu, self.run_loadsave_menu, globals.engine.quit],
+            globals.engine.screen_size,
         )
 
     def run_item_menu(self):
@@ -225,19 +219,18 @@ class PauseMenu(MenuState):
 
 
 class ItemMenu(MenuState):
-    def __init__(self, engine, supermenu):
-        super().__init__("ItemMenu", engine, supermenu=supermenu)
+    def __init__(self, supermenu):
+        super().__init__("ItemMenu", supermenu=supermenu)
         self.button_dict = {}
 
     def rebuild(self):
-        self.gui = items.create_item_menu(self.engine.player, self.engine, self.rebuild)
+        self.gui = items.create_item_menu(globals.player, self.rebuild)
 
 
 class LoadSaveMenu(MenuState):
-    def __init__(self, engine, supermenu):
+    def __init__(self, supermenu):
         super().__init__(
             "LoadSaveMenu",
-            engine,
             supermenu=supermenu,
         )
 
@@ -246,7 +239,7 @@ class LoadSaveMenu(MenuState):
             "Load/Save",
             ["Load", "Save", "Back"],
             [self.run_load_menu, self.run_save_menu, self.pop],
-            self.engine.screen_size,
+            globals.engine.screen_size,
         )
 
     def run_load_menu(self):
@@ -257,23 +250,22 @@ class LoadSaveMenu(MenuState):
 
 
 class SaveMenu(MenuState):
-    def __init__(self, engine, supermenu):
+    def __init__(self, supermenu):
         self.save_names = []
         super().__init__(
             "SaveMenu",
-            engine,
             supermenu=supermenu,
         )
 
     def rebuild(self):
         button_names = []
         button_functions = []
-        for name in get_save_names(self.engine.state.loader.base):
+        for name in get_save_names(globals.engine.state.loader.base):
             button_names.append(name)
             button_functions.append(partial(self.save, name))
         button_names.append("Back")
         self.gui = menu.create_menu(
-            "Save", button_names, button_functions, self.engine.screen_size
+            "Save", button_names, button_functions, globals.engine.screen_size
         )
         self.save_names = [i for i in button_names if i != "Back"]
 
@@ -284,36 +276,35 @@ class SaveMenu(MenuState):
         pass
 
     def save(self, name):
-        self.engine.state.save(name + EXT)
+        globals.engine.state.save(name + EXT)
 
 
 class LoadMenu(MenuState):
-    def __init__(self, engine, supermenu):
+    def __init__(self, supermenu):
         self.save_names = []
-        super().__init__("LoadMenu", engine, supermenu=supermenu)
+        super().__init__("LoadMenu", supermenu=supermenu)
 
     def rebuild(self):
         button_names = []
         button_functions = []
-        for name in get_save_names(self.engine.state.loader.base):
+        for name in get_save_names(globals.engine.state.loader.base):
             button_names.append(name)
             button_functions.append(partial(self.load, name))
         button_names.append("Back")
         self.gui = menu.create_menu(
-            "Load", button_names, button_functions, self.engine.screen_size
+            "Load", button_names, button_functions, globals.engine.screen_size
         )
         self.save_names = [i for i in button_names if i != "Back"]
 
     def load(self, name):
         path = name + EXT
-        self.engine.state.load(path)
+        globals.engine.state.load(path)
 
 
 class MainMenu(MenuState):
-    def __init__(self, engine):
+    def __init__(self):
         super().__init__(
             "MainMenu",
-            engine,
             screen_surf=loader.load("hud/bg_forest.png"),
         )
 
@@ -322,7 +313,7 @@ class MainMenu(MenuState):
             "Tred's Adventure",
             ["New Game", "Load Game", "Quit"],
             [self.run_newmenu, self.run_loadmenu, self.pop],
-            self.engine.screen_size,
+            globals.engine.screen_size,
         )
 
     def run_newmenu(self):
@@ -333,11 +324,10 @@ class MainMenu(MenuState):
 
 
 class NewSaveMenu(MenuState):
-    def __init__(self, engine, supermenu):
+    def __init__(self, supermenu):
         self.text_input = None
         super().__init__(
             "NewSaveMenu",
-            engine,
             supermenu=supermenu,
         )
 
@@ -346,7 +336,7 @@ class NewSaveMenu(MenuState):
             "New Game",
             [":SKIP", "Confirm", "Back"],
             [None, self.save, self.pop],
-            self.engine.screen_size,
+            globals.engine.screen_size,
             return_container=True,
             return_skipped=True,
         )
@@ -354,8 +344,8 @@ class NewSaveMenu(MenuState):
 
     def save(self):
         path = self.text_input.text + EXT
-        self.engine.state.load("../default_save_values.json")
-        self.engine.state.save(path)
+        globals.engine.state.load("../default_save_values.json")
+        globals.engine.state.save(path)
 
 
 def get_save_names(path):

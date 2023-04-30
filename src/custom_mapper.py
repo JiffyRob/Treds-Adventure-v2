@@ -1,17 +1,18 @@
 import pygame
 
 import environment
+import globals
 from bush import asset_handler, entity, physics
 from bush.mapping import group, mapping
 from game_objects import npc, plant, player, teleport
 
 
 class MapLoader(mapping.MapLoader):
-    def __init__(self, engine, state):
+    def __init__(self):
         self.collision_group = pygame.sprite.Group()
         self.group_creators = {
             "main": lambda map_size: group.TopDownGroup(
-                engine.screen_size,
+                globals.engine.screen_size,
                 map_size,
                 (0, 0),
                 self.get_player(),
@@ -29,7 +30,6 @@ class MapLoader(mapping.MapLoader):
         self.current_sprite_groups = None
         self.current_env_masks = None
         self.current_player = None
-        self.engine = engine
         self.sprite_classes = {
             "teleport": teleport.Teleport,
             "npc-static": npc.StaticNPC,
@@ -135,7 +135,6 @@ class MapLoader(mapping.MapLoader):
             ),
             surface=obj.image,
             topleft=True,
-            engine=self.engine,
             width=obj.width,
             height=obj.height,
             **obj.properties,
@@ -182,7 +181,6 @@ class MapLoader(mapping.MapLoader):
             player_pos,
             4,
             environment.EnvironmentHandler(self.current_env_masks),
-            engine,
             **{
                 key + "_group": value
                 for key, value in self.current_sprite_groups.items()

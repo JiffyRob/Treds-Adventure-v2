@@ -3,13 +3,14 @@ player - class for the player
 """
 import pygame
 
-SPEED_MEANDERING = 32
-SPEED_WALKING = 96
-SPEED_RUNNING = 128
-
+import globals
 import tool
 from bush import animation, asset_handler, event_binding, physics, util
 from game_objects import base
+
+SPEED_MEANDERING = 32
+SPEED_WALKING = 96
+SPEED_RUNNING = 128
 
 loader = asset_handler.AssetHandler(
     asset_handler.join(asset_handler.glob_loader.base, "sprites/player")
@@ -25,9 +26,7 @@ class Player(base.MobileGameObject):
         id: player's integer id
     """
 
-    def __init__(
-        self, pos, layer, map_env, engine, interactable_group, throwable_group, **__
-    ):
+    def __init__(self, pos, layer, map_env, interactable_group, throwable_group, **__):
         tiny_frames = loader.load_sprite_sheet("tiny.png", (16, 16))
         foot_frames = loader.load_sprite_sheet(
             "feet-default.png",
@@ -121,7 +120,6 @@ class Player(base.MobileGameObject):
         }
         super().__init__(
             pos,
-            engine,
             physics_data=physics.PhysicsData(
                 physics.TYPE_DYNAMIC, pygame.sprite.Group()
             ),
@@ -133,7 +131,6 @@ class Player(base.MobileGameObject):
             initial_state="idle",
         )
         self.collision_rect = self.rect
-        self.engine = engine
         self.speeds = {
             "x": SPEED_WALKING,
             "y": SPEED_WALKING,
@@ -147,7 +144,6 @@ class Player(base.MobileGameObject):
             "bug net": 1,
             "key": 5,
         }
-        self.save_state = self.engine.state
         self.save_fields = (
             "current_mana",
             "mana_capacity",
@@ -182,11 +178,11 @@ class Player(base.MobileGameObject):
 
     def save_data(self):
         for field in self.save_fields:
-            self.save_state.set(field, getattr(self, field), "player")
+            globals.engine.state.set(field, getattr(self, field), "player")
 
     def load_data(self):
         for field in self.save_fields:
-            setattr(self, field, self.save_state.get(field, "player"))
+            setattr(self, field, globals.engine.state.get(field, "player"))
 
     def event(self, event):
         if event.type == event_binding.BOUND_EVENT:

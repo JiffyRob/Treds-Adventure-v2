@@ -1,5 +1,6 @@
 import pygame
 
+import globals
 import scripts
 from bush import animation, asset_handler, entity, physics, util
 
@@ -13,7 +14,6 @@ class GameObject(entity.Actor):
     def __init__(
         self,
         pos,
-        engine,
         surface=None,
         anim_dict=None,
         groups=(),
@@ -27,7 +27,6 @@ class GameObject(entity.Actor):
         max_health=1,
     ):
         super().__init__(pos, surface, groups, id, layer, topleft)
-        self.engine = engine
         self.anim_dict = {}
         if anim_dict is not None:
             self.anim_dict = anim_dict
@@ -71,7 +70,7 @@ class GameObject(entity.Actor):
 
     @property
     def player(self):
-        return self.engine.player
+        return globals.engine.player
 
     @property
     def current_script(self):
@@ -89,7 +88,7 @@ class GameObject(entity.Actor):
                 script.finish()
             self.script_queue = []
         self.script_queue.append(
-            scripts.get_script(script_name, self, self.engine, self.entity_group)
+            scripts.get_script(script_name, self, globals.engine, self.entity_group)
         )
 
     def update_state(self, dt):
@@ -136,7 +135,6 @@ class MobileGameObject(GameObject):
     def __init__(
         self,
         pos,
-        engine,
         surface=None,
         anim_dict=None,
         groups=(),
@@ -151,7 +149,6 @@ class MobileGameObject(GameObject):
     ):
         super().__init__(
             pos,
-            engine,
             surface,
             anim_dict,
             groups,

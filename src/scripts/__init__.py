@@ -8,10 +8,9 @@ scripts = {
 }
 
 
-def get_script(name, sprite, engine, entity_group, other_groups=None):
+def get_script(name, sprite, entity_group, other_groups=None):
     return scripts.get(name, lambda **kwargs: None)(
         sprite=sprite,
-        engine=engine,
         entity_group=entity_group,
         other_groups=other_groups,
     )

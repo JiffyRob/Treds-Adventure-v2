@@ -1,5 +1,6 @@
 import pygame
 
+import globals
 from bush import asset_handler, autotile, collision, entity, physics, util, util_load
 from game_objects import base
 
@@ -88,7 +89,6 @@ class Throwable(base.GameObject):
         self,
         pos,
         surface,
-        engine,
         layer=5,
         id=None,
         groups=(),
@@ -97,7 +97,7 @@ class Throwable(base.GameObject):
         *_,
         **__
     ):
-        super().__init__(pos, engine, surface, None, groups, id, layer, topleft)
+        super().__init__(pos, surface, None, groups, id, layer, topleft)
         self.state = STATE_GROUND
         self.velocity = pygame.Vector2()
         self.dest_height = None
@@ -109,24 +109,22 @@ class Throwable(base.GameObject):
     def pick_up(self):
         if self.state == STATE_GROUND:
             self.state = STATE_HELD
-            self.engine.player.carrying = self
+            globals.player.carrying = self
 
     def throw(self):
         self.speed = 250
         self.weight = 15
         self.accum_height = 0
         self.state = STATE_THROWN
-        self.engine.player.carrying = None
-        self.velocity = (
-            util.string_direction_to_vec(self.engine.player.facing) * self.speed
-        )
-        self.dest_height = self.engine.player.rect.bottom - self.rect.bottom
-        self.dest_height += self.engine.player.rect.height
+        globals.player.carrying = None
+        self.velocity = util.string_direction_to_vec(globals.player.facing) * self.speed
+        self.dest_height = globals.player.rect.bottom - self.rect.bottom
+        self.dest_height += globals.player.rect.height
         if self.velocity.y > 0:
             self.dest_height += 5
 
     def position(self):
-        self.pos.update(self.engine.player.rect.midtop)
+        self.pos.update(globals.player.rect.midtop)
 
     def update(self, dt):
         super().update(dt)
@@ -140,7 +138,7 @@ class Throwable(base.GameObject):
                 self.kill()
             for sprite in self.main_group.sprites():
                 if collision.collides(self.rect, sprite.rect) and sprite not in {
-                    self.engine.player,
+                    globals.player,
                     self,
                 }:
                     if hasattr(sprite, "mask"):

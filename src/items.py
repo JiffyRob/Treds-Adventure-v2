@@ -1,5 +1,6 @@
 import pygame
 
+import globals
 import gui
 
 ITEM_DATA = gui.ITEM_DATA
@@ -65,7 +66,7 @@ class ItemCallback:
             self.rebuild_callback()
 
 
-def create_item_menu(player, engine, rebuild_callback):
+def create_item_menu(player, rebuild_callback):
     def get_item_button_data(items, rows=6, size=(32, 32), n=24):
         item_iter = iter(items.items())
         index = pygame.Vector2()
@@ -84,8 +85,8 @@ def create_item_menu(player, engine, rebuild_callback):
                 index.x = 0
                 index.y += 1
 
-    menu_rect = pygame.Rect((0, 0), engine.screen_size - (192, 128))
-    menu_rect.center = engine.screen_size / 2
+    menu_rect = pygame.Rect((0, 0), globals.engine.screen_size - (192, 128))
+    menu_rect.center = globals.engine.screen_size / 2
     gui_group = gui.UIGroup()
     bg = gui.BGRect(menu_rect, 1, gui_group)
 

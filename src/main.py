@@ -13,6 +13,7 @@ import pygame
 
 import custom_mapper
 import game_state
+import globals
 import gui
 import menu
 import sky
@@ -65,10 +66,8 @@ class Game:
         self.sky = sky.WeatherCycle(self.screen_size)
         # initial map load
         self.kill_dt = False
-        self.map_loader = custom_mapper.MapLoader(self, self.state)
+        self.map_loader = custom_mapper.MapLoader()
         self.current_map = None
-        self.player = None
-        self.stack.push(game_state.MainMenu(self))
         # dialogs
         self.dialog_queue = queue.Queue()
         self.current_dialog = None
@@ -79,28 +78,27 @@ class Game:
     def load_new_state(self, _):
         map_path = self.state.get("map", "engine")
         self.stack.clear()
-        self.stack.push(game_state.MainMenu(self))
-        self.player = None
+        self.stack.push(game_state.MainMenu())
         self.load_map(map_path, START_SPOTS.get(map_path, (0, 0)), push=True)
 
     def save_state(self, _):
-        self.player.save_data()
+        globals.player.save_data()
 
     def load_map(self, tmx_path, player_pos, push=None):
         self.current_map = tmx_path
-        if self.player is not None:
-            self.player.save_data()
+        if globals.player is not None:
+            globals.player.save_data()
         groups, track, event_script = self.map_loader.load_map(
             tmx_path, self, player_pos
         )
-        self.player = groups["player"].sprite
+        globals.player = groups["player"].sprite
         if push is False or (push is None and self.stack.get_current() != "MainMenu"):
             self.stack.pop()
-        self.stack.push(game_state.MapState("game map", groups, self, track))
+        self.stack.push(game_state.MapState("game map", groups, track))
         event_script = None
         if event_script:
             self.stack.push(
-                game_state.ScriptedMapState("game map", groups, self, event_script)
+                game_state.ScriptedMapState("game map", groups, event_script)
             )
 
     def toggle_fullscreen(self):
@@ -115,11 +113,12 @@ class Game:
         return dt
 
     async def run(self):
+        globals.engine = self  # set the global engine reference
         self.screen = pygame.display.set_mode(
             util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE, vsync=0
         )
         pygame.display.set_caption(self.caption)
-
+        self.stack.push(game_state.MainMenu())  # load the MainMenu
         self.running = True
         dt = 0
         self.tick()  # prevents large dt on first frame
