@@ -6,12 +6,18 @@ from game_objects import base
 
 
 class StaticNPC(base.GameObject):
+    groups = (
+        "main",
+        "collision",
+        "event",
+        "interactable",
+    )
+
     def __init__(
         self,
         pos,
         registry,
         surface,
-        groups=(),
         topleft=False,
         id=None,
         layer=None,
@@ -23,7 +29,6 @@ class StaticNPC(base.GameObject):
             pos,
             registry,
             surface,
-            groups=groups,
             id=id,
             layer=layer,
             topleft=topleft,
@@ -42,12 +47,13 @@ class StaticNPC(base.GameObject):
 
 
 class DynamicNPC(base.MobileGameObject):
+    groups = ("main", "collision", "event", "interactable")
+
     def __init__(
         self,
         pos,
         registry,
         surface,
-        groups=(),
         topleft=False,
         anim_name=None,
         gnome=False,  # gnomes are smaller
@@ -69,7 +75,6 @@ class DynamicNPC(base.MobileGameObject):
             physics_data=physics.PhysicsData(
                 physics.TYPE_DYNAMIC, registry.get_group("collision")
             ),
-            groups=groups,
             topleft=topleft,
             anim_dict=anim_dict,
             id=id,
@@ -80,7 +85,6 @@ class DynamicNPC(base.MobileGameObject):
         self.interaction_script = interaction_script
         self.run_script(self.normal_script)
         self.speed = 48
-        # TODO
 
     def interact(self):
         self.facing = util.string_direction(globals.player.pos - self.pos)

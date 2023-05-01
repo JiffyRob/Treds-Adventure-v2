@@ -85,19 +85,16 @@ class FarmPlant(entity.Entity):
 
 
 class Throwable(base.GameObject):
+    groups = (
+        "main",
+        "throwable",
+    )
+
     def __init__(
-        self,
-        pos,
-        registry,
-        surface,
-        layer=5,
-        id=None,
-        groups=(),
-        topleft=False,
-        *_,
-        **__
+        self, pos, registry, surface, layer=5, id=None, topleft=False, *_, **__
     ):
-        super().__init__(pos, registry, surface, None, groups, id, layer, topleft)
+        print(layer)
+        super().__init__(pos, registry, surface, None, id, layer, topleft)
         self.state = STATE_GROUND
         self.velocity = pygame.Vector2()
         self.dest_height = None
@@ -149,5 +146,5 @@ class Throwable(base.GameObject):
 
     def limit(self, map_rect):
         if super().limit(map_rect):
-            return  # TODO fix this
+            return  # TODO currently this part is always executed
             self.kill()

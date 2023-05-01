@@ -12,13 +12,14 @@ loader.cache_asset_handler(asset_handler.glob_loader)
 
 
 class GameObject(entity.Actor):
+    groups = ("main",)
+
     def __init__(
         self,
         pos,
         registry,
         surface=None,
         anim_dict=None,
-        groups=(),
         id=None,
         layer=None,
         topleft=False,
@@ -28,7 +29,14 @@ class GameObject(entity.Actor):
         start_health=1,
         max_health=1,
     ):
-        super().__init__(pos, surface, groups, id, layer, topleft)
+        super().__init__(
+            pos,
+            surface,
+            (registry.get_group(i) for i in self.groups),
+            id,
+            layer,
+            topleft,
+        )
         self.registry = registry
         self.anim_dict = {}
         if anim_dict is not None:
@@ -156,7 +164,6 @@ class MobileGameObject(GameObject):
             registry,
             surface,
             anim_dict,
-            groups,
             id,
             layer,
             topleft,

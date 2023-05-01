@@ -26,6 +26,11 @@ class Player(base.MobileGameObject):
         id: player's integer id
     """
 
+    groups = (
+        "main",
+        "player",
+    )
+
     def __init__(self, pos, layer, registry, **__):
         tiny_frames = loader.load_sprite_sheet("tiny.png", (16, 16))
         foot_frames = loader.load_sprite_sheet(

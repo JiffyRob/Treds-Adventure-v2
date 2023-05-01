@@ -5,10 +5,10 @@ from bush import entity, physics
 
 
 class Teleport(entity.Entity):
-    def __init__(
-        self, *, pos, registry, width=16, height=16, dest, dest_map=None, groups=(), **_
-    ):
-        super().__init__(pos, groups=groups, layer=1276)
+    groups = ("main", "collision")
+
+    def __init__(self, *, pos, registry, width=16, height=16, dest, dest_map=None, **_):
+        super().__init__(pos, layer=1276)
         self.dest = pygame.Vector2([int(i) for i in dest.split(", ")])
         self.dest_map = dest_map or globals.engine.current_map
         self.registry = registry

@@ -35,30 +35,6 @@ class MapLoader(mapping.MapLoader):
             "npc-dynamic": npc.DynamicNPC,
             "throwable": plant.Throwable,
         }
-        self.sprite_groups = {
-            "teleport": (
-                "main",
-                "collision",
-            ),
-            "npc-static": (
-                "main",
-                "collision",
-                "event",
-                "interactable",
-            ),
-            "npc-dynamic": (
-                "main",
-                "collision",
-                "event",
-                "interactable",
-            ),
-            "throwable": (
-                "main",
-                "throwable",
-            ),
-        }
-        self.player_groups = ("main", "player")
-        self.default_groups = ("main",)
         self.default_player_layer = 4  # second layer (default sub)
         loader = asset_handler.glob_loader
         self.mask_loader = asset_handler.AssetHandler(
@@ -85,7 +61,7 @@ class MapLoader(mapping.MapLoader):
             sprite = entity.Entity(
                 tile.pos,
                 pygame.Surface((16, 16), pygame.SRCALPHA),
-                [self.registry.get_group(i) for i in self.default_groups],
+                [self.registry.get_group("main")],
             )
             sprite.physics_data = physics.PhysicsData(
                 physics.TYPE_STATIC, self.registry.get_group("collision")
@@ -94,9 +70,7 @@ class MapLoader(mapping.MapLoader):
 
     def create_sprite(self, obj, sprite_group):
         if obj.type is None:
-            groups = obj.properties.get("groups", ", ".join(self.default_groups)).split(
-                ", "
-            )
+            groups = obj.properties.get("groups", "main").split(", ")
             sprite = entity.Entity(
                 pos=obj.pos,
                 layer=obj.layer * 3 + 1,
@@ -116,10 +90,6 @@ class MapLoader(mapping.MapLoader):
                 )
                 sprite.mask = mask
             return
-        groups = [
-            self.registry.get_group(key)
-            for key in self.sprite_groups.get(obj.type, self.default_groups)
-        ]
         obj.properties.pop("width", None)
         obj.properties.pop("height", None)
         if obj.name is not None:
@@ -127,10 +97,6 @@ class MapLoader(mapping.MapLoader):
         self.sprite_classes[obj.type](
             pos=obj.pos,
             layer=obj.layer * 3 + 1,
-            groups=(
-                sprite_group,
-                *groups,
-            ),
             surface=obj.image,
             topleft=True,
             width=obj.width,
@@ -162,8 +128,6 @@ class MapLoader(mapping.MapLoader):
             self.registry,
         )
         player_layer = properties.get("player_layer", 0) or self.default_player_layer
-        for key in self.player_groups:
-            self.registry.get_group(key).add(self.current_player)
         self.current_player.change_layer(player_layer)
         self.current_player.change_collision_group(self.registry.get_group("collision"))
         self.registry.get_group("main").follow = self.current_player
