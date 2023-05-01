@@ -16,6 +16,8 @@ METHOD_Y = 3
 
 
 def debug_view(img, scale=False):
+    if isinstance(img, pygame.Mask):
+        img = img.to_surface()
     screen = pygame.display.set_mode(img.get_size())
     if scale:
         screen = pygame.display.set_mode(img.get_size(), pygame.SCALED)

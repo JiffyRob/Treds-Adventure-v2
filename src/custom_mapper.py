@@ -28,7 +28,6 @@ class MapLoader(mapping.MapLoader):
             "throwable": lambda x: pygame.sprite.Group(),
         }
         self.registry = None
-        self.current_env_masks = None
         self.current_player = None
         self.sprite_classes = {
             "teleport": teleport.Teleport,
@@ -80,7 +79,7 @@ class MapLoader(mapping.MapLoader):
         terrain = tile.properties.get("terrain", None)
         mask = tile.properties.get("mask", None) or pygame.mask.from_surface(tile.image)
         if terrain:
-            self.current_env_masks[terrain].draw(mask, tile.pos)
+            self.registry.get_mask(terrain).draw(mask, tile.pos)
         groups = tile.properties.get("groups", None)
         if groups:
             sprite = entity.Entity(
@@ -154,27 +153,12 @@ class MapLoader(mapping.MapLoader):
             self.registry = registry.MapRegistry()
             for key, value in self.group_creators.items():
                 self.registry.add_group(key, value(map_size))
-            self.current_env_masks = {
-                key: pygame.Mask(
-                    (
-                        tmx_map.tilewidth * tmx_map.width,
-                        tmx_map.tileheight * tmx_map.height,
-                    )
-                )
-                for key in environment.TERRAIN_ORDER
-            }
             for key in environment.TERRAIN_ORDER:
-                self.current_env_masks[key] = pygame.Mask(
-                    (
-                        tmx_map.tilewidth * tmx_map.width,
-                        tmx_map.tileheight * tmx_map.height,
-                    )
-                )
+                self.registry.add_mask(key, pygame.Mask((map_size)))
             sprite_group, properties, cached = super().load(tmx_path)
         self.current_player = player.Player(
             player_pos,
             4,
-            environment.EnvironmentHandler(self.current_env_masks),
             self.registry,
         )
         player_layer = properties.get("player_layer", 0) or self.default_player_layer
@@ -187,7 +171,6 @@ class MapLoader(mapping.MapLoader):
         physics.optimize_for_physics(self.registry.get_group("collision"))
         groups = self.registry
         self.registry = None
-        self.current_env_masks = None
         self.current_player = None
         self.aux_cache[tmx_path] = groups, properties
         return groups, properties.get("track", None), properties.get("script", None)

@@ -1,5 +1,6 @@
 import pygame
 
+import environment
 import globals
 import scripts
 from bush import animation, asset_handler, entity, physics, util
@@ -52,6 +53,7 @@ class GameObject(entity.Actor):
         self.desired_velocity = pygame.Vector2()
         self.move_state = "walk"
         self.idle_state = "idle"
+        self.facing = "down"
 
     def get_anim_key(self):
         return self.state
@@ -171,6 +173,16 @@ class MobileGameObject(GameObject):
             )
         self.collision_rect = self.rect.copy()
 
+    def get_current_environment(self):
+        return environment.TERRAIN_DATA[
+            self.registry.masks.collide_mask(
+                pygame.Mask(self.collision_rect.size, True),
+                self.collision_rect.topleft,
+                *environment.TERRAIN_ORDER,
+            )
+            or "default"
+        ]
+
     def update_rects(self):
         self.collision_rect.center = self.pos
         self.rect.center = self.pos
@@ -179,7 +191,12 @@ class MobileGameObject(GameObject):
         return f"{self.state} {self.facing}"
 
     def update_physics(self, dt):
-        self.velocity = self.desired_velocity  # TODO: add environment
+        terrain = self.get_current_environment()
+        # slippety-slide!
+        if terrain.traction != 1:
+            self.velocity += (self.desired_velocity * terrain.speed) * terrain.traction
+        else:
+            self.velocity = self.desired_velocity * terrain.speed
         physics.dynamic_update(self, dt)
         self.update_rects()
 

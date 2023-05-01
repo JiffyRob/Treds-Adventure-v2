@@ -26,7 +26,7 @@ class Player(base.MobileGameObject):
         id: player's integer id
     """
 
-    def __init__(self, pos, layer, map_env, registry, **__):
+    def __init__(self, pos, layer, registry, **__):
         tiny_frames = loader.load_sprite_sheet("tiny.png", (16, 16))
         foot_frames = loader.load_sprite_sheet(
             "feet-default.png",
@@ -152,7 +152,6 @@ class Player(base.MobileGameObject):
             "health_capacity",
             "items",
         )
-        self.map_env = map_env
         self.tiny = False
         self.input_locked = False
         self.load_data()
@@ -245,7 +244,7 @@ class Player(base.MobileGameObject):
                 break
 
     def pick_up(self):
-        for sprite in self.throwable_group.sprites():
+        for sprite in self.registry.get_group("throwable").sprites():
             if sprite.rect.colliderect(self.get_interaction_rect()):
                 sprite.pick_up()
                 break

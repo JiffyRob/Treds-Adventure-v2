@@ -10,7 +10,7 @@ import pygame
 from bush import animation
 
 
-class Entity(pygame.sprite.DirtySprite):
+class Entity(pygame.sprite.Sprite):
     """Basic Entity"""
 
     def __init__(
