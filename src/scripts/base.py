@@ -8,9 +8,8 @@ STATE_FINISHED = 2
 
 
 class Script:
-    def __init__(self, entity_group, other_groups):
-        self.entity_group = entity_group
-        self.other_groups = other_groups
+    def __init__(self, registry):
+        self.registry = registry
         self.timer_list = []
         self.sky = globals.engine.sky
         self.talking = False
@@ -42,13 +41,10 @@ class Script:
         return self.state == STATE_FINISHED
 
     def get_entity(self, name):
-        self.entity_group.get_by_id(name)
+        self.registry.get_group("event").get_by_id(name)
 
     def get_time(self):
         return ("night", "day")[self.sky.is_day()]
-
-    def get_group(self, name):
-        return self.other_groups.get(name, None)
 
     def add_timer(self, new_timer):
         self.timer_list.append(new_timer)
@@ -85,9 +81,9 @@ class Script:
 
 
 class EntityScript(Script):
-    def __init__(self, sprite, entity_group, other_groups=None):
+    def __init__(self, sprite, registry):
         self.sprite = sprite
-        super().__init__(entity_group, other_groups)
+        super().__init__(registry)
 
     def get_sprite_state(self):
         return self.sprite.state  # TODO?

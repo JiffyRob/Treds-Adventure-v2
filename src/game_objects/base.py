@@ -14,6 +14,7 @@ class GameObject(entity.Actor):
     def __init__(
         self,
         pos,
+        registry,
         surface=None,
         anim_dict=None,
         groups=(),
@@ -27,6 +28,7 @@ class GameObject(entity.Actor):
         max_health=1,
     ):
         super().__init__(pos, surface, groups, id, layer, topleft)
+        self.registry = registry
         self.anim_dict = {}
         if anim_dict is not None:
             self.anim_dict = anim_dict
@@ -87,9 +89,7 @@ class GameObject(entity.Actor):
             for script in self.script_queue:
                 script.finish()
             self.script_queue = []
-        self.script_queue.append(
-            scripts.get_script(script_name, self, globals.engine, self.entity_group)
-        )
+        self.script_queue.append(scripts.get_script(script_name, self, self.registry))
 
     def update_state(self, dt):
         if self.desired_velocity:
@@ -118,7 +118,8 @@ class GameObject(entity.Actor):
             self.script_queue[-1].update(dt)
             if self.script_queue[-1].finished():
                 self.script_queue = self.script_queue[:-1]
-                self.script_queue[-1].unpause()
+                if self.script_queue:
+                    self.script_queue[-1].unpause()
 
     def update_rects(self):
         self.rect.center = self.pos
@@ -135,6 +136,7 @@ class MobileGameObject(GameObject):
     def __init__(
         self,
         pos,
+        registry,
         surface=None,
         anim_dict=None,
         groups=(),
@@ -149,6 +151,7 @@ class MobileGameObject(GameObject):
     ):
         super().__init__(
             pos,
+            registry,
             surface,
             anim_dict,
             groups,

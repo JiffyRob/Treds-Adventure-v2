@@ -9,7 +9,6 @@ The variables contained should ONLY be modified by the main.Game class, and even
 """
 
 engine = None  # game engine, set by the Engine object upon running the game
-map_registry = None  # representation of the world map, set by the Engine object upon loading a new map
 player = None  # player sprite, set by the engine upon loading a new map
 event_list = []  # list of pygame events, set every frame by the engine
 

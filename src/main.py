@@ -88,10 +88,8 @@ class Game:
         self.current_map = tmx_path
         if globals.player is not None:
             globals.player.save_data()
-        groups, track, event_script = self.map_loader.load_map(
-            tmx_path, self, player_pos
-        )
-        globals.player = groups["player"].sprite
+        groups, track, event_script = self.map_loader.load_map(tmx_path, player_pos)
+        globals.player = groups.get_group("player").sprite
         if push is False or (push is None and self.stack.get_current() != "MainMenu"):
             self.stack.pop()
         self.stack.push(game_state.MapState("game map", groups, track))

@@ -86,11 +86,11 @@ class GameState(state.StackState):
 
 
 class MapState(GameState):
-    def __init__(self, map_name, groups, soundtrack=None):
-        self.groups = groups
+    def __init__(self, map_name, registry, soundtrack=None):
+        self.registry = registry
         self.sky = globals.engine.sky
-        self.main_group = groups["main"]
-        self.player = groups["player"].sprite
+        self.main_group = self.registry.get_group("main")
+        self.player = registry.get_group("player").sprite
         self.soundtrack = soundtrack
         if self.soundtrack is not None:
             music_player.play(self.soundtrack)

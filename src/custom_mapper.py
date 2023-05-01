@@ -3,7 +3,7 @@ import pygame
 import environment
 import globals
 from bush import asset_handler, entity, physics
-from bush.mapping import group, mapping
+from bush.mapping import group, mapping, registry
 from game_objects import npc, plant, player, teleport
 
 
@@ -27,7 +27,7 @@ class MapLoader(mapping.MapLoader):
             "farmplants": lambda x: pygame.sprite.Group(),
             "throwable": lambda x: pygame.sprite.Group(),
         }
-        self.current_sprite_groups = None
+        self.registry = None
         self.current_env_masks = None
         self.current_player = None
         self.sprite_classes = {
@@ -86,11 +86,10 @@ class MapLoader(mapping.MapLoader):
             sprite = entity.Entity(
                 tile.pos,
                 pygame.Surface((16, 16), pygame.SRCALPHA),
-                (self.current_sprite_groups[i] for i in groups.split(", ")),
-                topleft=True,
+                [self.registry.get_group(i) for i in self.default_groups],
             )
             sprite.physics_data = physics.PhysicsData(
-                physics.TYPE_STATIC, self.current_sprite_groups["collision"]
+                physics.TYPE_STATIC, self.registry.get_group("collision")
             )
             sprite.mask = mask
 
@@ -102,7 +101,7 @@ class MapLoader(mapping.MapLoader):
             sprite = entity.Entity(
                 pos=obj.pos,
                 layer=obj.layer * 3 + 1,
-                groups=(*[self.current_sprite_groups[key] for key in groups],),
+                groups=(*[self.registry.get_group(key) for key in groups],),
                 id=obj.name,
                 surface=obj.image,
                 topleft=True,
@@ -114,12 +113,12 @@ class MapLoader(mapping.MapLoader):
                 else:
                     mask = pygame.mask.from_surface(self.mask_loader.load(mask))
                 sprite.physics_data = physics.PhysicsData(
-                    physics.TYPE_STATIC, self.current_sprite_groups["collision"]
+                    physics.TYPE_STATIC, self.registry.get_group("collision")
                 )
                 sprite.mask = mask
             return
         groups = [
-            self.current_sprite_groups[key]
+            self.registry.get_group(key)
             for key in self.sprite_groups.get(obj.type, self.default_groups)
         ]
         obj.properties.pop("width", None)
@@ -137,29 +136,24 @@ class MapLoader(mapping.MapLoader):
             topleft=True,
             width=obj.width,
             height=obj.height,
+            registry=self.registry,
             **obj.properties,
-            **{
-                f"{key}_group": value
-                for key, value in self.current_sprite_groups.items()
-            },
         )
 
-    def load_map(self, tmx_path, engine, player_pos):
+    def load_map(self, tmx_path, player_pos):
         try:
-            self.current_sprite_groups, properties = self.aux_cache[tmx_path]
-            sprite_group = self.current_sprite_groups["main"]
-            self.current_env_masks = self.current_sprite_groups[
-                "player"
-            ].sprite.environment.env_masks
-            self.current_sprite_groups["player"].sprite.kill()
+            self.registry, properties = self.aux_cache[tmx_path]
+            sprite_group = self.registry.get_group("main")
+            self.current_env_masks = {}
+            self.registry.get_group("player").sprite.kill()
         except KeyError:
             tmx_map = self.loader.load(tmx_path)
             map_size = pygame.Vector2(
                 tmx_map.width * tmx_map.tilewidth, tmx_map.height * tmx_map.tileheight
             )
-            self.current_sprite_groups = {
-                key: value(map_size) for key, value in self.group_creators.items()
-            }
+            self.registry = registry.MapRegistry()
+            for key, value in self.group_creators.items():
+                self.registry.add_group(key, value(map_size))
             self.current_env_masks = {
                 key: pygame.Mask(
                     (
@@ -181,23 +175,18 @@ class MapLoader(mapping.MapLoader):
             player_pos,
             4,
             environment.EnvironmentHandler(self.current_env_masks),
-            **{
-                key + "_group": value
-                for key, value in self.current_sprite_groups.items()
-            },
+            self.registry,
         )
         player_layer = properties.get("player_layer", 0) or self.default_player_layer
         for key in self.player_groups:
-            self.current_sprite_groups[key].add(self.current_player)
+            self.registry.get_group(key).add(self.current_player)
         self.current_player.change_layer(player_layer)
-        self.current_player.change_collision_group(
-            self.current_sprite_groups["collision"]
-        )
-        self.current_sprite_groups["main"].follow = self.current_player
-        self.current_sprite_groups["main"].add(sprite_group)
-        physics.optimize_for_physics(self.current_sprite_groups["collision"])
-        groups = self.current_sprite_groups
-        self.current_sprite_groups = None
+        self.current_player.change_collision_group(self.registry.get_group("collision"))
+        self.registry.get_group("main").follow = self.current_player
+        self.registry.get_group("main").add(sprite_group)
+        physics.optimize_for_physics(self.registry.get_group("collision"))
+        groups = self.registry
+        self.registry = None
         self.current_env_masks = None
         self.current_player = None
         self.aux_cache[tmx_path] = groups, properties

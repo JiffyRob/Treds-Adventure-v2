@@ -88,23 +88,22 @@ class Throwable(base.GameObject):
     def __init__(
         self,
         pos,
+        registry,
         surface,
         layer=5,
         id=None,
         groups=(),
-        main_group=None,
         topleft=False,
         *_,
         **__
     ):
-        super().__init__(pos, surface, None, groups, id, layer, topleft)
+        super().__init__(pos, registry, surface, None, groups, id, layer, topleft)
         self.state = STATE_GROUND
         self.velocity = pygame.Vector2()
         self.dest_height = None
         self.accum_height = 0
         self.speed = 400
         self.weight = 10
-        self.main_group = main_group
 
     def pick_up(self):
         if self.state == STATE_GROUND:
@@ -136,7 +135,7 @@ class Throwable(base.GameObject):
             self.accum_height += self.accum_height + (self.weight * dt)
             if self.accum_height >= self.dest_height:
                 self.kill()
-            for sprite in self.main_group.sprites():
+            for sprite in self.registry.get_group("main").sprites():
                 if collision.collides(self.rect, sprite.rect) and sprite not in {
                     globals.player,
                     self,
@@ -150,5 +149,5 @@ class Throwable(base.GameObject):
 
     def limit(self, map_rect):
         if super().limit(map_rect):
-            return
+            return  # TODO fix this
             self.kill()

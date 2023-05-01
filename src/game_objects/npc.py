@@ -9,6 +9,7 @@ class StaticNPC(base.GameObject):
     def __init__(
         self,
         pos,
+        registry,
         surface,
         groups=(),
         topleft=False,
@@ -16,19 +17,20 @@ class StaticNPC(base.GameObject):
         layer=None,
         script=None,
         interaction_script=None,
-        entity_group=None,
         **kwargs,
     ):
         super().__init__(
             pos,
+            registry,
             surface,
             groups=groups,
             id=id,
             layer=layer,
             topleft=topleft,
-            entity_group=entity_group,
         )
-        self.physics_data = physics.PhysicsData(physics.TYPE_STATIC, None)
+        self.physics_data = physics.PhysicsData(
+            physics.TYPE_STATIC, registry.get_group("collision")
+        )
         self.mask = pygame.mask.from_surface(self.image)
         self.normal_script = script
         self.interaction_script = interaction_script
@@ -43,6 +45,7 @@ class DynamicNPC(base.MobileGameObject):
     def __init__(
         self,
         pos,
+        registry,
         surface,
         groups=(),
         topleft=False,
@@ -52,7 +55,6 @@ class DynamicNPC(base.MobileGameObject):
         layer=None,
         script=None,
         interaction_script=None,
-        collision_group=None,
         **kwargs,
     ):
         anim_dict = None
@@ -62,8 +64,11 @@ class DynamicNPC(base.MobileGameObject):
             )
         super().__init__(
             pos,
+            registry,
             surface,
-            physics_data=physics.PhysicsData(physics.TYPE_DYNAMIC, collision_group),
+            physics_data=physics.PhysicsData(
+                physics.TYPE_DYNAMIC, registry.get_group("collision")
+            ),
             groups=groups,
             topleft=topleft,
             anim_dict=anim_dict,

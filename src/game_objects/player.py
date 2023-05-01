@@ -26,7 +26,7 @@ class Player(base.MobileGameObject):
         id: player's integer id
     """
 
-    def __init__(self, pos, layer, map_env, interactable_group, throwable_group, **__):
+    def __init__(self, pos, layer, map_env, registry, **__):
         tiny_frames = loader.load_sprite_sheet("tiny.png", (16, 16))
         foot_frames = loader.load_sprite_sheet(
             "feet-default.png",
@@ -120,8 +120,9 @@ class Player(base.MobileGameObject):
         }
         super().__init__(
             pos,
+            registry=registry,
             physics_data=physics.PhysicsData(
-                physics.TYPE_DYNAMIC, pygame.sprite.Group()
+                physics.TYPE_DYNAMIC, registry.get_group("collision")
             ),
             anim_dict=anim_dict,
             id="player",
@@ -153,8 +154,6 @@ class Player(base.MobileGameObject):
         )
         self.map_env = map_env
         self.tiny = False
-        self.interactable_group = interactable_group
-        self.throwable_group = throwable_group
         self.input_locked = False
         self.load_data()
         self.tool = None
@@ -238,7 +237,7 @@ class Player(base.MobileGameObject):
         return interaction_rect
 
     def interact(self):
-        for sprite in self.interactable_group.sprites():
+        for sprite in self.registry.get_group("interactable").sprites():
             if sprite.rect.colliderect(self.get_interaction_rect()):
                 sprite.interact()
                 print("interacting with sprite", sprite.get_id())
