@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 
 import globals
@@ -84,7 +86,7 @@ class DynamicNPC(base.MobileGameObject):
         self.normal_script = script
         self.interaction_script = interaction_script
         self.run_script(self.normal_script)
-        self.speed = 48
+        self.speed = 24
 
     def interact(self):
         self.facing = util.round_string_direction(

@@ -385,7 +385,7 @@ class Dialog(UIElement):
                 text += "\n"
                 if i == self.answer_index:
                     # put a dash before selected answer
-                    text += f"-<u>{choice}</u>"
+                    text += f"-{choice}"
                 else:
                     text += f" {choice}"
         return text

@@ -5,9 +5,7 @@ from scripts import base
 class TestScript(base.EntityScript):
     def init(self):
         self.ask(
-            "I have come to the conclusion that "
-            + text_util.lorum_ipsum
-            + "  You're a silly goober.",
+            "I have come to the conclusion that you are a VERY silly goober",
             ("Am Not!", "Sure am."),
             self.reply,
         )
