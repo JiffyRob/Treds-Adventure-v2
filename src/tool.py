@@ -2,7 +2,7 @@ from bush import timer
 
 
 class Tool:
-    def __init__(self, player, usage_delay, push_state=None, mana_cost=0):
+    def __init__(self, player, usage_delay=250, push_state=None, mana_cost=0):
         self.player = player
         self.use_timer = timer.Timer(usage_delay)
         self.use_timer.finish()
@@ -30,11 +30,14 @@ class Tool:
 
 class Sword(Tool):
     def __init__(self, player):
-        super().__init__(player, 250)
+        super().__init__(player)
 
 
 def get_tool(player, tool_id):
-    return TOOL_DICT[tool_id](player)
+    if tool_id in TOOL_DICT:
+        return TOOL_DICT[tool_id](player)
+    print(f"Warning: tool_id {tool_id!r} not found.  Using Null Tool instead")
+    return Tool(player)
 
 
 TOOL_DICT = {"base": Tool, "sword": Sword}

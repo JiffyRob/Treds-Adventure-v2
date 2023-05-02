@@ -39,7 +39,6 @@ class ItemCallback:
     def food_item(self, hp, mp, hp_aftereffect):
         self.player.heal(hp)
         self.player.heal_mp(mp)
-        self.player.poison(*hp_aftereffect)
 
     def tool_item(self, tool_id):
         self.player.equip(tool_id)

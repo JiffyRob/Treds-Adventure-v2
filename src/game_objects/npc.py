@@ -87,7 +87,10 @@ class DynamicNPC(base.MobileGameObject):
         self.speed = 48
 
     def interact(self):
-        self.facing = util.string_direction(globals.player.pos - self.pos)
+        self.facing = util.round_string_direction(
+            util.string_direction(globals.player.pos - self.pos),
+            util.METHOD_COUNTERCLOCKWISE,
+        )
         self.run_script(self.interaction_script)
 
     def get_anim_key(self):

@@ -24,7 +24,6 @@ class GameObject(entity.Actor):
         layer=None,
         topleft=False,
         initial_state=None,
-        entity_group=None,
         physics_data=None,
         start_health=1,
         max_health=1,
@@ -47,7 +46,6 @@ class GameObject(entity.Actor):
             self.state = "idle"
         else:
             self.state = None
-        self.entity_group = entity_group
         self.pushed_state = None
         self.script_queue = []
         if physics_data is not None:
@@ -168,7 +166,6 @@ class MobileGameObject(GameObject):
             layer,
             topleft,
             initial_state,
-            entity_group,
             physics_data,
             start_health,
             max_health,
