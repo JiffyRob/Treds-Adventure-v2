@@ -153,7 +153,7 @@ class Game:
 
     def quit(self):
         print("QUIT", self.stack)
-        self.running = False
+        self.running = False or util.is_pygbag()  # don't quit in pygbag
 
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ import globals
 import gui
 import items
 import menu
-from bush import asset_handler, event_binding, sound_manager, text_util
+from bush import asset_handler, event_binding, sound_manager, text_util, util
 from bush.ai import state
 
 # defining variables like this allows to flip out to specific ones later
@@ -303,6 +303,9 @@ class LoadMenu(MenuState):
 
 class MainMenu(MenuState):
     def __init__(self):
+        self.button_list = ("New Game", "Load Game", "Quit")
+        if util.is_pygbag():
+            self.button_list = self.button_list[:-1]
         super().__init__(
             "MainMenu",
             screen_surf=loader.load("hud/bg_forest.png"),
@@ -311,10 +314,15 @@ class MainMenu(MenuState):
     def rebuild(self):
         self.gui = menu.create_menu(
             "Tred's Adventure",
-            ["New Game", "Load Game", "Quit"],
+            self.button_list,
             [self.run_newmenu, self.run_loadmenu, self.pop],
             globals.engine.screen_size,
         )
+
+    def pop(self):
+        if util.is_pygbag():
+            return  # No quit in pygbag
+        super().pop()
 
     def run_newmenu(self):
         self.run_submenu(NewSaveMenu)
