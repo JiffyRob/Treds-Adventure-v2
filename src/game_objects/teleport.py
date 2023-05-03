@@ -19,6 +19,8 @@ class Teleport(entity.Entity):
         self.rect.topleft = pos
         self.pos = pygame.Vector2(self.rect.center)
         self.mask = pygame.Mask(self.rect.size, True)
+        for group in self.groups:
+            registry.get_group(group).add(self)
 
     def on_collision(self, collided, axis):
         if collided == globals.player:
