@@ -91,8 +91,10 @@ def create_item_menu(player, rebuild_callback):
 
     bottom_rect = pygame.Rect(menu_rect.left, 0, menu_rect.width, 100)
     dbox = gui.Descriptionbox(bottom_rect, 1, gui_group)
+    right_rect = pygame.Rect(0, menu_rect.top, 0, menu_rect.height)
 
     bottom = 0
+    right = 0
     for name, amount, pos in get_item_button_data(player.items):
         button_rect = pygame.Rect(pos + menu_rect.topleft, (32, 32))
         gui.ItemButton(
@@ -105,6 +107,7 @@ def create_item_menu(player, rebuild_callback):
             gui_group,
         )
         bottom = button_rect.bottom
+        right = button_rect.right
 
     dbox.rect = pygame.Rect(
         bottom_rect.left,
@@ -113,4 +116,9 @@ def create_item_menu(player, rebuild_callback):
         menu_rect.top + (menu_rect.height - bottom),
     )
     dbox.rebuild()
+
+    right_rect.left = right
+    right_rect.width = menu_rect.right - right
+    gui.HeartMeter(globals.player, right_rect, 2, gui_group)
+
     return gui_group
