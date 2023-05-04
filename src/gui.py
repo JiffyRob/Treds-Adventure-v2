@@ -285,16 +285,22 @@ class HeartMeter(UIElement):
         heart_count = math.ceil(
             self.sprite_to_monitor.health_capacity / len(HEART_IMAGES)
         )
-        self.image = pygame.Surface(
-            self.heart_size.elementwise() * (heart_count, 1), pygame.SRCALPHA
-        )
-        health_consumed = 0
+        columns = self.rect.width // self.heart_size.x
+        self.image = pygame.Surface(self.rect.size, pygame.SRCALPHA)
+        health_left = self.sprite_to_monitor.current_health
+        health_per_heart = len(HEART_IMAGES) - 1
+        pos = pygame.Vector2()
         for i in range(heart_count):
-            heart_index = min(
-                self.sprite_to_monitor.health_capacity - health_consumed,
-                len(HEART_IMAGES) - 1,
-            )
-            self.image.blit(HEART_IMAGES[heart_index], (i * self.heart_size.y, 0))
+            if health_left > health_per_heart:
+                heart_index = health_per_heart
+            else:
+                heart_index = health_left
+            health_left -= heart_index
+            self.image.blit(HEART_IMAGES[heart_index], pos)
+            pos.x += self.heart_size.x
+            if pos.x + self.heart_size.x >= self.rect.width:
+                pos.x = 0
+                pos.y += self.heart_size.y
         self.rect.size = self.image.get_size()
         self.last_data = (
             self.sprite_to_monitor.current_health,

@@ -95,7 +95,7 @@ class MapState(GameState):
         if self.soundtrack is not None:
             music_player.play(self.soundtrack)
         hud = gui.UIGroup()
-        gui.HeartMeter(globals.player, pygame.Rect(8, 8, 1, 1), 1, hud)
+        gui.HeartMeter(globals.player, pygame.Rect(8, 8, 192, 64), 1, hud)
         get_player_mana = (
             lambda: globals.player.current_mana / globals.player.mana_capacity
         )
