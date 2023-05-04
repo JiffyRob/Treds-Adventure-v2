@@ -56,17 +56,21 @@ class MapLoader(mapping.MapLoader):
         mask = tile.properties.get("mask", None) or pygame.mask.from_surface(tile.image)
         if terrain:
             self.registry.get_mask(terrain).draw(mask, tile.pos)
-        groups = tile.properties.get("groups", None)
+        groups = tile.properties.get("groups", "main").split(", ")
         if groups:
+            sprite_groups = [self.registry.get_group(group_key) for group_key in groups]
             sprite = entity.Entity(
                 tile.pos,
                 pygame.Surface((16, 16), pygame.SRCALPHA),
-                [self.registry.get_group("main")],
+                [self.registry.get_group(group_key) for group_key in groups],
+                topleft=True,
+                no_debug=True,
             )
-            sprite.physics_data = physics.PhysicsData(
-                physics.TYPE_STATIC, self.registry.get_group("collision")
-            )
-            sprite.mask = mask
+            if "collision" in groups:
+                sprite.physics_data = physics.PhysicsData(
+                    physics.TYPE_STATIC, self.registry.get_group("collision")
+                )
+                sprite.mask = mask
 
     def create_sprite(self, obj, sprite_group):
         if obj.type is None:

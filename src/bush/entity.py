@@ -14,7 +14,14 @@ class Entity(pygame.sprite.Sprite):
     """Basic Entity"""
 
     def __init__(
-        self, pos, surface=None, groups=(), id=None, layer=None, topleft=False
+        self,
+        pos,
+        surface=None,
+        groups=(),
+        id=None,
+        layer=None,
+        topleft=False,
+        no_debug=False,
     ):
         super().__init__(*groups)
         self.image = surface
@@ -36,6 +43,7 @@ class Entity(pygame.sprite.Sprite):
             self._layer = layer
         self._id = id
         self.dirty = 2
+        self.no_debug = no_debug
 
     def get_id(self):
         return deepcopy(self._id)

@@ -99,7 +99,7 @@ class CameraGroup(pygame.sprite.LayeredUpdates):
                 surface.blit(sprite.image, pos)
         if self.debug_physics:
             for sprite in self.sprites():
-                if self.is_visible(sprite) or self.update_all:
+                if not sprite.no_debug and (self.is_visible(sprite) or self.update_all):
                     pygame.draw.rect(surface, (0, 255, 0), sprite.rect.move(-offset), 1)
                     if hasattr(sprite, "collision_rect"):
                         pygame.draw.rect(
