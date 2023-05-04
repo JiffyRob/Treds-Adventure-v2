@@ -16,7 +16,7 @@ class MapLoader(mapping.MapLoader):
                 map_size,
                 (0, 0),
                 self.get_player(),
-                debug_physics=True,
+                debug_physics=False,
             ),
             "player": lambda x: pygame.sprite.GroupSingle(),
             "collision": lambda x: pygame.sprite.Group(),
