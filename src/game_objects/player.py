@@ -9,8 +9,8 @@ from bush import animation, asset_handler, event_binding, physics, util
 from game_objects import base
 
 SPEED_MEANDERING = 32
-SPEED_WALKING = 96
-SPEED_RUNNING = 128
+SPEED_WALKING = 128
+SPEED_RUNNING = 140
 
 loader = asset_handler.AssetHandler(
     asset_handler.join(asset_handler.glob_loader.base, "sprites/player")
@@ -266,7 +266,7 @@ class Player(base.MobileGameObject):
         self._layer = layer
 
     def update_rects(self):
-        self.rect = self.image.get_rect(center=self.pos)
+        self.rect = pygame.Rect(self.image.get_rect(center=self.pos))
         self.collision_rect = pygame.Rect(0, 0, 10, 10)
         self.collision_rect.midbottom = self.rect.midbottom
 

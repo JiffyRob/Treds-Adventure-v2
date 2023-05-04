@@ -137,7 +137,7 @@ class GameObject(entity.Actor):
         self.update_physics(dt)
         self.update_image(dt)
         self.update_script(dt)
-        super().update(dt)
+        entity.Entity.update(self, dt)
 
 
 class MobileGameObject(GameObject):
@@ -195,6 +195,7 @@ class MobileGameObject(GameObject):
         return f"{self.state} {self.facing}"
 
     def update_physics(self, dt):
+        self.update_rects()
         terrain = self.get_current_environment()
         # slippety-slide!
         if terrain.traction != 1:
