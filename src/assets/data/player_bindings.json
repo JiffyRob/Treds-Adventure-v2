@@ -11,8 +11,6 @@
   "KeyUp-left shift": "start walking x",
   "KeyDown-left ctrl": "interact",
   "KeyDown-space": "tool",
-  "KeyDown-left alt": "lift",
-  "KeyUp-left alt": "throw",
 
   "JoyAxisMotion-1-back": "go up",
   "JoyAxisMotion-1-center": ["stop up", "stop down"],

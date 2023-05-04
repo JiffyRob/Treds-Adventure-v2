@@ -87,7 +87,7 @@ class FarmPlant(entity.Entity):
 class Throwable(base.GameObject):
     groups = (
         "main",
-        "throwable",
+        "interactable",
     )
 
     def __init__(
@@ -102,10 +102,10 @@ class Throwable(base.GameObject):
         self.speed = 400
         self.weight = 10
 
-    def pick_up(self):
-        if self.state == STATE_GROUND:
+    def interact(self):
+        if globals.player.pick_up(self):
             self.state = STATE_HELD
-            globals.player.carrying = self
+            self.registry.get_group("interactable").remove(self)
 
     def throw(self):
         self.speed = 250

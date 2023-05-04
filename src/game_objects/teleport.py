@@ -27,4 +27,5 @@ class Teleport(entity.Entity):
             if globals.engine.current_map != self.dest_map:
                 globals.engine.load_map(self.dest_map, self.dest)
             else:
-                globals.engine.player.pos = self.dest
+                globals.player.pos = self.dest
+            globals.player.on_teleport()

@@ -199,10 +199,6 @@ class Player(base.MobileGameObject):
             self.interact()
         if words[0] == "tool" and self.tool is not None:
             self.tool.use()
-        if words[0] == "lift":
-            self.pick_up()
-        if words[0] == "throw":
-            self.throw()
         if words[0] == "start":
             if words[1] == "meandering":
                 self.speeds[words[2]] = SPEED_MEANDERING
@@ -241,6 +237,9 @@ class Player(base.MobileGameObject):
         return interaction_rect
 
     def interact(self):
+        if self.carrying:
+            self.throw()
+            return
         for sprite in self.registry.get_group("interactable").sprites():
             if sprite.rect.colliderect(self.get_interaction_rect()):
                 sprite.interact()
@@ -248,11 +247,9 @@ class Player(base.MobileGameObject):
                 self.stop()
                 break
 
-    def pick_up(self):
-        for sprite in self.registry.get_group("throwable").sprites():
-            if sprite.rect.colliderect(self.get_interaction_rect()):
-                sprite.pick_up()
-                break
+    def pick_up(self, sprite):
+        if sprite.rect.colliderect(self.get_interaction_rect()):
+            self.carrying = sprite
 
     def throw(self):
         if self.carrying is not None:
@@ -284,3 +281,6 @@ class Player(base.MobileGameObject):
         self.current_mana = min(self.current_mana + (dt * 0.1), self.mana_capacity)
         super().update(dt)
         self.update_throwable()
+
+    def on_teleport(self):
+        self.throw()

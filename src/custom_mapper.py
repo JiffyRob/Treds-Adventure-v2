@@ -25,7 +25,6 @@ class MapLoader(mapping.MapLoader):
             "farmplants_green": lambda x: pygame.sprite.Group(),
             "farmplants_orange": lambda x: pygame.sprite.Group(),
             "farmplants": lambda x: pygame.sprite.Group(),
-            "throwable": lambda x: pygame.sprite.Group(),
         }
         self.registry = None
         self.current_player = None
