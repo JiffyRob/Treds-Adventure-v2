@@ -10,11 +10,11 @@ Welcome to the development team!  Here is how to set things up to get coding.  T
    - Microsoft Visual Studio Code
    - Jetbrains Pycharm
 8. Run `pre-commit install` to setup pre-commit hooks.  Git commits will now fail if not properly formatted.
-9. Run `python run_game.py` and see if it runs.  If it does not contact me (@JiffyRob)
+9. `cd src` to go to the code directory and `python main.py` to run the game
 10. (Optional) Run `pygbag src` and then go to the url `localhost:8000`.  This should show the game on browser.  Note that it has been tested in chroe, brave, and firefox.  It doesn't work in teh debian stable version of firefox.
 
 # Virtual Environments
-You may want to create a virtual environment in order to isolate your packages.  If so, make sure to not create it in the `src` folder or any of its subdirectories.  If you do then pygbag will try to package the entire shebang when testing the web build.
+You may want to create a virtual environment in order to isolate your packages.  If so, make sure to not create it in the `src` folder or any of its subdirectories.  If you do then pygbag will try to package the entire shebang when testing the web build and error out on pygame's example directories.
 
 # Dependency List
 For those of you who want to know what all these libraries do, here is a list:
@@ -25,7 +25,7 @@ For those of you who want to know what all these libraries do, here is a list:
 Maps are done with the Tiled Map Editor (https://www.mapeditor.org/).  You can open the project from the `src/assets/tiled` directory in the repository.  It should have all the tilesets and object templates you need to make maps.
 
 # Code commit policy
-Because the web version of the game is based off the `main` branch, please do not push any experimental, partially complete, or broken features to it.  Instead make changes to a local branch and merge in once you're done.  After a major change is made (or a minor one, if you want), you can update the web build by going to to the `actions` tab in the repository and running the `pygbag_build` action.  I'm pretty sure the action to deploy the new build runs automatically.
+Because the web version of the game is based off the `main` branch, please do not push any experimental, partially complete, or broken features to it.  Instead make changes to a local branch and merge in once you're done.  Try not to push to `main` every five minutes because every time you do that it will rebuild the entire website.
 
 All code must be `black`ed and `isort`ed before commiting to `main`.  The `pre-commit` library should take care of this for you.
 
