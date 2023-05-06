@@ -4,7 +4,7 @@ import environment
 import globals
 from bush import asset_handler, entity, physics
 from bush.mapping import group, mapping, registry
-from game_objects import npc, plant, player, teleport
+from game_objects import npc, plant, teleport
 
 
 class MapLoader(mapping.MapLoader):
@@ -15,7 +15,7 @@ class MapLoader(mapping.MapLoader):
                 globals.engine.screen_size,
                 map_size,
                 (0, 0),
-                self.get_player(),
+                globals.player,
                 debug_physics=False,
             ),
             "player": lambda x: pygame.sprite.GroupSingle(),
@@ -27,7 +27,6 @@ class MapLoader(mapping.MapLoader):
             "farmplants": lambda x: pygame.sprite.Group(),
         }
         self.registry = None
-        self.current_player = None
         self.sprite_classes = {
             "teleport": teleport.Teleport,
             "npc-static": npc.StaticNPC,
@@ -46,9 +45,6 @@ class MapLoader(mapping.MapLoader):
             sprite_creator=self.create_sprite,
             tile_handler=self.handle_tile,
         )
-
-    def get_player(self):
-        return self.current_player
 
     def handle_tile(self, tile, sprite_group):
         terrain = tile.properties.get("terrain", None)
@@ -109,11 +105,11 @@ class MapLoader(mapping.MapLoader):
         )
 
     def load_map(self, tmx_path, player_pos):
+        globals.player.kill()
         try:
             self.registry, properties = self.aux_cache[tmx_path]
             sprite_group = self.registry.get_group("main")
             self.current_env_masks = {}
-            self.registry.get_group("player").sprite.kill()
         except KeyError:
             tmx_map = self.loader.load(tmx_path)
             map_size = pygame.Vector2(
@@ -123,21 +119,20 @@ class MapLoader(mapping.MapLoader):
             for key, value in self.group_creators.items():
                 self.registry.add_group(key, value(map_size))
             for key in environment.TERRAIN_ORDER:
-                self.registry.add_mask(key, pygame.Mask((map_size)))
+                self.registry.add_mask(key, pygame.Mask(map_size))
             sprite_group, properties, cached = super().load(tmx_path)
-        self.current_player = player.Player(
-            player_pos,
-            4,
+        globals.player.reset(
+            player_pos.copy(),
+            properties.get("player_layer", self.default_player_layer),
             self.registry,
         )
-        player_layer = properties.get("player_layer", 0) or self.default_player_layer
-        self.current_player.change_layer(player_layer)
-        self.current_player.change_collision_group(self.registry.get_group("collision"))
-        self.registry.get_group("main").follow = self.current_player
         self.registry.get_group("main").add(sprite_group)
         physics.optimize_for_physics(self.registry.get_group("collision"))
         groups = self.registry
         self.registry = None
-        self.current_player = None
         self.aux_cache[tmx_path] = groups, properties
         return groups, properties.get("track", None), properties.get("script", None)
+
+    def clear_cache(self):
+        super().clear_cache()
+        self.aux_cache.clear()

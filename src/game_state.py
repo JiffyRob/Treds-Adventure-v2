@@ -90,7 +90,6 @@ class MapState(GameState):
         self.registry = registry
         self.sky = globals.engine.sky
         self.main_group = self.registry.get_group("main")
-        self.player = registry.get_group("player").sprite
         self.soundtrack = soundtrack
         if self.soundtrack is not None:
             music_player.play(self.soundtrack)
@@ -113,7 +112,7 @@ class MapState(GameState):
     def handle_events(self):
         for event in pygame.event.get():
             super().handle_event(event)
-            self.player.event(event)
+            globals.player.event(event)
 
     def draw(self, surface):
         self.main_group.draw(surface)

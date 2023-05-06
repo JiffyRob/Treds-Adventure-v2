@@ -26,12 +26,10 @@ class Player(base.MobileGameObject):
         id: player's integer id
     """
 
-    groups = (
-        "main",
-        "player",
-    )
+    groups = ()  # do NOT add to any groups on setup, registry will be None
+    true_groups = ("main", "player")
 
-    def __init__(self, pos, layer, registry, **__):
+    def __init__(self, **__):
         tiny_frames = loader.load_sprite_sheet("tiny.png", (16, 16))
         foot_frames = loader.load_sprite_sheet(
             "feet-default.png",
@@ -124,14 +122,12 @@ class Player(base.MobileGameObject):
             ),
         }
         super().__init__(
-            pos,
-            registry=registry,
-            physics_data=physics.PhysicsData(
-                physics.TYPE_DYNAMIC, registry.get_group("collision")
-            ),
+            (0, 0),
+            registry=None,
+            physics_data=None,
             anim_dict=anim_dict,
             id="player",
-            layer=layer,
+            layer=0,
             start_health=6,
             max_health=12,
             initial_state="idle",
@@ -165,6 +161,21 @@ class Player(base.MobileGameObject):
         self.facing = "down"
         self.speed = 72
 
+    def reset(self, pos, layer, registry, tiny=False):
+        print("reset")
+        self.throw()
+        self.kill()
+        self.tiny = tiny
+        self.pos = pygame.Vector2(pos)
+        self.update_rects()
+        self.layer = layer
+        self.registry = registry
+        for key in self.true_groups:
+            self.registry.get_group(key).add(self)
+        self.physics_data = physics.PhysicsData(
+            physics.TYPE_DYNAMIC, self.registry.get_group("collision")
+        )
+
     def heal_mp(self, mp):
         self.current_mana += mp
 
@@ -185,6 +196,7 @@ class Player(base.MobileGameObject):
 
     def load_data(self):
         for field in self.save_fields:
+            print(f"setting {field} to {globals.engine.state.get(field, 'player')}")
             setattr(self, field, globals.engine.state.get(field, "player"))
 
     def event(self, event):

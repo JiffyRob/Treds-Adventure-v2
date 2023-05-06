@@ -19,6 +19,7 @@ import menu
 import sky
 from bush import asset_handler, joy_cursor, save_state, sound_manager, util
 from bush.ai import state
+from game_objects import player
 
 loader = asset_handler.glob_loader
 START_SPOTS = loader.load("data/player_start_positions.json")
@@ -71,11 +72,16 @@ class Game:
         # dialogs
         self.dialog_queue = queue.Queue()
         self.current_dialog = None
+        # global state setting
+        globals.engine = self
+        globals.player = player.Player()
 
     def dialog(self, text, answers, on_finish=lambda interrupted: None):
         self.dialog_queue.put((text, answers, on_finish))
 
     def load_new_state(self, _):
+        globals.player.load_data()
+        self.map_loader.clear_cache()  # new save, all previous stuff gone
         map_path = self.state.get("map", "engine")
         self.stack.clear()
         self.stack.push(game_state.MainMenu())
@@ -89,7 +95,6 @@ class Game:
         if globals.player is not None:
             globals.player.save_data()
         groups, track, event_script = self.map_loader.load_map(tmx_path, player_pos)
-        globals.player = groups.get_group("player").sprite
         if push is False or (push is None and self.stack.get_current() != "MainMenu"):
             self.stack.pop()
         self.stack.push(game_state.MapState("game map", groups, track))
@@ -112,6 +117,7 @@ class Game:
 
     async def run(self):
         globals.engine = self  # set the global engine reference
+        globals.player = player.Player()
         self.screen = pygame.display.set_mode(
             util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE, vsync=0
         )

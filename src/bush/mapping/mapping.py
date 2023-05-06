@@ -198,3 +198,6 @@ class MapLoader:
         if self.cache_maps:
             self.cache[filepath] = (sprite_group, map.properties, True)
         return sprite_group, map.properties, False
+
+    def clear_cache(self):
+        self.cache.clear()

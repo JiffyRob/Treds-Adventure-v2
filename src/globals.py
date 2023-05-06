@@ -5,12 +5,11 @@ Do NOT add variables to this unless it falls under these criteria or is approved
   2) Would have to be piped through at least 4 interfaces to reach its destination
   3) Inherantly there should only be one of them
 
-The variables contained should ONLY be modified by the main.Game class, and even then only sparingly
+All variables here to be modified in the "global state setting" section of the main.Game.__init__() function
 """
 
-engine = None  # game engine, set by the Engine object upon running the game
-player = None  # player sprite, set by the engine upon loading a new map
-event_list = []  # list of pygame events, set every frame by the engine
+player = None  # player object, to be phased out
+engine = None
 
 
 def play_sound(sound_id):
