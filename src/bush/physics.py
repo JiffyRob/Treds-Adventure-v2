@@ -66,6 +66,8 @@ def static_collision(dynamic, static, axis, stop_on_collision):
     motions = {}
     start_pos = tuple(dynamic.pos)
     for velocity in velocities:
+        if velocity.length_squared() < 0.0001:
+            continue
         velocity.scale_to_length(0.2)
         motion = pygame.Vector2()
         while collision.collide_rect_mask(
@@ -77,7 +79,8 @@ def static_collision(dynamic, static, axis, stop_on_collision):
         motions[motion.length_squared()] = motion
         dynamic.pos.update(start_pos)
         dynamic.update_rects()
-    dynamic.pos += motions[min(motions.keys())]
+    if motions:
+        dynamic.pos += motions[min(motions.keys())]
 
 
 def dynamic_collision(dynamic1, dynamic2, axis, stop_on_collision):

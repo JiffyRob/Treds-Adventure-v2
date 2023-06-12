@@ -11,19 +11,19 @@
             "scale": 1.0410416666666666,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 240.14408645187115,
-                "y": 160.89653792275365
+                "x": 237.26235741444867,
+                "y": 159.93596157694617
             }
         },
         "maps/big_map.tmx": {
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 3,
+            "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 338,
-                "y": 137.83333333333334
+                "x": 343,
+                "y": 207.5
             }
         },
         "maps/test_map.tmx": {
@@ -31,11 +31,11 @@
                 3,
                 7
             ],
-            "scale": 3,
-            "selectedLayer": 1,
+            "scale": 1.5,
+            "selectedLayer": 0,
             "viewCenter": {
-                "x": 84,
-                "y": 94.49999999999999
+                "x": 271.3333333333333,
+                "y": 111.66666666666669
             }
         },
         "tilesets/dungeon.tmx": {
@@ -102,6 +102,7 @@
     ],
     "project": "tav2.tiled-project",
     "recentFiles": [
+        "maps/big_map.tmx",
         "maps/test_map.tmx",
         "tilesets/nature.tsx",
         "tilesets/floor_detail.tsx",
@@ -111,7 +112,6 @@
         "tilesets/interior_elements.tsx",
         "tilesets/dungeon.tsx",
         "tilesets/floor.tsx",
-        "maps/bg_forest.tmx",
-        "maps/big_map.tmx"
+        "maps/bg_forest.tmx"
     ]
 }

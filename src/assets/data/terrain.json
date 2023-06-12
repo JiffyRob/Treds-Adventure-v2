@@ -30,6 +30,7 @@
     "idle_state": "idle wading"
   },
   "ice": {
+    "speed": 0.5,
     "traction": 0.2,
     "moves": ["skate", "attack", "carry", "interact", "face"]
   },
