@@ -162,7 +162,6 @@ class Player(base.MobileGameObject):
         self.speed = 72
 
     def reset(self, pos, layer, registry, tiny=False):
-        print("reset")
         self.throw()
         self.kill()
         self.tiny = tiny
@@ -196,7 +195,6 @@ class Player(base.MobileGameObject):
 
     def load_data(self):
         for field in self.save_fields:
-            print(f"setting {field} to {globals.engine.state.get(field, 'player')}")
             setattr(self, field, globals.engine.state.get(field, "player"))
 
     def event(self, event):

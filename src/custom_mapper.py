@@ -5,6 +5,7 @@ import globals
 from bush import asset_handler, entity, physics
 from bush.mapping import group, mapping, registry
 from game_objects import npc, plant, teleport
+from game_objects.enemies import slime
 
 
 class MapLoader(mapping.MapLoader):
@@ -22,6 +23,7 @@ class MapLoader(mapping.MapLoader):
             "collision": lambda x: pygame.sprite.Group(),
             "event": lambda x: group.EntityGroup(),
             "interactable": lambda x: pygame.sprite.Group(),
+            "attackable": lambda x: pygame.sprite.Group(),
             "farmplants_green": lambda x: pygame.sprite.Group(),
             "farmplants_orange": lambda x: pygame.sprite.Group(),
             "farmplants": lambda x: pygame.sprite.Group(),
@@ -32,6 +34,7 @@ class MapLoader(mapping.MapLoader):
             "npc-static": npc.StaticNPC,
             "npc-dynamic": npc.DynamicNPC,
             "throwable": plant.Throwable,
+            "slime": slime.Slime,
         }
         self.default_player_layer = 4  # second layer (default sub)
         loader = asset_handler.glob_loader

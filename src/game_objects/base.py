@@ -28,6 +28,8 @@ class GameObject(entity.Actor):
         start_health=1,
         max_health=1,
     ):
+        if surface is None and anim_dict is not None:
+            surface = anim_dict[min(anim_dict.keys())].image()
         super().__init__(
             pos,
             surface,
@@ -80,7 +82,7 @@ class GameObject(entity.Actor):
 
     @property
     def player(self):
-        return globals.engine.player
+        return globals.player
 
     @property
     def current_script(self):
@@ -147,12 +149,10 @@ class MobileGameObject(GameObject):
         registry,
         surface=None,
         anim_dict=None,
-        groups=(),
         id=None,
         layer=None,
         topleft=False,
         initial_state=None,
-        entity_group=None,
         physics_data=None,
         start_health=1,
         max_health=1,
