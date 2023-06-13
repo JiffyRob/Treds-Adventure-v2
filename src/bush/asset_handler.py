@@ -113,7 +113,7 @@ class AssetHandler:
             self.type_dict[filetype][filepath] = result
         return result
 
-    def load_sprite_sheet(self, path, size=(16, 16), margin=(0, 0), spacing=0):
+    def load_spritesheet(self, path, size=(16, 16), margin=(0, 0), spacing=0):
         image = self.load(path)
         return make_spritesheet(image, size, margin, spacing)
 
@@ -125,18 +125,6 @@ class AssetHandler:
         for key in self.type_dict.keys():
             self.type_dict[key] = {}
         gc.collect()
-
-    def load_spritesheet(
-        self, path, frame_size=(16, 16), margin=(0, 0), spacing=0, cache=True
-    ):
-        return self.load(
-            path,
-            loader=load_spritesheet,
-            frame_size=frame_size,
-            margin=margin,
-            spacing=spacing,
-            cache=cache,
-        )
 
 
 glob_loader = AssetHandler()

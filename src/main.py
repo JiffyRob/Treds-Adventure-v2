@@ -44,10 +44,7 @@ class Game:
         self.screen = pygame.display.set_mode(
             util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE
         )
-        cursor_images = loader.load_sprite_sheet(
-            "hud/cursor.png",
-            (16, 16),
-        )
+        cursor_images = loader.load_spritesheet("hud/cursor.png", (16, 16))
         self.cursor = joy_cursor.JoyCursor(
             pygame.transform.scale2x(cursor_images[0]),
             pygame.Vector2(4, 2),

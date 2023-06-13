@@ -30,23 +30,11 @@ class Player(base.MobileGameObject):
     true_groups = ("main", "player")
 
     def __init__(self, **__):
-        tiny_frames = loader.load_sprite_sheet("tiny.png", (16, 16))
-        foot_frames = loader.load_sprite_sheet(
-            "feet-default.png",
-            (16, 32),
-        )
-        torso_frames = loader.load_sprite_sheet(
-            "torso-default.png",
-            (16, 32),
-        )
-        arm_frames = loader.load_sprite_sheet(
-            "arms-default.png",
-            (16, 32),
-        )
-        head_frames = loader.load_sprite_sheet(
-            "head-default.png",
-            (16, 32),
-        )
+        tiny_frames = loader.load_spritesheet("tiny.png", (16, 16))
+        foot_frames = loader.load_spritesheet("feet-default.png", (16, 32))
+        torso_frames = loader.load_spritesheet("torso-default.png", (16, 32))
+        arm_frames = loader.load_spritesheet("arms-default.png", (16, 32))
+        head_frames = loader.load_spritesheet("head-default.png", (16, 32))
         anim_dict = {
             "tiny walk down": animation.Animation(tiny_frames[0:16:4], 150),
             "tiny walk up": animation.Animation(tiny_frames[1:17:4], 150),

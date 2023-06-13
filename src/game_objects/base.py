@@ -231,7 +231,7 @@ class MobileGameObject(GameObject):
 
 
 def get_anim_dict(path, size):
-    frames = loader.load_sprite_sheet(path + ".png", size)
+    frames = loader.load_spritesheet(path + ".png", size)
     return {
         "walk down": animation.Animation(frames[0:16:4], 150),
         "walk up": animation.Animation(frames[1:17:4], 150),
