@@ -85,7 +85,7 @@ class BaseEnemy(base.MobileGameObject):
     def update_state(self, dt):
         super().update_state(dt)
         if self.player.collision_rect.colliderect(self.collision_rect):
-            pass  # self.player.hurt(self.touch_damage)
+            self.player.hurt(self.touch_damage)
 
 
 def get_anim_dict(path, size):

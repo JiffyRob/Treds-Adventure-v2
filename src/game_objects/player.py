@@ -5,7 +5,7 @@ import pygame
 
 import globals
 import tool
-from bush import animation, asset_handler, event_binding, physics, util
+from bush import animation, asset_handler, effect, event_binding, physics, util
 from game_objects import base
 
 SPEED_MEANDERING = 32
@@ -130,6 +130,8 @@ class Player(base.MobileGameObject):
             layer=0,
             start_health=6,
             max_health=12,
+            hit_effect=effect.Flicker(1500),
+            immunity=1500,
             initial_state="idle",
         )
         self.collision_rect = self.rect
@@ -279,9 +281,6 @@ class Player(base.MobileGameObject):
 
     def get_anim_key(self):
         return ("tiny " * self.tiny) + f"{self.state} {self.facing}"
-
-    def update_state(self, dt):
-        super().update_state(dt)
 
     def update_throwable(self):
         if self.carrying is not None:

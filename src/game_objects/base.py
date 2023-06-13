@@ -3,7 +3,7 @@ import pygame
 import environment
 import globals
 import scripts
-from bush import animation, asset_handler, entity, physics, util
+from bush import animation, asset_handler, entity, physics, timer, util
 
 loader = asset_handler.AssetHandler(
     asset_handler.join(asset_handler.glob_loader.base, "sprites")
@@ -27,6 +27,8 @@ class GameObject(entity.Actor):
         physics_data=None,
         start_health=1,
         max_health=1,
+        immunity_time=150,
+        hit_effect=None,
     ):
         if surface is None and anim_dict is not None:
             surface = anim_dict[min(anim_dict.keys())].image()
@@ -62,17 +64,33 @@ class GameObject(entity.Actor):
         self.move_state = "walk"
         self.idle_state = "idle"
         self.facing = "down"
+        self.immunity_time = immunity_time
+        self.immunity_timer = timer.Timer(immunity_time)
+        self.immunity_timer.finish()
+        self.visual_effects = []
+        self.hit_effect = hit_effect
 
     def get_anim_key(self):
         return self.state
+
+    def add_visual_effect(self, effect):
+        self.visual_effects.append(effect)
 
     def heal(self, amount):
         self.current_health = min(self.health_capacity, self.current_health + amount)
 
     def hurt(self, amount):
-        self.current_health -= amount
-        if self.current_health <= 0:
-            self.kill()
+        if self.immunity_timer.done():
+            self.current_health -= amount
+            if self.current_health <= 0:
+                self.kill()
+            self.immunify()
+
+    def immunify(self):
+        if self.hit_effect is not None:
+            self.hit_effect.reset()
+            self.add_visual_effect(self.hit_effect)
+        self.immunity_timer.reset()
 
     def move(self, direction):
         self.desired_velocity = direction
@@ -118,6 +136,9 @@ class GameObject(entity.Actor):
             self.anim = self.anim_dict[self.get_anim_key()]
         if self.anim:
             self.image = self.anim.image()
+        self.visual_effects = [e for e in self.visual_effects if not e.done()]
+        for effect in self.visual_effects:
+            self.image = effect.apply(self.image)
 
     def update_physics(self, dt):
         self.pos += self.velocity * dt
@@ -139,7 +160,6 @@ class GameObject(entity.Actor):
         self.update_physics(dt)
         self.update_image(dt)
         self.update_script(dt)
-        entity.Entity.update(self, dt)
 
 
 class MobileGameObject(GameObject):
@@ -156,6 +176,8 @@ class MobileGameObject(GameObject):
         physics_data=None,
         start_health=1,
         max_health=1,
+        immunity=150,
+        hit_effect=None,
     ):
         super().__init__(
             pos,
@@ -169,6 +191,8 @@ class MobileGameObject(GameObject):
             physics_data,
             start_health,
             max_health,
+            immunity,
+            hit_effect,
         )
         self.facing = "down"
         if physics_data is None:

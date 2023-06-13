@@ -3,8 +3,11 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "maps/test_map.tmx",
     "expandedProjectPaths": [
+        ".",
+        "maps",
+        "tilesets"
     ],
     "fileStates": {
         "maps/bg_forest.tmx": {
@@ -31,11 +34,11 @@
                 3,
                 7
             ],
-            "scale": 1.5,
-            "selectedLayer": 0,
+            "scale": 2,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 271.3333333333333,
-                "y": 111.66666666666669
+                "x": 84.5,
+                "y": 248.25
             }
         },
         "tilesets/dungeon.tmx": {
@@ -90,7 +93,8 @@
             "scaleInDock": 1
         },
         "tilesets/water.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         }
     },
     "map.height": 40,
@@ -99,19 +103,24 @@
     "map.tileWidth": 16,
     "map.width": 40,
     "openFiles": [
+        "maps/bg_forest.tmx",
+        "maps/test_map.tmx",
+        "tilesets/water.tsx",
+        "tilesets/floor.tsx"
     ],
     "project": "tav2.tiled-project",
     "recentFiles": [
-        "maps/big_map.tmx",
+        "maps/bg_forest.tmx",
+        "tilesets/floor.tsx",
+        "tilesets/water.tsx",
         "maps/test_map.tmx",
+        "maps/big_map.tmx",
         "tilesets/nature.tsx",
         "tilesets/floor_detail.tsx",
         "tilesets/interior.tsx",
         "tilesets/interior_floor.tsx",
         "tilesets/dungeon.tmx",
         "tilesets/interior_elements.tsx",
-        "tilesets/dungeon.tsx",
-        "tilesets/floor.tsx",
-        "maps/bg_forest.tmx"
+        "tilesets/dungeon.tsx"
     ]
 }
