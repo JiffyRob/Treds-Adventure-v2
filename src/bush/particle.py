@@ -1,25 +1,38 @@
+from collections import namedtuple
+
 import pygame
+
+AnimData = namedtuple("AnimData", ("frames", "delay"))
 
 
 class AnimParticle:
-    def __init__(self, pos, velocity, anim, is_alive=lambda self: True):
+    def __init__(
+        self, pos, velocity, anim, is_alive=lambda self, dt: not self.anim_done
+    ):
         self.pos = pygame.Vector2(pos)
         self.vel = pygame.Vector2(velocity)
 
-        self.anim = anim
+        self.frames = anim.frames
+        self.delay = anim.delay / 1000
+        self.image = next(self.frames)
+        self.age = 0
+        self.anim_done = False
         self.is_alive = is_alive
 
     def update(self, dt):
         self.pos += self.vel * dt
-        return self.is_alive(self)
-
-    @property
-    def image(self):
-        return self.anim.image()
+        self.age += dt
+        if not self.anim_done and self.age >= self.delay:
+            self.age = 0
+            try:
+                self.image = next(self.frames)
+            except StopIteration:
+                self.anim_done = True
+        return self.is_alive(self, dt)
 
 
 class ImageParticle:
-    def __init__(self, pos, velocity, image, is_alive=lambda self: True):
+    def __init__(self, pos, velocity, image, is_alive=lambda self, dt: True):
         self.pos = pygame.Vector2(pos)
         self.velocity = pygame.Vector2(velocity)
         self.image = image
@@ -27,13 +40,13 @@ class ImageParticle:
 
     def update(self, dt):
         self.pos += self.velocity * dt
-        return self.is_alive(self)
+        return self.is_alive(self, dt)
 
 
 class RectParticle:
     cached_images = {}
 
-    def __init__(self, pos, velocity, size, color, is_alive=lambda self: True):
+    def __init__(self, pos, velocity, size, color, is_alive=lambda self, dt: True):
         self.pos = pygame.Vector2(pos)
         self.velocity = pygame.Vector2(velocity)
 
@@ -45,7 +58,7 @@ class RectParticle:
 
     def update(self, dt):
         self.pos += self.velocity * dt
-        return self.is_alive(self)
+        return self.is_alive(self, dt)
 
     def update_image(self):
         cache_lookup = (self.size, self.color)
@@ -72,11 +85,11 @@ class CircleParticle:
         color,
         width=0,
         expansion=0,
-        is_alive=lambda self: self.radius > 0,
+        is_alive=lambda self, dt: self.radius > 0,
     ):
-        self.pos = pygame.Vector2(pos)
+        self.true_pos = pygame.Vector2(pos)
+        self.pos = self.true_pos - (radius, radius)
         self.velocity = pygame.Vector2(velocity)
-
         self.radius = radius
         self.color = color
         self.image = None
@@ -86,11 +99,12 @@ class CircleParticle:
         self.update_image()  # self.image set here
 
     def update(self, dt):
-        self.pos += self.velocity * dt
+        self.true_pos += self.velocity * dt
         if self.expansion:
             self.radius += self.expansion * dt
             self.update_image()
-        return self.is_alive(self)
+        self.pos = self.true_pos - (self.radius, self.radius)
+        return self.is_alive(self, dt)
 
     def update_image(self):
         # use a rounded radius because sub-pixel doesn't happen and else caching will be almost useless
@@ -130,3 +144,23 @@ class ParticleManager:
 
     def __len__(self):
         return len(self.particles)
+
+
+class DurationCallback:
+    def __init__(self, duration, on_finish=lambda *args, **kwargs: None):
+        self.duration = int(duration)
+        self.on_finish = on_finish
+
+    def __call__(self, particle, dt):
+        self.duration = max(0, self.duration - dt)
+        if not self.duration:
+            self.on_finish(particle, dt)
+            return 0
+        return 1
+
+
+def on_rect_callback(rect):
+    def on_rect(particle, dt):
+        return rect.colliderect(particle.rect)
+
+    return on_rect

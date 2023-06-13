@@ -3,6 +3,8 @@ Bush util
 
 Basic utility module
 """
+import math
+import random
 import sys
 
 import pygame
@@ -158,3 +160,17 @@ class IDHandler:
 
 def is_pygbag():
     return sys.platform == "emscripten"
+
+
+def randincircle(length, outside=False):
+    angle = random.random() * 2 * math.pi
+    mult = 1 - (random.random() * outside)
+    return pygame.Vector2(
+        math.cos(angle) * length * mult, math.sin(angle) * length * mult
+    )
+
+
+def randinrect(rect):
+    return pygame.Vector2(
+        random.uniform(rect.left, rect.right), random.uniform(rect.top, rect.bottom)
+    )
