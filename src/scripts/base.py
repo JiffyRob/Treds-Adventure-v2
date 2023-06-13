@@ -61,9 +61,8 @@ class Script:
     def play_sound(self, sound_name):
         player.play(sound_name)
 
-    def spawn_particles(self):
-        # TODO
-        pass
+    def spawn_particles(self, particles):
+        globals.engine.stack.get_current().add_particles(particles)
 
     def give_player(self, *things):
         for thing in things:

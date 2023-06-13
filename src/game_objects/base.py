@@ -161,6 +161,10 @@ class GameObject(entity.Actor):
         self.update_image(dt)
         self.update_script(dt)
 
+    @staticmethod
+    def spawn_particles(particles):
+        globals.engine.stack.get_current().add_particles(particles)
+
 
 class MobileGameObject(GameObject):
     def __init__(

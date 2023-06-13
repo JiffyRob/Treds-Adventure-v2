@@ -7,7 +7,7 @@ import globals
 import gui
 import items
 import menu
-from bush import asset_handler, event_binding, sound_manager, text_util, util
+from bush import asset_handler, event_binding, particle, sound_manager, text_util, util
 from bush.ai import state
 
 # defining variables like this allows to flip out to specific ones later
@@ -91,6 +91,7 @@ class MapState(GameState):
         self.sky = globals.engine.sky
         self.main_group = self.registry.get_group("main")
         self.soundtrack = soundtrack
+        self.particle_manager = particle.ParticleManager()
         if self.soundtrack is not None:
             music_player.play(self.soundtrack)
         hud = gui.UIGroup()
@@ -107,6 +108,7 @@ class MapState(GameState):
     def update(self, dt=0.03):
         super().update(dt)
         self.sky.update(dt)
+        self.particle_manager.update(dt)
         self.main_group.update(dt)
 
     def handle_events(self):
@@ -126,6 +128,9 @@ class MapState(GameState):
                 1,
             )
         self.sky.render(surface)
+        self.particle_manager.draw(
+            surface, -pygame.Vector2(self.main_group.cam_rect.topleft)
+        )
         super().draw(surface)
 
 
