@@ -10,35 +10,3 @@ All variables here to be modified in the "global state setting" section of the m
 
 player = None  # player object, to be phased out
 engine = None
-
-
-def play_sound(sound_id):
-    ...  # TODO
-
-
-def switch_music(new_track):
-    ...  # TODO
-
-
-def spawn_particles(frames, positions, velocities):
-    ...  # TODO
-
-
-def camera_shake(value, time):
-    ...  # TODO
-
-
-def get_terrain(mask, offset):
-    ...  # TODO
-
-
-def find_sprites(group, id=None):
-    ...  # TODO
-
-
-def spawn_sprite(sprite):
-    ...  # TODO
-
-
-def show_dialog(self):
-    ...  # TODO
