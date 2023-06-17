@@ -7,33 +7,21 @@ from game_objects import base
 class BaseObstacle(base.GameObject):
     """Does nothing.  Damage to be implemented later."""
 
-    groups = (
+    registry_groups = (
         "main",
         "collision",
     )
 
     def __init__(
         self,
-        pos,
-        registry,
-        surface=None,
-        anim_dict=None,
-        id=None,
-        layer=None,
-        topleft=False,
-        initial_state=None,
+        data,
+        initial_state="idle",
         physics_data=None,
         start_health=1,
         max_health=1,
     ):
         super().__init__(
-            pos,
-            registry,
-            surface=surface,
-            anim_dict=anim_dict,
-            id=id,
-            layer=layer,
-            topleft=topleft,
+            data=data,
             initial_state=initial_state,
             physics_data=physics_data,
             start_health=start_health,
@@ -48,32 +36,21 @@ class BaseEnemy(base.MobileGameObject):
 
     def __init__(
         self,
-        pos,
-        registry,
-        surface=None,
+        data,
         anim_dict=None,
-        id=None,
-        layer=None,
-        topleft=False,
         initial_state=None,
         start_health=1,
         max_health=1,
         script=None,
         speed=36,
         touch_damage=2,
-        **kwargs,
     ):
         super().__init__(
-            pos,
-            registry,
-            surface=surface,
+            data=data,
             anim_dict=anim_dict,
-            id=id,
-            layer=layer,
-            topleft=topleft,
             initial_state=initial_state,
             physics_data=physics.PhysicsData(
-                physics.TYPE_DYNAMIC, registry.get_group("collision")
+                physics.TYPE_DYNAMIC, data.registry.get_group("collision")
             ),
             start_health=start_health,
             max_health=max_health,

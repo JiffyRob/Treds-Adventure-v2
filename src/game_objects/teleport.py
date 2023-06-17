@@ -5,20 +5,24 @@ from bush import entity, physics
 
 
 class Teleport(entity.Entity):
-    groups = ("main", "collision")
+    registry_groups = ("main", "collision")
 
-    def __init__(self, *, pos, registry, width=16, height=16, dest, dest_map=None, **_):
-        super().__init__(pos, layer=1276)
-        for group in self.groups:
-            registry.get_group(group).add(self)
-        self.dest = pygame.Vector2([int(i) for i in dest.split(", ")])
-        self.dest_map = dest_map or globals.engine.current_map
-        self.registry = registry
+    def __init__(self, data):
+        super().__init__(
+            data.pos,
+            None,
+            (data.registry.get_group(key) for key in self.registry_groups),
+            data.id,
+            1000,
+        )
+        self.dest = pygame.Vector2([int(i) for i in data.misc["dest"].split(", ")])
+        self.dest_map = data.misc["dest_map"] or globals.engine.current_map
+        self.registry = data.registry
         self.physics_data = physics.PhysicsData(
             physics.TYPE_TRIGGER, self.registry.get_group("collision")
         )
-        self.rect.size = (width, height)
-        self.rect.topleft = pos
+        self.rect.size = (data.misc["width"], data.misc["height"])
+        self.rect.topleft = data.pos
         self.pos = pygame.Vector2(self.rect.center)
         self.mask = pygame.Mask(self.rect.size, True)
 

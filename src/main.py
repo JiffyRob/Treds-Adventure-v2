@@ -4,7 +4,7 @@ Has Access to all other modules
 """
 import startup
 
-startup.splash()
+startup.splash()  # later modules load assets that are pulled in from here
 
 import asyncio
 import queue

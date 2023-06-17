@@ -4,7 +4,7 @@ import environment
 import globals
 from bush import asset_handler, entity, physics
 from bush.mapping import group, mapping, registry
-from game_objects import npc, plant, teleport
+from game_objects import arg, npc, plant, teleport
 from game_objects.enemies import slime
 
 
@@ -100,21 +100,13 @@ class MapLoader(mapping.MapLoader):
         if obj.name is not None:
             obj.properties["id"] = obj.name
         self.sprite_classes[obj.type](
-            pos=obj.pos,
-            layer=obj.layer * 3 + 1,
-            surface=obj.image,
-            topleft=True,
-            width=obj.width,
-            height=obj.height,
-            registry=self.current_registry,
-            **obj.properties,
+            arg.from_mapping_object(obj, self.current_registry)
         )
 
     def load_map(self, tmx_path, player_pos):
         globals.player.kill()
         try:
             self.current_registry, properties = self.aux_cache[tmx_path]
-            self.current_env_masks = {}
         except KeyError:
             tmx_map = self.loader.load(tmx_path)
             self.map_size = pygame.Vector2(

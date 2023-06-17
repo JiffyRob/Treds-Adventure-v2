@@ -6,7 +6,7 @@ import pygame
 import globals
 import tool
 from bush import animation, asset_handler, effect, event_binding, physics, util
-from game_objects import base
+from game_objects import arg, base
 
 SPEED_MEANDERING = 32
 SPEED_WALKING = 128
@@ -19,17 +19,12 @@ loader.cache_asset_handler(asset_handler.glob_loader)
 
 
 class Player(base.MobileGameObject):
-    """main player of the game
+    """main player of the game"""
 
-    Args:
-        pos: initial position of the player (list, pygame.Vector2, etc.)
-        id: player's integer id
-    """
-
-    groups = ()  # do NOT add to any groups on setup, registry will be None
+    registry_groups = ()  # do NOT add to any groups on setup, registry will be None
     true_groups = ("main", "player")
 
-    def __init__(self, **__):
+    def __init__(self):
         tiny_frames = loader.load_spritesheet("tiny.png", (16, 16))
         foot_frames = loader.load_spritesheet("feet-default.png", (16, 32))
         torso_frames = loader.load_spritesheet("torso-default.png", (16, 32))
@@ -110,12 +105,8 @@ class Player(base.MobileGameObject):
             ),
         }
         super().__init__(
-            (0, 0),
-            registry=None,
-            physics_data=None,
+            arg.GameObjectArgs(id="player"),
             anim_dict=anim_dict,
-            id="player",
-            layer=0,
             start_health=6,
             max_health=12,
             hit_effect=effect.Flicker(1500),

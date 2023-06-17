@@ -8,7 +8,7 @@ from game_objects import base
 
 
 class StaticNPC(base.GameObject):
-    groups = (
+    registry_groups = (
         "main",
         "collision",
         "event",
@@ -17,30 +17,15 @@ class StaticNPC(base.GameObject):
 
     def __init__(
         self,
-        pos,
-        registry,
-        surface,
-        topleft=False,
-        id=None,
-        layer=None,
-        script=None,
-        interaction_script=None,
-        **kwargs,
+        data,
     ):
-        super().__init__(
-            pos,
-            registry,
-            surface,
-            id=id,
-            layer=layer,
-            topleft=topleft,
-        )
+        super().__init__(data)
         self.physics_data = physics.PhysicsData(
-            physics.TYPE_STATIC, registry.get_group("collision")
+            physics.TYPE_STATIC, data.registry.get_group("collision")
         )
         self.mask = pygame.mask.from_surface(self.image)
-        self.normal_script = script
-        self.interaction_script = interaction_script
+        self.normal_script = data.script
+        self.interaction_script = data.interaction_script
         if self.normal_script:
             self.run_script(self.normal_script)
 
@@ -49,42 +34,29 @@ class StaticNPC(base.GameObject):
 
 
 class DynamicNPC(base.MobileGameObject):
-    groups = ("main", "collision", "event", "interactable")
+    registry_groups = ("main", "collision", "event", "interactable")
 
     def __init__(
         self,
-        pos,
-        registry,
-        surface,
-        topleft=False,
-        anim_name=None,
-        gnome=False,  # gnomes are smaller
-        id=None,
-        layer=None,
-        script=None,
-        interaction_script=None,
-        **kwargs,
+        data,
     ):
         anim_dict = None
+        anim_name = data.misc.get("anim_name", None)
+        gnome = data.misc.get("gnome", None)
         if anim_name is not None:
             anim_dict = base.get_anim_dict(
                 "npcs/" + anim_name, ((16, 32), (16, 16))[gnome]
             )
         super().__init__(
-            pos,
-            registry,
-            surface,
+            data,
             physics_data=physics.PhysicsData(
-                physics.TYPE_DYNAMIC, registry.get_group("collision")
+                physics.TYPE_DYNAMIC, data.registry.get_group("collision")
             ),
-            topleft=topleft,
             anim_dict=anim_dict,
-            id=id,
-            layer=layer,
         )
         self.mask = pygame.mask.from_surface(self.image)
-        self.normal_script = script
-        self.interaction_script = interaction_script
+        self.normal_script = data.script
+        self.interaction_script = data.interaction_script
         self.run_script(self.normal_script)
         self.speed = 24
 

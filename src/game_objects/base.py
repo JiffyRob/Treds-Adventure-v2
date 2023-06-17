@@ -12,35 +12,31 @@ loader.cache_asset_handler(asset_handler.glob_loader)
 
 
 class GameObject(entity.Actor):
-    groups = ("main",)
+    registry_groups = ("main",)
 
     def __init__(
         self,
-        pos,
-        registry,
-        surface=None,
+        data,
         anim_dict=None,
-        id=None,
-        layer=None,
-        topleft=False,
         initial_state=None,
         physics_data=None,
         start_health=1,
         max_health=1,
-        immunity_time=150,
+        immunity=150,
         hit_effect=None,
     ):
-        if surface is None and anim_dict is not None:
+        surface = data.surface
+        if data.surface is None and anim_dict is not None:
             surface = anim_dict[min(anim_dict.keys())].image()
         super().__init__(
-            pos,
+            data.pos,
             surface,
-            (registry.get_group(i) for i in self.groups),
-            id,
-            layer,
-            topleft,
+            (data.registry.get_group(i) for i in self.registry_groups),
+            data.id,
+            data.layer,
+            data.topleft,
         )
-        self.registry = registry
+        self.registry = data.registry
         self.anim_dict = {}
         if anim_dict is not None:
             self.anim_dict = anim_dict
@@ -64,8 +60,8 @@ class GameObject(entity.Actor):
         self.move_state = "walk"
         self.idle_state = "idle"
         self.facing = "down"
-        self.immunity_time = immunity_time
-        self.immunity_timer = timer.Timer(immunity_time)
+        self.immunity_time = immunity
+        self.immunity_timer = timer.Timer(immunity)
         self.immunity_timer.finish()
         self.visual_effects = []
         self.hit_effect = hit_effect
@@ -169,13 +165,8 @@ class GameObject(entity.Actor):
 class MobileGameObject(GameObject):
     def __init__(
         self,
-        pos,
-        registry,
-        surface=None,
+        data,
         anim_dict=None,
-        id=None,
-        layer=None,
-        topleft=False,
         initial_state=None,
         physics_data=None,
         start_health=1,
@@ -184,19 +175,14 @@ class MobileGameObject(GameObject):
         hit_effect=None,
     ):
         super().__init__(
-            pos,
-            registry,
-            surface,
-            anim_dict,
-            id,
-            layer,
-            topleft,
-            initial_state,
-            physics_data,
-            start_health,
-            max_health,
-            immunity,
-            hit_effect,
+            data=data,
+            anim_dict=anim_dict,
+            initial_state=initial_state,
+            physics_data=physics_data,
+            start_health=start_health,
+            max_health=max_health,
+            immunity=immunity,
+            hit_effect=hit_effect,
         )
         self.facing = "down"
         if physics_data is None:

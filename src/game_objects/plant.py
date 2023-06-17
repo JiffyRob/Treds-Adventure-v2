@@ -1,7 +1,7 @@
 import pygame
 
 import globals
-from bush import asset_handler, autotile, collision, entity, physics, util, util_load
+from bush import asset_handler, collision, entity, physics, util, util_load
 from game_objects import base
 
 loader = asset_handler.glob_loader
@@ -27,74 +27,14 @@ STATE_HELD = 1
 STATE_THROWN = 2
 
 
-def green_farmplant(*args, **kwargs):
-    return FarmPlant("green", *args, **kwargs)
-
-
-def orange_farmplant(*args, **kwargs):
-    return FarmPlant("orange", *args, **kwargs)
-
-
-class FarmPlant(entity.Entity):
-    def __init__(
-        self,
-        color,
-        pos,
-        surface,
-        collision_group=None,
-        layer=5,
-        farmplants_orange_group=None,
-        farmplants_green_group=None,
-        id=None,
-        *_,
-        **__
-    ):
-        self.color = color
-        self.physics_data = physics.PhysicsData(physics.TYPE_STATIC, collision_group)
-        super().__init__(pos, surface, layer=layer, id=id)
-        self.mask = pygame.mask.from_surface(surface)
-        self.autotile = autotile.BinaryAutotile(self.get_neighbors)
-        self.farmplants_group = {
-            "orange": farmplants_orange_group,
-            "green": farmplants_green_group,
-        }[self.color]
-
-    def get_neighbors(self):
-        positions = {
-            tuple(self.pos + (0, -16)): autotile.NORTH,
-            tuple(self.pos + (16, 0)): autotile.EAST,
-            tuple(self.pos + (0, 16)): autotile.SOUTH,
-            tuple(self.pos + (-16, 0)): autotile.WEST,
-        }
-        neighbors = {
-            autotile.NORTHWEST: False,
-            autotile.NORTHEAST: False,
-            autotile.SOUTHEAST: False,
-            autotile.SOUTHWEST: False,
-        }
-        for sprite in self.farmplants_group:
-            pos = tuple(sprite.pos)
-            direction = positions.get(pos, None)
-            if direction is not None:
-                neighbors[direction] = True
-        return neighbors
-
-    def update(self, dt):
-        super().update(dt)
-        self.image = FARMPLANT_IMAGES[self.color][self.autotile.calculate()]
-
-
 class Throwable(base.GameObject):
-    groups = (
+    registry_groups = (
         "main",
         "interactable",
     )
 
-    def __init__(
-        self, pos, registry, surface, layer=5, id=None, topleft=False, *_, **__
-    ):
-        print(layer)
-        super().__init__(pos, registry, surface, None, id, layer, topleft)
+    def __init__(self, data):
+        super().__init__(data)
         self.state = STATE_GROUND
         self.velocity = pygame.Vector2()
         self.dest_height = None
