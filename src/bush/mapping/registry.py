@@ -90,3 +90,12 @@ class MapRegistry:
 
     def get_rect_list(self, key, fallback=None):
         return self.rect_lists.get(key, fallback)
+
+    def list_groups(self):
+        return list(self.groups.keys())
+
+    def list_masks(self):
+        return list(self.masks.keys())
+
+    def list_rect_lists(self):
+        return list(self.rect_lists.keys())

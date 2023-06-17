@@ -1,10 +1,10 @@
 from collections import namedtuple
-from itertools import chain
 
 import pygame
 
 import pytmx
 from bush import animation, asset_handler, entity, util
+from bush.mapping import registry
 
 TYPE_TILE = "tile"
 TYPE_OBJECT = "object"
@@ -49,17 +49,23 @@ class MapLoader:
         base_dir,
         cache_maps=True,
         cache_files=True,
-        sprite_creator=lambda obj, sprite_group: entity.Entity(
+        sprite_creator=lambda obj, registry: entity.Entity(
             obj.pos,
             obj.image,
-            groups=[sprite_group],
+            groups=[registry.get_group(i) for i in entity.Entity.registry_groups],
             id=obj.name,
             layer=obj.layer * 3 + 1,
             topleft=True,
         ),
         tile_handler=lambda tile, sprite_group: None,
+        registry_creators=None,
         colorkey=(255, 255, 0),
     ):
+        self.registry_creators = registry_creators
+        if registry_creators is None:
+            self.registry_creators = {
+                "main": pygame.sprite.Group,
+            }
         self.loader = asset_handler.AssetHandler(base_dir)
         self.cache = {}
         self.cache_maps = cache_maps
@@ -67,6 +73,7 @@ class MapLoader:
         self.sprite_creator = sprite_creator
         self.tile_handler = tile_handler
         self.colorkey = colorkey
+        self.current_registry = None
 
     def parse(self, map):
         def get_anim(tmx_map, gid):
@@ -157,23 +164,29 @@ class MapLoader:
     ):
         if not isinstance(map, pytmx.TiledMap):
             map = self.loader.load(map, self.cache_files)
+        map_size = pygame.Vector2(
+            map.width * map.tilewidth, map.height * map.tileheight
+        )
+
         filepath = map.filename
         if filepath in self.cache:
             return self.cache[filepath]
 
         layers = self.parse(map)
-        sprite_group = pygame.sprite.Group()
+        self.current_registry = registry.MapRegistry()
+        for group_name, group_creator in self.registry_creators.items():
+            self.current_registry.add_group(group_name, group_creator(map_size))
         for layer in layers:
             if layer.type == LAYERTYPE_TILE:
                 surface = pygame.Surface(layer.size).convert()
                 surface.fill(self.colorkey)
                 surface.set_colorkey(self.colorkey)
                 for tile in layer.items:
-                    self.tile_handler(tile, sprite_group)
+                    self.tile_handler(tile, self.current_registry)
                     try:
                         surface.blit(tile.image, tile.pos)
                     except TypeError:
-                        sprite_group.add(
+                        self.current_registry.get_group("main").add(
                             entity.Entity(
                                 tile.pos,
                                 tile.image,
@@ -185,19 +198,23 @@ class MapLoader:
                 sprite = entity.Entity(
                     (0, 0), surface, layer=layer.layer * 3 + 1, topleft=True
                 )
-                sprite_group.add(sprite)
+                self.current_registry.get_group("main").add(sprite)
             if layer.type == LAYERTYPE_IMAGE:
-                sprite_group.add(
+                self.current_registry.get_group("main").add(
                     entity.Entity(
                         (0, 0), layer.image, layer=layer.layer * 3 + 1, id=layer.name
                     )
                 )
             if layer.type == LAYERTYPE_OBJECT:
                 for obj in layer.items:
-                    self.sprite_creator(obj, sprite_group)
+                    self.sprite_creator(obj, self.current_registry.get_group("main"))
         if self.cache_maps:
-            self.cache[filepath] = (sprite_group, map.properties, True)
-        return sprite_group, map.properties, False
+            self.cache[filepath] = (
+                self.current_registry.get_group("main"),
+                map.properties,
+                True,
+            )
+        return self.current_registry, map.properties, False
 
     def clear_cache(self):
         self.cache.clear()

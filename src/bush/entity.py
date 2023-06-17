@@ -13,6 +13,8 @@ from bush import animation
 class Entity(pygame.sprite.Sprite):
     """Basic Entity"""
 
+    registry_groups = ("main",)
+
     def __init__(
         self,
         pos,
@@ -23,7 +25,7 @@ class Entity(pygame.sprite.Sprite):
         topleft=False,
         no_debug=False,
     ):
-        super().__init__(*groups)
+        super().__init__(groups)
         self.image = surface
         self.anim = None
         if isinstance(surface, animation.Animation):
