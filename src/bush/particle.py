@@ -89,6 +89,7 @@ class CircleParticle:
     ):
         self.true_pos = pygame.Vector2(pos)
         self.pos = self.true_pos - (radius, radius)
+        self.rect = (self.true_pos, (radius, radius))
         self.velocity = pygame.Vector2(velocity)
         self.radius = radius
         self.color = color
@@ -104,6 +105,7 @@ class CircleParticle:
             self.radius += self.expansion * dt
             self.update_image()
         self.pos = self.true_pos - (self.radius, self.radius)
+        self.rect = (self.true_pos, (self.radius, self.radius))
         return self.is_alive(self, dt)
 
     def update_image(self):
@@ -163,6 +165,6 @@ class DurationCallback:
 
 def on_rect_callback(rect):
     def on_rect(particle, dt):
-        return rect.colliderect(particle.rect)
+        return pygame.Rect(rect).colliderect(particle.rect)
 
     return on_rect

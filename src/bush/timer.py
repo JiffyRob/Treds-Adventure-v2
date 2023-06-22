@@ -9,6 +9,9 @@ class Timer:
         self.repeat = repeat
         self.ran_ending = False
 
+    def __repr__(self):
+        return f"<bush.Timer (start={self.start}, remaining={self.time_left()}>"
+
     def time_left(self):
         return max(self.wait - (pygame.time.get_ticks() - self.start), 0)
 

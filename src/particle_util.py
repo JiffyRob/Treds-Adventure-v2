@@ -6,7 +6,9 @@ import pygame
 
 from bush import asset_handler, particle, util
 
-loader = asset_handler.AssetHandler("sprites/particles")
+loader = asset_handler.AssetHandler(
+    asset_handler.join(asset_handler.glob_loader.base, "particles")
+)
 loader.cache_asset_handler(asset_handler.glob_loader)
 
 fireball_frames = loader.load_spritesheet("fireball.png")

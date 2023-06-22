@@ -6,6 +6,7 @@
     "empty",
     "sword",
     "bow",
+    "bomb",
     "cheddar",
     "white cheddar",
     "empty bottle",
@@ -57,6 +58,12 @@
       "type": "tool",
       "params": {
         "tool_id": "bow"
+      }
+    },
+    "bomb": {
+      "type": "tool",
+      "params": {
+        "tool_id": "bomb"
       }
     },
     "cheddar": {

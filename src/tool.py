@@ -1,4 +1,9 @@
+import pygame
+
+import globals
 from bush import timer
+from game_objects import arg
+from game_objects.projectiles import bomb
 
 
 class Tool:
@@ -33,6 +38,15 @@ class Sword(Tool):
         super().__init__(player)
 
 
+class Bomb(Tool):
+    def can_be_used(self):
+        return super().can_be_used() and globals.player.has("bomb")
+
+    def use_callback(self):
+        bomb.Bomb(arg.from_projectile_shooter(self.player, pygame.Vector2()))
+        globals.player.lose("bomb")
+
+
 def get_tool(player, tool_id):
     if tool_id in TOOL_DICT:
         return TOOL_DICT[tool_id](player)
@@ -40,4 +54,4 @@ def get_tool(player, tool_id):
     return Tool(player)
 
 
-TOOL_DICT = {"base": Tool, "sword": Sword}
+TOOL_DICT = {"base": Tool, "sword": Sword, "bomb": Bomb}
