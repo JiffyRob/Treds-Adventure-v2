@@ -1,6 +1,6 @@
 import os
 
-from bush import physics
+from bush import effect, physics
 from game_objects import base
 
 
@@ -10,6 +10,7 @@ class BaseObstacle(base.GameObject):
     registry_groups = (
         "main",
         "collision",
+        "attackable",
     )
 
     def __init__(
@@ -32,7 +33,7 @@ class BaseObstacle(base.GameObject):
 class BaseEnemy(base.MobileGameObject):
     """Runs a script.  Damage and such to be implemented later"""
 
-    groups = ("main", "collision", "attackable")
+    registry_groups = ("main", "collision", "attackable")
 
     def __init__(
         self,
@@ -54,6 +55,7 @@ class BaseEnemy(base.MobileGameObject):
             ),
             start_health=start_health,
             max_health=max_health,
+            hit_effect=effect.Blink(500),
         )
         self.speed = speed
         self.touch_damage = touch_damage

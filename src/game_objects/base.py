@@ -76,6 +76,7 @@ class GameObject(entity.Actor):
         self.current_health = min(self.health_capacity, self.current_health + amount)
 
     def hurt(self, amount):
+        print("ouch!", self, amount)
         if self.immunity_timer.done():
             self.current_health -= amount
             if self.current_health <= 0:

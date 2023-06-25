@@ -3,7 +3,7 @@ import pygame
 import environment
 import globals
 from bush import asset_handler, entity, physics
-from bush.mapping import group, mapping, registry
+from bush.mapping import group, mapping
 from game_objects import arg, npc, plant, teleport
 from game_objects.enemies import slime
 

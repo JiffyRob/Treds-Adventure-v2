@@ -10,7 +10,7 @@ class Slime(enemy.BaseEnemy):
             data=data,
             anim_dict=enemy.get_anim_dict("slime2", (16, 16)),
             initial_state="idle",
-            start_health=12,
-            max_health=12,
+            start_health=3,
+            max_health=3,
             script="random-walk",
         )

@@ -22,7 +22,7 @@ class Player(base.MobileGameObject):
     """main player of the game"""
 
     registry_groups = ()  # do NOT add to any groups on setup, registry will be None
-    true_groups = ("main", "player")
+    true_groups = ("main", "player", "attackable")
 
     def __init__(self):
         tiny_frames = loader.load_spritesheet("tiny.png", (16, 16))
@@ -201,6 +201,10 @@ class Player(base.MobileGameObject):
     def event(self, event):
         if event.type == event_binding.BOUND_EVENT:
             self.command(event.name)
+        if event.type == pygame.MOUSEWHEEL:
+            for sprite in self.registry.get_group("attackable"):
+                if sprite is not self:
+                    sprite.hurt(1)
 
     def command(self, command_name):
         if self.input_locked:
