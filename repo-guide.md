@@ -1,5 +1,5 @@
 # What do all of the modules do?
-A brief summary of every python module currently in the repo, located in the `src` folder (last updated 5/6/2023)
+A brief summary of every python module currently in the repo, located in the `src` folder (last updated 6/24/2023)
  - `bush` is a custom game engine written specifically for this game.  It will likely be used elsewhere later as well once it is in a more stable condition.  It has quite a few submodules:
    - `ai` is a subpackage for sprite behaviour:
      - `steering_behaviours.py` has a series of behaviours that can be called on sprites to make them perform the given action.
@@ -8,54 +8,62 @@ A brief summary of every python module currently in the repo, located in the `sr
    - `mapping` is a subpackage with stuff for level loading in it:
      - `group.py` has some specialized sprite groups for cameras, top down rendering, and sprite identification.
      - `mapping.py` holds a map loader that takes pygame tmx maps and loads them into sprites.  Meant to be extended.
+     - `registry.py` contains classes for holding sprite groups, rects, and other collision information.  The MapRegistry class is used everywhere
    - `color.py` has some color constants.  This will probably be phased out as well.
    - `collision.py` contains collision functions for rects and masks.
    - `animation.py` contains classes for sprite animation.
    - `timer.py` contains a class for creating timers.  These can be updated to call their own functions or checked for completion.
-   - `util.py` has a couple of neat utility functions.
-   - `sound_manager.py` has a class for managing sound objects and playing them
-   - `autotile.py` has a *very* primitive autotiler in it.
+   - `util.py` has a couple of neat utility functions, especially regarding vectors.
+   - `sound_manager.py` has a class for managing sound objects and playing them.
+   - `autotile.py` has a *very* primitive autotiler in it.  This may or may not be removed.
    - `joy_cursor.py` has a cursor class that takes an arbitrary image and uses it for the system cursor.  Meant to take input from a joystick.
-   - `entity.py` contains basic sprite classes for use in the game.  Everything else is made to work with these.
-   - `physics.py` has some very basic top down physics.
-   - `asset_hander.py` holds a class for handling and caching assets of many different file types.  All file loading is done through these
-   - `util_load.py` has a bunch of functions to load files.  Usually used in the asset_handler, or for files that you know will only be loaded once.  Do not use this, as for this project all files are cached in the `asset_handler.glob_loader`
+   - `entity.py` contains basic sprite classes for use in the game.  Everything else (with a couple of rare exceptions) is a subclass of these.
+   - `particle.py` holds the particle effect engine.  GameStates have ParticleManagers and methods to spawn particles in them.
+   - `physics.py` has some basic top down physics.  This is where collision resolution is handled.  If you want to find where ice and such is applied, that is in the base MobileGameObject class.
+   - `asset_hander.py` holds a class for handling and caching assets of many different file types.  One of these is created which loads everything, and then smaller loaders grab what they need from it.
+   - `util_load.py` has a bunch of functions to load files.  Usually used in the asset_handler, or for files that you know will only be loaded once.  Do not use this for this game, as for this project all files are cached in the `asset_handler.glob_loader`
    - `save_state.py` holds a couple of classes for global game state, things that would be saved in a save file
-   - `event_binding.py` contains a class and some helper functions for complex input handling.  Use this if you want to use joystick input or rebind your keys
+   - `event_binding.py` contains a class and some helper functions for complex input handling.  You might see one of these wherever the event queue is interacted with.  It creates `BOUND_EVENT` objects.
    - `__init__.py` imports the modules in the engine and makes them available to the outside.
  - `scripts` has python scripts for entities in it.  They are executed by certain GameObjects.  
    - `__init__.py` import all scripts and makes them available via import or through string id.
    - `base.py` contains a base class that all scripts derive from
    - `random_walk.py` is a script for an entity to walk around aimlessly, and sometimes stop.
-   - `test.py` is a script for interaction.  It simply pulls up a little dialog and leaves it at that.
- - `game_objects` is a package containing all sprite classes in the game.  It's modules include:
-   - `base.py` has a base class for game objects that do more than sit still and get bumped into.  It has two flavors: those which move are can be influenced by terrain, and those which don't move.  These are what execute scripts.
-   - `npc.py` has two classes for NPCs.  One stays put and the other does not.  These interact and have scripts.
-   - `plant.py` has some plant classes in it.  Things like wheat plants and if we ever want to do anything with trees.  This will probably be phased out as the current farmplant classes' autotiling is a little cringy.
-   - `player.py` houses the all-important player class.
-   - `teleport.py` houses the class for the teleport, a handy little class that can be of arbitrary size and will move the play to a destination if he touches it (even if it's on another map)
- - `sky.py` has a class that handles the day/night cycle, and likely more advanced weather/time later
- - `environment.py` has a class that loads the environments of tiled maps and makes them visible to game objects.
+   - `test.py` is a script for interaction.  It simply pulls up a little dialog calling you a silly goober.
+ - `game_objects` is a package containing all sprite classes in the game.  It's modules and packages include:
+   - `enemies` are enemies.  There will be a seperate file for every 'type' of enemy.  Currently there is a base class in here and a slime module.
+   - `projectiles` are things that get shot and affect entities.  Examples include bombs, arrows, cannonballs, etc.  This one contains a base and a bomb.
+   - `arg.py` is a very important module for object instantiation.  It has a *dataclass* that holds basic positioning and surface data.  It is a requirement that all entities spawned on a tiled map take just a `data` param which is one of these objects.  Additionally there are some helper functions to reate these objects.
+   - `base.py` has a base class for game objects that do more than sit still and get bumped into.  It has two flavors: those which move and can be influenced by terrain, and those which don't move.  These can execute scripts, but won't by default.
+   - `npc.py` has two classes for NPCs.  One stays put and the other does not.  These interact and run scripts.
+   - `plant.py` has some plant classes in it.  Things like wheat plants and if we ever want to do anything with trees.  This naming is a little bad at the moment and we'll probably rename it later.
+   - `player.py` houses the all-important player class and nothing else.
+   - `teleport.py` houses the class for the teleport, a handy little class that can be of arbitrary size and will move the player to a destination if he touches it (even if it's on another map)
  - `custom_mapper.py` has an extension of the original map loader from the bush module.  Among other things it loads sprites into groups and registries.  Probably will move some functionality to the base loader.
+ - `environment.py` has a class that loads the environments of tiled maps and makes them visible to game objects.
  - `game_state.py` holds all of the states of the game, like maps and menus.  This is what does the rendering and updating of everything on the map.
- - `menu.py` contains a helper function for creating menus and a couple of custom GUI elements.
+ - `globals.py` contains a couple global variables.
  - `gui.py` contains a mini GUI library for making interfaces with.
- - `globals.py` contains a couple global variables and utility functions for things scripts will do later.
- - `main.py` holds the class for the main game.  Running this runs the game (run from project root directory, NOT src)
+ - `main.py` holds the class for the main game.  Running this from the src directory runs the game.
+ - `menu.py` contains a helper function for creating menus and for getting dialog area.  This should probably be moved to `gui`.
+ - `particle_util.py` contains a utility function for creating explosions out of bush particles.  There may be more utilities here later as well.
+ - `sky.py` holds a class for the sky, which darkens or lightens based on time of day.
+ - `startup.py` houses a function that makes a splash screen and loads all of the assets on startup, before any other modules are imported.
  - `tool.py` has classes for tools the player can equip
- - `startup.py` loads and caches all assets on import
 
  # Also in the data directories...
   - `assets` contains visual and audio assets.  This was put into the `src` folder for web reasons:
     - `tiled` contains all maps and tileset files used in the game, as well as templates, world files, etc.  - `tiled` contains all maps and tileset files used in the game, as well as templates, world files, etc.
     - `hud` has GUI stuff
     - `masks` has collision shapes for some static sprites
-    - `particlefx` has particle effects
+    - `particles` has particle effects
     - `sounds` has sounds
-    - `sprites` has sprites
-    - `tiles` has tilesets
+    - `sprites` has spritesheets in it, divided by type where needed.
+    - `tiles` has tileset images
+    - `tiled` has tiled maps and tilesets, created from the images.  (Naming is a little ambiguous, fix this?)
     - `data` contains save files and input bindings, as well as item and weapon definitions, etc.
     - `music` contains the game's music.  It is currently a bit empty as I figure out instruments, but has the alpha theme song in it for testing of soundtracks.
+    - `LICENSES.md` holds licenses for all of the different assets.
     
 # Additionally, in root directory of the repository
   - `credits.txt` is the credits of the game.  When end of game credits are implemented, it will just scroll through this file.
