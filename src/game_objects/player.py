@@ -201,10 +201,6 @@ class Player(base.MobileGameObject):
     def event(self, event):
         if event.type == event_binding.BOUND_EVENT:
             self.command(event.name)
-        if event.type == pygame.MOUSEWHEEL:
-            for sprite in self.registry.get_group("attackable"):
-                if sprite is not self:
-                    sprite.hurt(1)
 
     def command(self, command_name):
         if self.input_locked:

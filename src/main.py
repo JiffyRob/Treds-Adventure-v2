@@ -63,7 +63,7 @@ class Game:
         # day/night
         self.sky = sky.WeatherCycle(self.screen_size)
         # initial map load
-        self.kill_dt = False
+        self.dt_mult = 1
         self.map_loader = custom_mapper.MapLoader()
         self.current_map = None
         # dialogs
@@ -72,6 +72,9 @@ class Game:
         # global state setting
         globals.engine = self
         globals.player = player.Player()
+
+    def time_phase(self, mult):
+        self.dt_mult = mult
 
     def dialog(self, text, answers, on_finish=lambda interrupted: None):
         self.dialog_queue.put((text, answers, on_finish))
@@ -107,9 +110,8 @@ class Game:
 
     def tick(self):
         dt = self.clock.tick(self.fps) / 1000
-        if self.kill_dt:
-            dt = 0
-        self.kill_dt = False
+        dt *= self.dt_mult
+        self.dt_mult = 1
         return dt
 
     async def run(self):
