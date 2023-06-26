@@ -61,7 +61,7 @@ class GameObject(entity.Actor):
         self.idle_state = "idle"
         self.facing = "down"
         self.immunity_time = immunity
-        self.immunity_timer = timer.Timer(immunity)
+        self.immunity_timer = timer.DTimer(immunity)
         self.immunity_timer.finish()
         self.visual_effects = []
         self.hit_effect = hit_effect
@@ -135,6 +135,7 @@ class GameObject(entity.Actor):
             self.image = self.anim.image()
         self.visual_effects = [e for e in self.visual_effects if not e.done()]
         for effect in self.visual_effects:
+            effect.update(dt)
             self.image = effect.apply(self.image)
 
     def update_physics(self, dt):
@@ -157,6 +158,7 @@ class GameObject(entity.Actor):
         self.update_physics(dt)
         self.update_image(dt)
         self.update_script(dt)
+        self.immunity_timer.update(dt)
 
     @staticmethod
     def spawn_particles(particles):

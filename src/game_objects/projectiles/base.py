@@ -28,13 +28,13 @@ class Projectile(entity.Entity):
         )
         self.velocity = data.misc.get("fly_direction", pygame.Vector2(1, 0))
         self.collision_rect = self.rect.copy()
-        self.life_timer = timer.Timer(duration, on_finish=self.kill)
+        self.life_timer = timer.DTimer(duration, on_finish=self.kill)
         self.life_timer.reset()
 
     def update(self, dt):
         super().update(dt)
         physics.dynamic_update(self, dt)
-        self.life_timer.update()
+        self.life_timer.update(dt)
 
     def update_rects(self):
         self.rect.center = self.pos

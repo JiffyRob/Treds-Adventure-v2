@@ -359,8 +359,8 @@ class Dialog(UIElement):
         self.answer_index = 0
         self.chosen_index = None
         self.on_kill = on_kill
-        self.add_letter_timer = timer.Timer(20, self.add_text, True)
-        self.kill_timer = timer.Timer()
+        self.add_letter_timer = timer.DTimer(20, self.add_text, True)
+        self.kill_timer = timer.DTimer()
         self.image.set_colorkey(COLORKEY)
         self.state = STATE_WRITING_PROMPT
         self.pad = 3
@@ -374,9 +374,9 @@ class Dialog(UIElement):
             self.state = STATE_GETTING_ANSWER
             self.update_text()
             if not self.answers:
-                self.kill_timer = timer.Timer(1500, self.choose)
+                self.kill_timer = timer.DTimer(1500, self.choose)
                 self.state = STATE_COMPLETE
-            self.add_letter_timer = timer.Timer()
+            self.add_letter_timer = timer.DTimer()
         else:
             self.displayed_text += self.text[0]
             self.text = self.text[1:]
@@ -424,9 +424,8 @@ class Dialog(UIElement):
 
     def update(self, time_delta: float):
         super().update(time_delta)
-        self.kill_timer.update()
-        self.add_letter_timer.update()
-        # print(self.text, self.displayed_text)
+        self.kill_timer.update(time_delta)
+        self.add_letter_timer.update(time_delta)
 
     def pass_event(self, event):
         if self.state == STATE_GETTING_ANSWER:

@@ -13,7 +13,7 @@ def solid_overlay(surf, overlay_color=(0, 0, 0)):
 
 class Effect:
     def __init__(self, duration):
-        self.life_timer = timer.Timer(duration)
+        self.life_timer = timer.DTimer(duration)
 
     def apply(self, surface):
         if self.done():
@@ -23,6 +23,9 @@ class Effect:
 
     def _apply(self, surface):
         return surface.copy()
+
+    def update(self, dt):
+        self.life_timer.update(dt)
 
     def done(self):
         return self.life_timer.done()
@@ -34,8 +37,12 @@ class Effect:
 class Flicker(Effect):
     def __init__(self, duration, delay=16):
         super().__init__(duration)
-        self.switch_timer = timer.Timer(delay)
+        self.switch_timer = timer.DTimer(delay)
         self.show = True
+
+    def update(self, dt):
+        super().update(dt)
+        self.switch_timer.update(dt)
 
     def _apply(self, surface):
         if self.switch_timer.done():
@@ -59,9 +66,13 @@ class Overlay(Effect):
 class Blink(Effect):
     def __init__(self, duration, delay=16, color="red"):
         super().__init__(duration)
-        self.switch_timer = timer.Timer(delay)
+        self.switch_timer = timer.DTimer(delay)
         self.show = True
         self.color = color
+
+    def update(self, dt):
+        super().update(dt)
+        self.switch_timer.update(dt)
 
     def _apply(self, surface):
         if self.switch_timer.done():

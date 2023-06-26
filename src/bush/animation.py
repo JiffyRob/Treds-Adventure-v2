@@ -27,9 +27,12 @@ class Animation:
         self.index = 0
         self.last_start_time = pygame.time.get_ticks()
 
-    def image(self):
-        now = pygame.time.get_ticks()
-        if now - self.last_start_time > self.lengths[self.index]:
+    def image(self, dt=None):
+        if dt is None:
+            dt = pygame.time.get_ticks() - self.last_start_time
+        else:
+            dt = dt * 1000
+        if dt > self.lengths[self.index]:
             self.increment()
         return self.images[self.index]
 
