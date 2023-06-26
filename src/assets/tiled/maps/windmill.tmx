@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.9.2" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="2">
+<map version="1.8" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="2">
+ <properties>
+  <property name="weather" type="bool" value="false"/>
+ </properties>
  <tileset firstgid="1" source="../tilesets/interior.tsx"/>
  <tileset firstgid="1281" source="../tilesets/interior_floor.tsx"/>
  <layer id="1" name="bg" width="8" height="8">

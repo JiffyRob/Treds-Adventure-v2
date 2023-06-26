@@ -4,7 +4,7 @@ import pygame
 class WeatherCycle:
     def __init__(self, size):
         self.surface = pygame.Surface(size).convert()
-        self.min_brightness, self.max_brightness = 0, 128
+        self.min_brightness, self.max_brightness = 0.0, 128.0
         self.brightness_increment = 0
         self.brightness = 255
         # all units are milliseconds
@@ -18,9 +18,16 @@ class WeatherCycle:
         self.last_frame_time = self.start
 
         self.transition_offset = 4_500
+        self.enabled = True
 
     def get_date(self):
         return (self.time // (self.day_length + self.night_length)) + 1
+
+    def enable(self):
+        self.enabled = True
+
+    def disable(self):
+        self.enabled = False
 
     def update(self, dt):
         self.time += pygame.time.get_ticks() - self.last_frame_time
@@ -45,11 +52,14 @@ class WeatherCycle:
             ) + self.max_brightness
             self.brightness = max(self.min_brightness, self.brightness)
         self.last_frame_time = pygame.time.get_ticks()
+        if not self.enabled:
+            self.brightness = self.max_brightness
 
     def render(self, surface: pygame.Surface):
         # invert brightness over itself in order to subtract darkness
         avg_brightness = (self.min_brightness + self.max_brightness) / 2
         darkness = round(((avg_brightness - self.brightness) * 2) + self.brightness)
+        print(darkness)
         self.surface.fill((darkness, darkness, darkness))
         surface.blit(self.surface, (0, 0), special_flags=pygame.BLEND_SUB)
 
