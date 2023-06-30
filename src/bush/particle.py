@@ -143,6 +143,9 @@ class ParticleManager:
     def add(self, particles):
         self.particles.extend(particles)
 
+    def kill(self):
+        self.particles = []
+
     def draw(self, surface, offset=(0, 0)):
         surface.fblits(
             [(particle.image, particle.pos + offset) for particle in self.particles]

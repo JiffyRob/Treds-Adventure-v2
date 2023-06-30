@@ -108,7 +108,7 @@ class WeatherCycle:
                     for _ in range(round(200 * dt))
                 ]
             )
-            self.brightness = max(self.min_brightness, self.brightness - 32)
+            self.brightness = max(64, self.brightness - 32)
         # snowflakes
         if self.weathertype & self.WEATHERTYPE_SNOWING:
             frames = particle_util.load("snow", (32, 32))
@@ -125,17 +125,14 @@ class WeatherCycle:
             )
             self.brightness = min(self.max_brightness, self.brightness + 32)
 
-        # fogowar
-        if self.weathertype & self.WEATHERTYPE_DARK:
-            print("Wha wha wha wha what do you want?")
-            ...  # TODO: fogowar rendering
         # thunder
         if self.weathertype & self.WEATHERTYPE_THUNDER:
             self.thunder_timer.update(dt)
-            self.brightness = max(self.min_brightness, self.brightness - 48)
+            self.brightness = max(64, self.brightness - 48)
         self.manager.update(dt)
 
     def set_weather(self, weather=WEATHERTYPE_DNCYCLE):
+        self.manager.kill()
         self.thunder_timer.finish()
         self.thundering = False
         self.thunder_cycle = itertools.cycle(self.thunder_lengths)
