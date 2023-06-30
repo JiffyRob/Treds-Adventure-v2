@@ -40,9 +40,9 @@ class WeatherCycle:
         # thunder
         self.thunder_lengths = (
             4_000,
-            75,
+            100,
             400,
-            75,
+            100,
         )  # time off, time on, time off, time on
         self.thunder_cycle = itertools.cycle(self.thunder_lengths)
         self.thunder_timer = timer.DTimer(
@@ -129,12 +129,15 @@ class WeatherCycle:
 
     def set_weather(self, weather=WEATHERTYPE_DNCYCLE):
         self.manager.kill()
-        self.thunder_timer.finish()
         self.thundering = False
         self.thunder_cycle = itertools.cycle(self.thunder_lengths)
+        self.thunder_timer = timer.DTimer(
+            next(self.thunder_cycle), on_finish=self.thunder_step
+        )
         self.weathertype = weather
 
     def thunder_step(self):
+        print("step", self.thundering)
         self.thundering = not self.thundering
         self.thunder_timer = timer.DTimer(next(self.thunder_cycle), self.thunder_step)
 
