@@ -15,6 +15,12 @@ fireball_frames = loader.load_spritesheet("fireball.png")
 smoke_frames = loader.load_spritesheet("smoke.png", (32, 32))
 
 
+def load(name, size=None):
+    if size is None:
+        return loader.load(name + ".png")
+    return loader.load_spritesheet(name + ".png", size)
+
+
 def explosion(
     pos,
     manager,

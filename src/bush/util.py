@@ -174,3 +174,18 @@ def randinrect(rect):
     return pygame.Vector2(
         random.uniform(rect.left, rect.right), random.uniform(rect.top, rect.bottom)
     )
+
+
+def repeat(image, size, alpha=False):
+    if alpha:
+        new_surface = pygame.Surface(size, pygame.SRCALPHA).convert_alpha()
+    else:
+        new_surface = pygame.Surface(size).convert()
+        colorkey = image.get_colorkey()
+        if colorkey is not None:
+            new_surface.set_colorkey(colorkey)
+    image_size = image.get_size()
+    for x in range(0, size[0], image_size[0]):
+        for y in range(0, size[1], image_size[1]):
+            new_surface.blit(image, (x, y))
+    return new_surface

@@ -41,9 +41,14 @@ class Game:
         self.fps = 30 * (not util.is_pygbag())  # no framerate limiting on browser
         self.running = False
         self.bgcolor = (20, 27, 27)
-        self.screen = pygame.display.set_mode(
-            util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE
-        )
+        try:
+            self.screen = pygame.display.set_mode(
+                util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE, vsync=1
+            )
+        except pygame.error:
+            self.screen = pygame.display.set_mode(
+                util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE
+            )
         cursor_images = loader.load_spritesheet("hud/cursor.png", (16, 16))
         self.cursor = joy_cursor.JoyCursor(
             pygame.transform.scale2x(cursor_images[0]),
@@ -78,6 +83,9 @@ class Game:
 
     def dialog(self, text, answers, on_finish=lambda interrupted: None):
         self.dialog_queue.put((text, answers, on_finish))
+
+    def spawn_particles(self, particles):
+        self.stack.get_current().particle_manager.add(particles)
 
     def load_new_state(self, _):
         globals.player.load_data()
@@ -117,9 +125,6 @@ class Game:
     async def run(self):
         globals.engine = self  # set the global engine reference
         globals.player = player.Player()
-        self.screen = pygame.display.set_mode(
-            util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE, vsync=0
-        )
         pygame.display.set_caption(self.caption)
         self.stack.push(game_state.MainMenu())  # load the MainMenu
         self.running = True

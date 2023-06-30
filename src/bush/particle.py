@@ -18,6 +18,7 @@ class AnimParticle:
         self.age = 0
         self.anim_done = False
         self.is_alive = is_alive
+        self.rect = pygame.Rect(self.pos, self.image.get_size())
 
     def update(self, dt):
         self.pos += self.vel * dt
@@ -28,6 +29,7 @@ class AnimParticle:
                 self.image = next(self.frames)
             except StopIteration:
                 self.anim_done = True
+        self.rect = pygame.Rect(self.pos, self.image.get_size())
         return self.is_alive(self, dt)
 
 

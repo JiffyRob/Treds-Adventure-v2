@@ -10,6 +10,21 @@
     ],
     "propertyTypes": [
         {
+            "id": 3,
+            "name": "Ambience",
+            "storageType": "int",
+            "type": "enum",
+            "values": [
+                "DNCYCLE",
+                "RAINY",
+                "SNOWING",
+                "FOGGY",
+                "FOGOWAR",
+                "THUNDER"
+            ],
+            "valuesAsFlags": true
+        },
+        {
             "id": 1,
             "name": "Terrain",
             "storageType": "string",

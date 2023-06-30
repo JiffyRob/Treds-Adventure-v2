@@ -125,7 +125,9 @@ class MapLoader(mapping.MapLoader):
         for key in environment.TERRAIN_ORDER:
             if key not in self.current_registry.list_masks():
                 self.current_registry.add_mask(key, pygame.Mask(self.map_size))
-        globals.engine.sky.enabled = properties.get("weather", True)
+        globals.engine.sky.set_weather(
+            properties.get("ambience", globals.engine.sky.WEATHERTYPE_DNCYCLE)
+        )
         return (
             self.current_registry,
             properties.get("track", None),

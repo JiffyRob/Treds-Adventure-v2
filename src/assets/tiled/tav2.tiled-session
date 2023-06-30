@@ -14,8 +14,8 @@
             "scale": 1.0410416666666666,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 278.5671402841705,
-                "y": 160.41624974984992
+                "x": 276.6459875925555,
+                "y": 159.45567340404244
             }
         },
         "maps/big_map.tmx": {
@@ -25,8 +25,8 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 343,
-                "y": 207.5
+                "x": 316,
+                "y": 207
             }
         },
         "maps/test_map.tmx": {
@@ -34,11 +34,19 @@
                 7,
                 3
             ],
-            "scale": 3,
+            "scale": 1.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 58.33333333333333,
-                "y": 117.66666666666666
+                "x": 202.66666666666666,
+                "y": 246
+            }
+        },
+        "maps/windmill.tmx": {
+            "scale": 3.6960937499999997,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 64.12175015852887,
+                "y": 96.58845909955613
             }
         },
         "tilesets/dungeon.tmx": {
@@ -86,8 +94,13 @@
         "tilesets/propeller.tsx": {
             "scaleInDock": 1
         },
+        "tilesets/raindrop.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "tilesets/round_house.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "tilesets/trees.tsx": {
             "scaleInDock": 1
@@ -97,11 +110,12 @@
             "scaleInEditor": 1
         }
     },
-    "map.height": 40,
+    "last.imagePath": "/home/jack/Python Workspace/CurrentGame/src/assets/particles",
+    "map.height": 20,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 40,
+    "map.width": 30,
     "openFiles": [
         "maps/bg_forest.tmx",
         "maps/test_map.tmx",
@@ -109,8 +123,10 @@
         "tilesets/floor.tsx"
     ],
     "project": "tav2.tiled-project",
-    "property.type": "bool",
+    "property.type": "Ambience",
     "recentFiles": [
+        "tilesets/round_house.tsx",
+        "tilesets/raindrop.tsx",
         "maps/bg_forest.tmx",
         "tilesets/floor.tsx",
         "tilesets/water.tsx",
@@ -120,8 +136,11 @@
         "tilesets/floor_detail.tsx",
         "tilesets/interior.tsx",
         "tilesets/interior_floor.tsx",
-        "tilesets/dungeon.tmx",
-        "tilesets/interior_elements.tsx",
-        "tilesets/dungeon.tsx"
-    ]
+        "tilesets/dungeon.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 8,
+        "width": 8
+    }
 }
