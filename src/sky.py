@@ -66,6 +66,7 @@ class WeatherCycle:
         return (self.time // (self.day_length + self.night_length)) + 1
 
     def update(self, dt):
+        # set time
         self.time += dt * 1000
         self.time_of_day = self.time % (self.day_length + self.night_length)
         day_diff = self.time_of_day - self.day_length
@@ -137,7 +138,6 @@ class WeatherCycle:
         self.weathertype = weather
 
     def thunder_step(self):
-        print("step", self.thundering)
         self.thundering = not self.thundering
         self.thunder_timer = timer.DTimer(next(self.thunder_cycle), self.thunder_step)
 
