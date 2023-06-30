@@ -16,10 +16,6 @@ class WeatherCycle:
     WEATHERTYPE_DARK = 16  # add ambient blackness
     WEATHERTYPE_THUNDER = 32  # add random blinks of light
 
-    BRIGHTNESS_MAX = 128.0
-    BRIGHTNESS_MID = 64.0
-    BRIGHTNESS_MIN = 0
-
     def __init__(self, size):
         self.rect = pygame.Rect((0, 0), size)
         self.above_rect = pygame.Rect(0, 0, self.rect.width, 1)
