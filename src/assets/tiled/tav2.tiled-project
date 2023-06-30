@@ -19,7 +19,7 @@
                 "RAINY",
                 "SNOWING",
                 "FOGGY",
-                "FOGOWAR",
+                "DARK",
                 "THUNDER"
             ],
             "valuesAsFlags": true

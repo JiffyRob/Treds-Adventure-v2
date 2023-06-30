@@ -3,6 +3,7 @@ import random
 
 import pygame
 
+import globals
 import particle_util
 from bush import animation, particle, timer, util
 
@@ -12,7 +13,7 @@ class WeatherCycle:
     WEATHERTYPE_RAINY = 2  # add rain drops
     WEATHERTYPE_SNOWING = 4  # add falling snowflakes
     WEATHERTYPE_FOGGY = 8  # add fog
-    WEATHERTYPE_FOGOWAR = 16  # add ambient blackness
+    WEATHERTYPE_DARK = 16  # add ambient blackness
     WEATHERTYPE_THUNDER = 32  # add random blinks of light
 
     BRIGHTNESS_MAX = 128.0
@@ -26,6 +27,8 @@ class WeatherCycle:
             0, self.rect.height * 0.25, self.rect.width, self.rect.height * 0.75
         )
         self.surface = pygame.Surface(size).convert()
+        self.fog_surface = pygame.Surface(size).convert()
+        self.fog_surface.set_colorkey("chartreuse")
 
         # dn cycle
         self.min_brightness, self.max_brightness = 0.0, 128.0
@@ -123,7 +126,7 @@ class WeatherCycle:
             self.brightness = min(self.max_brightness, self.brightness + 32)
 
         # fogowar
-        if self.weathertype & self.WEATHERTYPE_FOGOWAR:
+        if self.weathertype & self.WEATHERTYPE_DARK:
             print("Wha wha wha wha what do you want?")
             ...  # TODO: fogowar rendering
         # thunder
@@ -154,6 +157,14 @@ class WeatherCycle:
         surface.blit(self.surface, (0, 0), special_flags=pygame.BLEND_SUB)
         if self.weathertype & self.WEATHERTYPE_FOGGY:
             surface.blit(self.fog_anim.image(), (0, 0), special_flags=pygame.BLEND_MULT)
+        if self.weathertype & self.WEATHERTYPE_DARK:
+            pos = (
+                globals.player.pos
+                + util.string_direction_to_vec(globals.player.facing) * 24
+            )
+            self.fog_surface.fill(globals.engine.bgcolor)
+            pygame.draw.circle(self.fog_surface, "chartreuse", pos, 64)
+            surface.blit(self.fog_surface, (0, 0))
 
     def is_day(self):
         return self.brightness < (self.min_brightness + self.max_brightness) / 2
