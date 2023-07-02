@@ -12,7 +12,6 @@ import queue
 import pygame
 
 import custom_mapper
-import game_state
 import globals
 import gui
 import menu
@@ -20,6 +19,7 @@ import sky
 from bush import asset_handler, joy_cursor, save_state, sound_manager, util
 from bush.ai import state
 from game_objects import player
+from game_states import ui, world
 
 loader = asset_handler.glob_loader
 START_SPOTS = loader.load("data/player_start_positions.json")
@@ -92,25 +92,20 @@ class Game:
         self.map_loader.clear_cache()  # new save, all previous stuff gone
         map_path = self.state.get("map", "engine")
         self.stack.clear()
-        self.stack.push(game_state.MainMenu())
-        self.load_map(map_path, START_SPOTS.get(map_path, (0, 0)), push=True)
+        self.stack.push(ui.MainMenu())
+        self.load_map(map_path, START_SPOTS.get(map_path, (0, 0)))
 
     def save_state(self, _):
         globals.player.save_data()
 
-    def load_map(self, tmx_path, player_pos, push=None):
+    def load_map(self, tmx_path, player_pos):
         self.current_map = tmx_path
         if globals.player is not None:
             globals.player.save_data()
-        groups, track, event_script = self.map_loader.load_map(tmx_path, player_pos)
-        if push is False or (push is None and self.stack.get_current() != "MainMenu"):
-            self.stack.pop()
-        self.stack.push(game_state.MapState("game map", groups, track))
-        event_script = None
-        if event_script:
-            self.stack.push(
-                game_state.ScriptedMapState("game map", groups, event_script)
-            )
+        groups, properties = self.map_loader.load_map(tmx_path, player_pos)
+        self.stack.push(
+            world.MapState("game map", groups, properties.get("track", None))
+        )
 
     def toggle_fullscreen(self):
         if not util.is_pygbag():
@@ -126,7 +121,7 @@ class Game:
         globals.engine = self  # set the global engine reference
         globals.player = player.Player()
         pygame.display.set_caption(self.caption)
-        self.stack.push(game_state.MainMenu())  # load the MainMenu
+        self.stack.push(ui.MainMenu())  # load the MainMenu
         self.running = True
         dt = 0
         self.tick()  # prevents large dt on first frame

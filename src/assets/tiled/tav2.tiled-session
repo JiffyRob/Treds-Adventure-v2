@@ -14,31 +14,39 @@
             "scale": 1.0410416666666666,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 311.7070242145287,
-                "y": 158.49509705823496
+                "x": 239.18351010606364,
+                "y": 159.93596157694617
             }
         },
         "maps/big_map.tmx": {
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 1,
+            "scale": 0.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 316,
-                "y": 207
+                "x": -182,
+                "y": 772
+            }
+        },
+        "maps/chunk_test.tmx": {
+            "scale": 0.5,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 518,
+                "y": 390
             }
         },
         "maps/test_map.tmx": {
             "expandedObjectLayers": [
-                7,
-                3
+                3,
+                7
             ],
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 42,
-                "y": 7
+                "x": 256.5,
+                "y": 155
             }
         },
         "maps/windmill.tmx": {
@@ -111,11 +119,15 @@
         }
     },
     "last.imagePath": "/home/jack/Python Workspace/CurrentGame/src/assets/particles",
-    "map.height": 20,
+    "last.worldFilePath": "/home/jack/Python Workspace/CurrentGame/src/assets/tiled/worlds",
+    "loadedWorlds": [
+        "/home/jack/Python Workspace/CurrentGame/src/assets/tiled/worlds/overworld.world"
+    ],
+    "map.height": 40,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 30,
+    "map.width": 60,
     "openFiles": [
         "maps/bg_forest.tmx",
         "maps/test_map.tmx",
@@ -123,7 +135,7 @@
         "tilesets/floor.tsx"
     ],
     "project": "tav2.tiled-project",
-    "property.type": "Ambience",
+    "property.type": "object",
     "recentFiles": [
         "maps/windmill.tmx",
         "maps/test_map.tmx",

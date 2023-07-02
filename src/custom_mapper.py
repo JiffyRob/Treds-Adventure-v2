@@ -2,6 +2,7 @@ import pygame
 
 import environment
 import globals
+import pytmx
 from bush import asset_handler, entity, physics
 from bush.mapping import group, mapping
 from game_objects import arg, npc, plant, teleport
@@ -23,7 +24,6 @@ class MapLoader(mapping.MapLoader):
             asset_handler.join(loader.base, "masks")
         )
         self.mask_loader.cache_asset_handler(asset_handler.glob_loader)
-        self.aux_cache = {}
         self.map_size = None
         super().__init__(
             asset_handler.join(loader.base, "tiled/maps"),
@@ -46,6 +46,7 @@ class MapLoader(mapping.MapLoader):
                 "farmplants_orange": lambda x: pygame.sprite.Group(),
                 "farmplants": lambda x: pygame.sprite.Group(),
             },
+            # cache_maps=False,
         )
 
     def handle_tile(self, tile, sprite_group):
@@ -103,37 +104,26 @@ class MapLoader(mapping.MapLoader):
             arg.from_mapping_object(obj, self.current_registry)
         )
 
-    def load_map(self, tmx_path, player_pos):
+    def load_map(self, tmx_map, player_pos):
         globals.player.kill()
-        try:
-            self.current_registry, properties = self.aux_cache[tmx_path]
-        except KeyError:
-            tmx_map = self.loader.load(tmx_path)
-            self.map_size = pygame.Vector2(
-                tmx_map.width * tmx_map.tilewidth, tmx_map.height * tmx_map.tileheight
-            )
-            _, properties, cached = super().load(tmx_path)
+        if not isinstance(tmx_map, pytmx.TiledMap):
+            tmx_map = self.loader.load(tmx_map, self.cache_files)
+        self.map_size = pygame.Vector2(
+            tmx_map.width * tmx_map.tilewidth, tmx_map.height * tmx_map.tileheight
+        )
+        self.current_registry, properties = super().load(tmx_map)
         sprite_group = self.current_registry.get_group("main")
         globals.player.reset(
-            player_pos.copy(),
+            player_pos,
             properties.get("player_layer", self.default_player_layer),
             self.current_registry,
         )
         self.current_registry.get_group("main").add(sprite_group)
         physics.optimize_for_physics(self.current_registry.get_group("collision"))
-        self.aux_cache[tmx_path] = self.current_registry, properties
         for key in environment.TERRAIN_ORDER:
             if key not in self.current_registry.list_masks():
                 self.current_registry.add_mask(key, pygame.Mask(self.map_size))
         globals.engine.sky.set_weather(
             properties.get("ambience", globals.engine.sky.WEATHERTYPE_DNCYCLE)
         )
-        return (
-            self.current_registry,
-            properties.get("track", None),
-            properties.get("script", None),
-        )
-
-    def clear_cache(self):
-        super().clear_cache()
-        self.aux_cache.clear()
+        return (self.current_registry, properties)

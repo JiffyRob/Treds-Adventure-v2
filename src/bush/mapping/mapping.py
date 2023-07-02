@@ -210,11 +210,10 @@ class MapLoader:
                     self.sprite_creator(obj, self.current_registry.get_group("main"))
         if self.cache_maps:
             self.cache[filepath] = (
-                self.current_registry.get_group("main"),
+                self.current_registry,
                 map.properties,
-                True,
             )
-        return self.current_registry, map.properties, False
+        return self.current_registry, map.properties
 
     def clear_cache(self):
         self.cache.clear()

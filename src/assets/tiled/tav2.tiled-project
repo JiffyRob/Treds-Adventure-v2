@@ -25,6 +25,39 @@
             "valuesAsFlags": true
         },
         {
+            "color": "#ffa0a0a4",
+            "drawFill": true,
+            "id": 4,
+            "members": [
+                {
+                    "name": "down",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "name": "left",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "name": "right",
+                    "type": "string",
+                    "value": ""
+                },
+                {
+                    "name": "up",
+                    "type": "string",
+                    "value": ""
+                }
+            ],
+            "name": "MapBorders",
+            "type": "class",
+            "useAs": [
+                "property",
+                "map"
+            ]
+        },
+        {
             "id": 1,
             "name": "Terrain",
             "storageType": "string",
