@@ -84,7 +84,7 @@ class CameraGroup(pygame.sprite.LayeredUpdates):
                 updated.append(sprite)
         return updated
 
-    def draw(self, surface):
+    def draw(self, surface, offset=(0, 0)):
         self.visible_rect = self.cam_rect.inflate(
             self.border_overshoot * 2, self.border_overshoot * 2
         )
@@ -92,7 +92,7 @@ class CameraGroup(pygame.sprite.LayeredUpdates):
             self.cam_rect.center = self.follow.pos
             self.limit()
             self.limit_sprites()
-        offset = pygame.Vector2(self.cam_rect.topleft)
+        offset = pygame.Vector2(self.cam_rect.topleft) + offset
         for sprite in self.sprites():
             if self.is_visible(sprite) or self.update_all:
                 pos = pygame.Vector2(sprite.rect.topleft) - offset
