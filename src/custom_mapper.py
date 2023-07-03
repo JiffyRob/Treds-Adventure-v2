@@ -104,7 +104,7 @@ class MapLoader(mapping.MapLoader):
             arg.from_mapping_object(obj, self.current_registry)
         )
 
-    def load_map(self, tmx_map, player_pos):
+    def load(self, tmx_map, player_pos):
         globals.player.kill()
         if not isinstance(tmx_map, pytmx.TiledMap):
             tmx_map = self.loader.load(tmx_map, self.cache_files)

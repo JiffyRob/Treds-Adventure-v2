@@ -60,12 +60,6 @@
     <property name="mask" value="tree.png"/>
    </properties>
   </object>
-  <object id="17" type="teleport" x="27" y="137" width="11" height="11">
-   <properties>
-    <property name="dest" value="72, 95"/>
-    <property name="dest_map" value="windmill.tmx"/>
-   </properties>
-  </object>
   <object id="19" name="Jake" type="npc-static" gid="592" x="144" y="160" width="16" height="16">
    <properties>
     <property name="interaction_script" value="test-script"/>

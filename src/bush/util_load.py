@@ -176,5 +176,5 @@ def load_world(path):
             tmx_map.width * tmx_map.tilewidth,
             tmx_map.height * tmx_map.tileheight,
         )
-        export_data[rect] = tmx_map
+        export_data[tmx_map.filename.split(".")[-2]] = rect, tmx_map
     return export_data

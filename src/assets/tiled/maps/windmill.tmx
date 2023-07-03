@@ -18,7 +18,7 @@
 </data>
  </layer>
  <objectgroup id="2" name="objects">
-  <object id="1" type="teleport" x="64" y="127" width="16" height="1">
+  <object id="1" type="pop-teleport" x="64" y="127" width="16" height="1">
    <properties>
     <property name="dest" value="32, 184"/>
     <property name="dest_map" value="test_map.tmx"/>

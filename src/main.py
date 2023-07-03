@@ -7,6 +7,8 @@ import startup
 startup.splash()  # later modules load assets that are pulled in from here
 
 import asyncio
+import functools
+import os
 import queue
 
 import pygame
@@ -70,11 +72,11 @@ class Game:
         # initial map load
         self.dt_mult = 1
         self.map_loader = custom_mapper.MapLoader()
-        self.current_map = None
         # dialogs
         self.dialog_queue = queue.Queue()
         self.current_dialog = None
         # global state setting
+        self.current_map = None
         globals.engine = self
         globals.player = player.Player()
 
@@ -93,18 +95,27 @@ class Game:
         map_path = self.state.get("map", "engine")
         self.stack.clear()
         self.stack.push(ui.MainMenu())
-        self.load_map(map_path, START_SPOTS.get(map_path, (0, 0)))
+        if "tmx" in map_path:
+            self.load_map(map_path, START_SPOTS.get(map_path, (30, 30)))
+        else:
+            self.load_world(map_path, START_SPOTS.get(map_path, (30, 30)))
 
     def save_state(self, _):
         globals.player.save_data()
 
     def load_map(self, tmx_path, player_pos):
-        self.current_map = tmx_path
-        if globals.player is not None:
-            globals.player.save_data()
-        groups, properties = self.map_loader.load_map(tmx_path, player_pos)
+        groups, properties = self.map_loader.load(tmx_path, player_pos)
         self.stack.push(
             world.MapState("game map", groups, properties.get("track", None))
+        )
+
+    def load_world(self, world_path, player_pos):
+        self.stack.push(
+            world.WorldState(
+                world_path,
+                functools.partial(self.map_loader.load, player_pos=player_pos),
+                initial_pos=player_pos,
+            )
         )
 
     def toggle_fullscreen(self):

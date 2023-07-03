@@ -286,9 +286,15 @@ class Player(base.MobileGameObject):
             self.carrying.position()
 
     def update(self, dt):
-        self.current_mana = min(self.current_mana + (dt * 0.1), self.mana_capacity)
         super().update(dt)
+        self.current_mana = min(self.current_mana + (dt * 0.1), self.mana_capacity)
         self.update_throwable()
 
     def on_teleport(self):
         self.throw()
+
+    def limit(self, map_rect):
+        if not map_rect.contains(self.rect):
+            if globals.engine.stack.get_current().update_map():
+                return
+        super().limit(map_rect)

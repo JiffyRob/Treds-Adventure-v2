@@ -11,11 +11,14 @@
     ],
     "fileStates": {
         "maps/bg_forest.tmx": {
-            "scale": 1.0410416666666666,
-            "selectedLayer": 0,
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 1,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 239.18351010606364,
-                "y": 159.93596157694617
+                "x": -7,
+                "y": 97.5
             }
         },
         "maps/big_map.tmx": {
@@ -39,22 +42,22 @@
         },
         "maps/test_map.tmx": {
             "expandedObjectLayers": [
-                3,
-                7
+                7,
+                3
             ],
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 256.5,
-                "y": 155
+                "x": 474,
+                "y": 178.5
             }
         },
         "maps/windmill.tmx": {
             "scale": 3.6960937499999997,
-            "selectedLayer": 0,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 63.17480448108223,
-                "y": 95.77679137603046
+                "x": 45.453392517438175,
+                "y": 95.37095751426762
             }
         },
         "tilesets/dungeon.tmx": {
@@ -119,9 +122,9 @@
         }
     },
     "last.imagePath": "/home/jack/Python Workspace/CurrentGame/src/assets/particles",
-    "last.worldFilePath": "/home/jack/Python Workspace/CurrentGame/src/assets/tiled/worlds",
+    "last.worldFilePath": "/home/jack/Python Workspace/CurrentGame/src/assets/tiled/maps",
     "loadedWorlds": [
-        "/home/jack/Python Workspace/CurrentGame/src/assets/tiled/worlds/overworld.world"
+        "/home/jack/Python Workspace/CurrentGame/src/assets/tiled/maps/overworld.world"
     ],
     "map.height": 40,
     "map.lastUsedFormat": "tmx",
