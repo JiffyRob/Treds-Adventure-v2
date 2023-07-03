@@ -7,7 +7,7 @@
     "expandedProjectPaths": [
         ".",
         "maps",
-        "tilesets"
+        "worlds"
     ],
     "fileStates": {
         "maps/bg_forest.tmx": {
@@ -17,8 +17,8 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": -7,
-                "y": 97.5
+                "x": 240,
+                "y": 159.5
             }
         },
         "maps/big_map.tmx": {
@@ -28,8 +28,8 @@
             "scale": 0.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": -182,
-                "y": 772
+                "x": 472,
+                "y": 137
             }
         },
         "maps/chunk_test.tmx": {
@@ -45,19 +45,22 @@
                 7,
                 3
             ],
-            "scale": 1,
+            "scale": 0.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 474,
-                "y": 178.5
+                "x": 310,
+                "y": 455
             }
         },
         "maps/windmill.tmx": {
+            "expandedObjectLayers": [
+                2
+            ],
             "scale": 3.6960937499999997,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 45.453392517438175,
-                "y": 95.37095751426762
+                "x": 63.986472204607914,
+                "y": 63.986472204607914
             }
         },
         "tilesets/dungeon.tmx": {
@@ -135,18 +138,19 @@
         "maps/bg_forest.tmx",
         "maps/test_map.tmx",
         "tilesets/water.tsx",
-        "tilesets/floor.tsx"
+        "tilesets/floor.tsx",
+        "maps/windmill.tmx"
     ],
     "project": "tav2.tiled-project",
     "property.type": "object",
     "recentFiles": [
+        "maps/bg_forest.tmx",
         "maps/windmill.tmx",
+        "tilesets/floor.tsx",
+        "tilesets/water.tsx",
         "maps/test_map.tmx",
         "tilesets/round_house.tsx",
         "tilesets/raindrop.tsx",
-        "maps/bg_forest.tmx",
-        "tilesets/floor.tsx",
-        "tilesets/water.tsx",
         "maps/big_map.tmx",
         "tilesets/nature.tsx",
         "tilesets/floor_detail.tsx",

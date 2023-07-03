@@ -77,6 +77,7 @@ class WorldState(base.GameState):
         self.sky = globals.engine.sky
         self.registry = None
         self.main_group = None
+        self.map_rect = None
         self.soundtrack = None
         self.state = self.STATE_MAP
 
@@ -101,6 +102,7 @@ class WorldState(base.GameState):
         self.registry, properties = self.map_loader(
             self.world.get_map_by_name(map_name)
         )
+        self.map_rect = pygame.Rect(self.world.get_rect_by_name(map_name))
         self.main_group = self.registry.get_group("main")
         self.soundtrack = properties.get("track", None)
         self.sky.set_weather(properties.get("ambience", self.sky.WEATHERTYPE_DNCYCLE))
@@ -108,9 +110,15 @@ class WorldState(base.GameState):
             self.music_player.play(self.soundtrack)
 
     def update_map(self):
-        pos = util.string_direction_to_vec(globals.player.facing) * 64
-        new_map = self.world.map_collidepoint(pos)
-        print("should load", new_map)
+        pos = (
+            (util.string_direction_to_vec(globals.player.facing) * 16)
+            + globals.player.pos
+            + self.map_rect.topleft
+        )
+        new_map = self.world.name_collidepoint(pos)
+        if new_map is not None:
+            self.load_map(new_map)
+        globals.player.pos = pos - self.map_rect.topleft
 
     def update(self, dt=0.03):
         super().update(dt)
