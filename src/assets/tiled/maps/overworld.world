@@ -1,0 +1,27 @@
+{
+    "maps": [
+        {
+            "fileName": "test_map.tmx",
+            "height": 320,
+            "width": 480,
+            "x": 0,
+            "y": 0
+        },
+        {
+            "fileName": "bg_forest.tmx",
+            "height": 320,
+            "width": 480,
+            "x": 480,
+            "y": 80
+        },
+        {
+            "fileName": "big_map.tmx",
+            "height": 640,
+            "width": 640,
+            "x": -160,
+            "y": 320
+        }
+    ],
+    "onlyShowAdjacentMaps": false,
+    "type": "world"
+}
