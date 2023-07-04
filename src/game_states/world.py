@@ -91,8 +91,10 @@ class WorldState(base.GameState):
         self.map1_group = None
         self.map2_offset = None
         self.player_offset = None
+        self.player_motion_ratio = None
         self.player_dest = None
         self.transition_timer = timer.Timer(0)
+        self.ambience = None
 
         hud = gui.UIGroup()
         gui.HeartMeter(globals.player, pygame.Rect(8, 8, 192, 64), 1, hud)
@@ -145,7 +147,11 @@ class WorldState(base.GameState):
             self.map2_offset = (
                 pygame.Vector2(self.map_rect.topleft) - old_map_rect.topleft
             )
-
+            motion_index = list(player_facing).index(max(player_facing))
+            self.player_motion_ratio = (
+                (self.map1_dest - self.map1_start).length()
+                - globals.player.rect.size[motion_index]
+            ) / (self.map1_dest - self.map1_start).length()
             self.transition_timer = timer.Timer(1000, self.finish_transition)
 
     def finish_transition(self):
@@ -159,11 +165,12 @@ class WorldState(base.GameState):
         self.player_offset = None
         self.player_dest = None
         self.transition_timer = timer.Timer(0)
+        self.main_group.add(globals.player)
 
     def update(self, dt=0.03):
+        super().update(dt)
         self.transition_timer.update()
         if self.state == self.STATE_MAP:
-            super().update(dt)
             self.sky.update(dt)
             self.particle_manager.update(dt)
             self.main_group.update(dt)
@@ -178,7 +185,7 @@ class WorldState(base.GameState):
                     )
             globals.player.event(event)
 
-    def draw(self, surface, draw_player=True, offset=(0, 0)):
+    def draw(self, surface, offset=(0, 0)):
         if self.state == self.STATE_MAP:
             self.main_group.draw(surface, offset)
             if self.main_group.debug_physics:
@@ -190,14 +197,21 @@ class WorldState(base.GameState):
                     ),
                     1,
                 )
-            self.sky.render(surface)
             self.particle_manager.draw(
                 surface, -pygame.Vector2(self.main_group.cam_rect.topleft)
             )
-            super().draw(surface)
         else:
+            self.main_group.remove(globals.player)
             percent_complete = self.transition_timer.percent_complete()
             map1_pos = self.map1_start.lerp(self.map1_dest, percent_complete)
             self.map1_group.draw(surface, offset=map1_pos)
             self.main_group.draw(surface, offset=map1_pos + self.map2_offset)
-            surface.blit(globals.player.image, map1_pos + self.player_offset)
+            surface.blit(
+                globals.player.image,
+                self.map1_start.lerp(
+                    self.map1_dest, percent_complete * self.player_motion_ratio
+                )
+                + self.player_offset,
+            )
+        self.sky.render(surface)
+        super().draw(surface)
