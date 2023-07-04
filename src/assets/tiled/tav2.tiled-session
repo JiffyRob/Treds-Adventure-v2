@@ -144,11 +144,11 @@
     "project": "tav2.tiled-project",
     "property.type": "object",
     "recentFiles": [
+        "maps/test_map.tmx",
         "maps/bg_forest.tmx",
         "maps/windmill.tmx",
         "tilesets/floor.tsx",
         "tilesets/water.tsx",
-        "maps/test_map.tmx",
         "tilesets/round_house.tsx",
         "tilesets/raindrop.tsx",
         "maps/big_map.tmx",

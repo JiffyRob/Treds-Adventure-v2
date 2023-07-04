@@ -92,7 +92,7 @@ class CameraGroup(pygame.sprite.LayeredUpdates):
             self.cam_rect.center = self.follow.pos
             self.limit()
             self.limit_sprites()
-        offset = pygame.Vector2(self.cam_rect.topleft) + offset
+        offset = pygame.Vector2(self.cam_rect.topleft) - offset
         for sprite in self.sprites():
             if self.is_visible(sprite) or self.update_all:
                 pos = pygame.Vector2(sprite.rect.topleft) - offset
@@ -122,6 +122,14 @@ class CameraGroup(pygame.sprite.LayeredUpdates):
     def limit_sprites(self):
         for sprite in self.sprites():
             sprite.limit(self.map_rect)
+
+    def cam_rect_centered(self, center):
+        new_rect = self.cam_rect.copy()
+        self.cam_rect.center = center
+        self.limit()
+        return_rect = self.cam_rect
+        self.cam_rect = new_rect
+        return return_rect
 
 
 class TopDownGroup(CameraGroup):

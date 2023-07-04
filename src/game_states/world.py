@@ -4,7 +4,7 @@ import pygame
 
 import globals
 import gui
-from bush import event_binding, particle, util
+from bush import event_binding, particle, timer, util
 from bush.mapping import world
 from game_states import base, ui
 
@@ -70,18 +70,30 @@ class WorldState(base.GameState):
     STATE_TRANSITIION = 1
 
     def __init__(self, world_name, map_loader, initial_map=None, initial_pos=None):
+        # mapping
         self.world = world.World(
             self.loader.load(os.path.join("tiled/maps", world_name))
         )
         self.map_loader = map_loader
         self.sky = globals.engine.sky
+        self.particle_manager = particle.ParticleManager()
         self.registry = None
         self.main_group = None
         self.map_rect = None
+        self.map_name = None
         self.soundtrack = None
         self.state = self.STATE_MAP
+        # transitions
+        # map1 is the map to be transitioned out of
+        # map2 is the map to be transitioned into
+        self.map1_start = None
+        self.map1_dest = None
+        self.map1_group = None
+        self.map2_offset = None
+        self.player_offset = None
+        self.player_dest = None
+        self.transition_timer = timer.Timer(0)
 
-        self.particle_manager = particle.ParticleManager()
         hud = gui.UIGroup()
         gui.HeartMeter(globals.player, pygame.Rect(8, 8, 192, 64), 1, hud)
         rect = pygame.Rect(0, 4, 64, 9)
@@ -99,6 +111,7 @@ class WorldState(base.GameState):
             self.load_map(self.world.name_collidepoint((0, 0)))
 
     def load_map(self, map_name):
+        self.map_name = map_name
         self.registry, properties = self.map_loader(
             self.world.get_map_by_name(map_name)
         )
@@ -110,21 +123,50 @@ class WorldState(base.GameState):
             self.music_player.play(self.soundtrack)
 
     def update_map(self):
-        pos = (
-            (util.string_direction_to_vec(globals.player.facing) * 16)
-            + globals.player.pos
-            + self.map_rect.topleft
-        )
+        player_facing = util.string_direction_to_vec(globals.player.facing)
+        pos = player_facing * 16 + globals.player.pos + self.map_rect.topleft
         new_map = self.world.name_collidepoint(pos)
-        if new_map is not None:
+
+        if new_map not in {None, self.map_name}:
+            self.state = self.STATE_TRANSITIION
+            self.player_offset = globals.player.pos.copy() - (
+                pygame.Vector2(globals.player.rect.size) // 2
+            )
+            old_map_rect = self.map_rect
+            self.map1_group = self.main_group
             self.load_map(new_map)
-        globals.player.pos = pos - self.map_rect.topleft
+            self.player_dest = pos - self.map_rect.topleft
+            self.map1_dest = -(
+                self.main_group.cam_rect_centered(self.player_dest).topleft
+                + pygame.Vector2(self.map_rect.topleft)
+                - old_map_rect.topleft
+            )
+            self.map1_start = -pygame.Vector2(self.map1_group.cam_rect.topleft)
+            self.map2_offset = (
+                pygame.Vector2(self.map_rect.topleft) - old_map_rect.topleft
+            )
+
+            self.transition_timer = timer.Timer(1000, self.finish_transition)
+
+    def finish_transition(self):
+        self.state = self.STATE_MAP
+
+        globals.player.pos = self.player_dest
+        self.map1_start = None
+        self.map1_dest = None
+        self.map1_group = None
+        self.map2_offset = None
+        self.player_offset = None
+        self.player_dest = None
+        self.transition_timer = timer.Timer(0)
 
     def update(self, dt=0.03):
-        super().update(dt)
-        self.sky.update(dt)
-        self.particle_manager.update(dt)
-        self.main_group.update(dt)
+        self.transition_timer.update()
+        if self.state == self.STATE_MAP:
+            super().update(dt)
+            self.sky.update(dt)
+            self.particle_manager.update(dt)
+            self.main_group.update(dt)
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -137,21 +179,25 @@ class WorldState(base.GameState):
             globals.player.event(event)
 
     def draw(self, surface, draw_player=True, offset=(0, 0)):
-        if not draw_player:
-            self.main_group.remove(globals.player)
-        self.main_group.draw(surface, offset)
-        self.main_group.add(globals.player)
-        if self.main_group.debug_physics:
-            pygame.draw.rect(
-                surface,
-                (255, 0, 0),
-                globals.player.get_interaction_rect().move(
-                    -pygame.Vector2(self.main_group.cam_rect.topleft)
-                ),
-                1,
+        if self.state == self.STATE_MAP:
+            self.main_group.draw(surface, offset)
+            if self.main_group.debug_physics:
+                pygame.draw.rect(
+                    surface,
+                    (255, 0, 0),
+                    globals.player.get_interaction_rect().move(
+                        -pygame.Vector2(self.main_group.cam_rect.topleft)
+                    ),
+                    1,
+                )
+            self.sky.render(surface)
+            self.particle_manager.draw(
+                surface, -pygame.Vector2(self.main_group.cam_rect.topleft)
             )
-        self.sky.render(surface)
-        self.particle_manager.draw(
-            surface, -pygame.Vector2(self.main_group.cam_rect.topleft)
-        )
-        super().draw(surface)
+            super().draw(surface)
+        else:
+            percent_complete = self.transition_timer.percent_complete()
+            map1_pos = self.map1_start.lerp(self.map1_dest, percent_complete)
+            self.map1_group.draw(surface, offset=map1_pos)
+            self.main_group.draw(surface, offset=map1_pos + self.map2_offset)
+            surface.blit(globals.player.image, map1_pos + self.player_offset)
