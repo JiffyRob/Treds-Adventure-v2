@@ -84,7 +84,7 @@ def create_item_menu(player, rebuild_callback):
                 index.x = 0
                 index.y += 1
 
-    menu_rect = pygame.Rect((0, 0), globals.engine.screen_size - (192, 128))
+    menu_rect = pygame.Rect((0, 0), globals.engine.screen_size - (16, 16))
     menu_rect.center = globals.engine.screen_size / 2
     gui_group = gui.UIGroup()
     bg = gui.BGRect(menu_rect, 1, gui_group)

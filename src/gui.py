@@ -164,7 +164,9 @@ class ItemButton(UIElement):
         self.image = self.bg_images[self.state].copy()
         self.image.blit(self.item_image, (0, 0))
         if self.count:
-            number_pos = pygame.Vector2(self.rect.size) - (5, 7)
+            number_pos = (
+                pygame.Vector2(self.rect.size) - self.count_image.get_size() - (1, 1)
+            )
             self.image.blit(self.count_image, number_pos)
         # self.dirty = 1  # redraw
 

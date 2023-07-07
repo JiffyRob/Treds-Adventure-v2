@@ -14,7 +14,7 @@ def create_menu(
     menu = gui.UIGroup()
     container_rect = pygame.Rect(
         (0, 0),
-        (screen_size.x * 0.4, screen_size.y * 0.7),
+        (screen_size.x * 0.8, screen_size.y * 0.8),
     )
     container_rect.center = screen_size / 2
     container = gui.BGRect(container_rect, 1, menu)
@@ -27,7 +27,9 @@ def create_menu(
     for i, button_name, on_click in zip(
         range(len(button_names)), button_names, button_functions
     ):
-        rect = pygame.Rect((0, (i + 1) * (height + 2) + 10, 100, 30))
+        rect = pygame.Rect(
+            (0, (i + 1) * (height + 2) + 10, container_rect.width - 16, 30)
+        )
         rect.centerx = container_rect.width / 2
         rect.topleft += pygame.Vector2(container_rect.topleft)
         if button_name == ":SKIP":

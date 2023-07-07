@@ -36,7 +36,7 @@ sound_manager.music_player.add_tracks(
 class Game:
     def __init__(self):
         # Basic Pygame Boilerplate Variables (BPBV)
-        self.screen_size = pygame.Vector2(480, 320)
+        self.screen_size = pygame.Vector2(320, 240)
         self.caption = "Tred's Adventure"
         self.screen = None
         self.clock = pygame.time.Clock()
