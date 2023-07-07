@@ -153,6 +153,7 @@ class WorldState(base.GameState):
                 - globals.player.rect.size[motion_index]
             ) / (self.map1_dest - self.map1_start).length()
             self.transition_timer = timer.Timer(1000, self.finish_transition)
+            self.main_group.update(0)
 
     def finish_transition(self):
         self.state = self.STATE_MAP

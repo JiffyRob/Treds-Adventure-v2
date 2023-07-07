@@ -35,6 +35,7 @@ class MapLoader(mapping.MapLoader):
                     map_size,
                     (0, 0),
                     globals.player,
+                    False,
                     debug_physics=False,
                 ),
                 "player": lambda x: pygame.sprite.GroupSingle(),
@@ -46,7 +47,6 @@ class MapLoader(mapping.MapLoader):
                 "farmplants_orange": lambda x: pygame.sprite.Group(),
                 "farmplants": lambda x: pygame.sprite.Group(),
             },
-            # cache_maps=False,
         )
 
     def handle_tile(self, tile, sprite_group):

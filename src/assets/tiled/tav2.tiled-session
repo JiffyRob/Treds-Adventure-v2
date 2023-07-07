@@ -3,22 +3,23 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/test_map.tmx",
+    "activeFile": "maps/test_dark.tmx",
     "expandedProjectPaths": [
-        ".",
+        "tilesets",
         "maps",
-        "worlds"
+        "worlds",
+        "."
     ],
     "fileStates": {
         "maps/bg_forest.tmx": {
             "expandedObjectLayers": [
                 3
             ],
-            "scale": 1,
+            "scale": 0.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 240,
-                "y": 159.5
+                "x": -95,
+                "y": 379
             }
         },
         "maps/big_map.tmx": {
@@ -28,8 +29,8 @@
             "scale": 0.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 472,
-                "y": 137
+                "x": 523,
+                "y": 29
             }
         },
         "maps/chunk_test.tmx": {
@@ -40,16 +41,46 @@
                 "y": 390
             }
         },
-        "maps/test_map.tmx": {
+        "maps/test2.tmx": {
             "expandedObjectLayers": [
-                7,
-                3
+                2
             ],
             "scale": 0.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 310,
-                "y": 455
+                "x": 25,
+                "y": 126
+            }
+        },
+        "maps/test_dark.tmx": {
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 0.33,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 722.7272727272726,
+                "y": -381.81818181818187
+            }
+        },
+        "maps/test_map.tmx": {
+            "expandedObjectLayers": [
+                3,
+                7
+            ],
+            "scale": 0.5,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 747,
+                "y": 44
+            }
+        },
+        "maps/test_winter.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 240,
+                "y": 160.5
             }
         },
         "maps/windmill.tmx": {
@@ -59,8 +90,8 @@
             "scale": 3.6960937499999997,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 63.986472204607914,
-                "y": 63.986472204607914
+                "x": 41.12449799196787,
+                "y": 64.2570281124498
             }
         },
         "tilesets/dungeon.tmx": {
@@ -72,6 +103,14 @@
             }
         },
         "tilesets/dungeon.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/fish_net.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/flag.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
@@ -122,6 +161,10 @@
         "tilesets/water.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "tilesets/waterfall.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         }
     },
     "last.imagePath": "/home/jack/Python Workspace/CurrentGame/src/assets/particles",
@@ -129,33 +172,35 @@
     "loadedWorlds": [
         "/home/jack/Python Workspace/CurrentGame/src/assets/tiled/maps/overworld.world"
     ],
-    "map.height": 40,
+    "map.height": 20,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 60,
+    "map.width": 30,
     "openFiles": [
-        "maps/bg_forest.tmx",
         "maps/test_map.tmx",
-        "tilesets/water.tsx",
-        "tilesets/floor.tsx",
-        "maps/windmill.tmx"
+        "maps/windmill.tmx",
+        "maps/test2.tmx",
+        "maps/test_winter.tmx",
+        "tilesets/fish_net.tsx",
+        "tilesets/flag.tsx",
+        "maps/test_dark.tmx"
     ],
     "project": "tav2.tiled-project",
-    "property.type": "object",
+    "property.type": "string",
     "recentFiles": [
         "maps/test_map.tmx",
-        "maps/bg_forest.tmx",
         "maps/windmill.tmx",
-        "tilesets/floor.tsx",
-        "tilesets/water.tsx",
-        "tilesets/round_house.tsx",
-        "tilesets/raindrop.tsx",
+        "maps/test2.tmx",
+        "maps/test_winter.tmx",
+        "tilesets/fish_net.tsx",
+        "tilesets/flag.tsx",
+        "maps/test_dark.tmx",
+        "maps/bg_forest.tmx",
         "maps/big_map.tmx",
-        "tilesets/nature.tsx",
-        "tilesets/floor_detail.tsx",
-        "tilesets/interior.tsx",
-        "tilesets/interior_floor.tsx"
+        "tilesets/waterfall.tsx",
+        "tilesets/floor.tsx",
+        "tilesets/water.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

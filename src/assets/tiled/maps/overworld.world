@@ -8,17 +8,24 @@
             "y": 0
         },
         {
-            "fileName": "bg_forest.tmx",
-            "height": 320,
-            "width": 480,
+            "fileName": "test2.tmx",
+            "height": 480,
+            "width": 640,
             "x": 480,
-            "y": 80
+            "y": 0
         },
         {
-            "fileName": "big_map.tmx",
-            "height": 640,
-            "width": 640,
-            "x": -160,
+            "fileName": "test_winter.tmx",
+            "height": 320,
+            "width": 480,
+            "x": 640,
+            "y": -320
+        },
+        {
+            "fileName": "test_dark.tmx",
+            "height": 320,
+            "width": 480,
+            "x": 0,
             "y": 320
         }
     ],
