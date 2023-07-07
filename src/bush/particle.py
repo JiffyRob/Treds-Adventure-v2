@@ -157,7 +157,7 @@ class ParticleManager:
 
 class DurationCallback:
     def __init__(self, duration, on_finish=lambda *args, **kwargs: None):
-        self.duration = int(duration)
+        self.duration = duration
         self.on_finish = on_finish
 
     def __call__(self, particle, dt):

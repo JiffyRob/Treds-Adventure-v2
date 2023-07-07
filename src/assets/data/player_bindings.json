@@ -7,8 +7,8 @@
   "KeyUp-up": "stop up",
   "KeyDown-down": "go down",
   "KeyUp-down": "stop down",
-  "KeyDown-left shift": "start running x",
-  "KeyUp-left shift": "start walking x",
+  "KeyDown-left shift": ["start running x", "start running y"],
+  "KeyUp-left shift": ["start walking x", "start walking y"],
   "KeyDown-left ctrl": "interact",
   "KeyDown-space": "tool",
 

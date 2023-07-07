@@ -1,7 +1,10 @@
+import random
+
 import pygame
 
 import globals
-from bush import asset_handler, collision, entity, physics, util, util_load
+import particle_util
+from bush import asset_handler, collision, particle, util, util_load
 from game_objects import base
 
 loader = asset_handler.glob_loader
@@ -41,6 +44,21 @@ class Throwable(base.GameObject):
         self.accum_height = 0
         self.speed = 400
         self.weight = 10
+
+    def kill(self):
+        frames = particle_util.load("grass", (12, 13))
+        globals.engine.spawn_particles(
+            [
+                particle.ImageParticle(
+                    util.randinrect(self.rect),
+                    util.randincircle(164),
+                    random.choice(frames),
+                    is_alive=particle.DurationCallback(0.2),
+                )
+                for _ in range(10)
+            ]
+        )
+        super().kill()
 
     def interact(self):
         if globals.player.pick_up(self):
@@ -85,6 +103,5 @@ class Throwable(base.GameObject):
                             self.kill()
 
     def limit(self, map_rect):
-        if super().limit(map_rect):
-            return  # TODO currently this part is always executed
+        if not map_rect.contains(self.rect):
             self.kill()

@@ -9,7 +9,7 @@ from bush import animation, asset_handler, effect, event_binding, physics, util
 from game_objects import arg, base
 
 SPEED_MEANDERING = 32
-SPEED_WALKING = 128
+SPEED_WALKING = 96
 SPEED_RUNNING = 140
 
 loader = asset_handler.AssetHandler(
@@ -218,6 +218,7 @@ class Player(base.MobileGameObject):
             if words[1] == "running":
                 self.speeds[words[2]] = SPEED_RUNNING
             self.speed = max(self.speeds.values())
+            print(words, self.speeds, self.speed)
         if words[0] == "go":
             directions = {
                 "up": (self.desired_velocity.x, -self.speed),

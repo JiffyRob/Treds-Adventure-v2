@@ -48,8 +48,8 @@
             "scale": 0.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 25,
-                "y": 126
+                "x": 45,
+                "y": 22
             }
         },
         "maps/test_dark.tmx": {
