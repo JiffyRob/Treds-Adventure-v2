@@ -1,0 +1,11 @@
+yes = "Sure am.";
+no = "Am not!";
+answer = dialog("I have come to the conclusion that you are a VERY silly goober.", no, yes)
+switch answer {
+    case no {
+        dialog("Yeah, right.  So what are you?  A goofy goober?")
+    }
+    case yes {
+        dialog("Alright.  I like an honest person, so I'll be honest too.  Your dad has a peanut allergy."
+    }
+}
