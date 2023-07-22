@@ -2,7 +2,7 @@ import pygame
 
 import environment
 import globals
-import scripts
+import script
 from bush import animation, asset_handler, entity, physics, timer, util
 
 loader = asset_handler.AssetHandler(
@@ -47,7 +47,6 @@ class GameObject(entity.Actor):
         else:
             self.state = None
         self.pushed_state = None
-        self.script_queue = []
         if physics_data is not None:
             self.physics_data = physics_data
         else:
@@ -65,6 +64,7 @@ class GameObject(entity.Actor):
         self.immunity_timer.finish()
         self.visual_effects = []
         self.hit_effect = hit_effect
+        self.script_stack = []
 
     def get_anim_key(self):
         return self.state
@@ -95,26 +95,10 @@ class GameObject(entity.Actor):
     def stop(self):
         self.desired_velocity *= 0
 
-    @property
-    def player(self):
-        return globals.player
-
-    @property
-    def current_script(self):
-        if self.script_queue:
-            return self.script_queue[-1]
-
-    def run_script(self, script_name, queue=True):
-        for script in self.script_queue:
-            script.pause()
-        if queue:
-            for script in self.script_queue:
-                script.pause()
-        else:
-            for script in self.script_queue:
-                script.finish()
-            self.script_queue = []
-        self.script_queue.append(scripts.get_script(script_name, self, self.registry))
+    def run_script(self, script_name):
+        self.script_stack.append(
+            script.Script(self.get_id(), self.registry, script_name)
+        )
 
     def update_state(self, dt):
         if self.desired_velocity:
@@ -142,13 +126,14 @@ class GameObject(entity.Actor):
         self.pos += self.velocity * dt
         self.update_rects()
 
+    def update_behaviour(self, dt):
+        pass
+
     def update_script(self, dt):
-        if self.script_queue:
-            self.script_queue[-1].update(dt)
-            if self.script_queue[-1].finished():
-                self.script_queue = self.script_queue[:-1]
-                if self.script_queue:
-                    self.script_queue[-1].unpause()
+        if self.script_stack:
+            self.script_stack[-1].update(dt)
+            if self.script_stack[-1].finished():
+                self.script_stack = self.script_stack[:-1]
 
     def update_rects(self):
         self.rect.center = self.pos
@@ -157,6 +142,7 @@ class GameObject(entity.Actor):
         self.update_state(dt)
         self.update_physics(dt)
         self.update_image(dt)
+        self.update_behaviour(dt)
         self.update_script(dt)
         self.immunity_timer.update(dt)
 
@@ -203,6 +189,14 @@ class MobileGameObject(GameObject):
             )
             or "default"
         ]
+
+    def face(self, dest):
+        if isinstance(dest, str):
+            self.facing = dest
+        else:
+            self.facing = util.string_direction(
+                pygame.Vector2(util.direction(dest - self.pos))
+            )
 
     def update_rects(self):
         self.collision_rect.center = self.pos

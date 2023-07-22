@@ -22,7 +22,7 @@ class Player(base.MobileGameObject):
     """main player of the game"""
 
     registry_groups = ()  # do NOT add to any groups on setup, registry will be None
-    true_groups = ("main", "player", "attackable")
+    true_groups = ("main", "player", "attackable", "scriptable")
 
     def __init__(self):
         tiny_frames = loader.load_spritesheet("tiny.png", (16, 16))

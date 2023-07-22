@@ -12,5 +12,5 @@ class Slime(enemy.BaseEnemy):
             initial_state="idle",
             start_health=3,
             max_health=3,
-            script="random-walk",
+            script="random_walk.snk",
         )

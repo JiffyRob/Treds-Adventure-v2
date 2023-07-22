@@ -1,2 +1,3 @@
 pytmx
 pygame-ce
+pyparsing  # only for SNEK lang

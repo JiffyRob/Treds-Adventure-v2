@@ -45,34 +45,34 @@
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 0.5,
+            "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 45,
-                "y": 22
+                "x": 11.333333333333343,
+                "y": 380
             }
         },
         "maps/test_dark.tmx": {
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 0.33,
+            "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 722.7272727272726,
-                "y": -381.81818181818187
+                "x": 111.33333333333337,
+                "y": -72
             }
         },
         "maps/test_map.tmx": {
             "expandedObjectLayers": [
-                3,
-                7
+                7,
+                3
             ],
-            "scale": 0.5,
+            "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 747,
-                "y": 44
+                "x": 111.33333333333337,
+                "y": 246.66666666666666
             }
         },
         "maps/test_winter.tmx": {

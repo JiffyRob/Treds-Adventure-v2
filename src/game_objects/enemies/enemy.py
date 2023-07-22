@@ -1,5 +1,6 @@
 import os
 
+import globals
 from bush import effect, physics
 from game_objects import base
 
@@ -7,11 +8,7 @@ from game_objects import base
 class BaseObstacle(base.GameObject):
     """Does nothing.  Damage to be implemented later."""
 
-    registry_groups = (
-        "main",
-        "collision",
-        "attackable",
-    )
+    registry_groups = ("main", "collision", "attackable", "scriptable")
 
     def __init__(
         self,
@@ -33,7 +30,7 @@ class BaseObstacle(base.GameObject):
 class BaseEnemy(base.MobileGameObject):
     """Runs a script.  Damage and such to be implemented later"""
 
-    registry_groups = ("main", "collision", "attackable")
+    registry_groups = ("main", "collision", "attackable", "scriptable")
 
     def __init__(
         self,
@@ -63,8 +60,8 @@ class BaseEnemy(base.MobileGameObject):
 
     def update_state(self, dt):
         super().update_state(dt)
-        if self.player.collision_rect.colliderect(self.collision_rect):
-            self.player.hurt(self.touch_damage)
+        if globals.player.collision_rect.colliderect(self.collision_rect):
+            globals.player.hurt(self.touch_damage)
 
 
 def get_anim_dict(path, size):

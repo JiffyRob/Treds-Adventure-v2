@@ -40,12 +40,9 @@ class MapLoader(mapping.MapLoader):
                 ),
                 "player": lambda x: pygame.sprite.GroupSingle(),
                 "collision": lambda x: pygame.sprite.Group(),
-                "event": lambda x: group.EntityGroup(),
+                "scriptable": lambda x: group.EntityGroup(),
                 "interactable": lambda x: pygame.sprite.Group(),
                 "attackable": lambda x: pygame.sprite.Group(),
-                "farmplants_green": lambda x: pygame.sprite.Group(),
-                "farmplants_orange": lambda x: pygame.sprite.Group(),
-                "farmplants": lambda x: pygame.sprite.Group(),
             },
         )
 

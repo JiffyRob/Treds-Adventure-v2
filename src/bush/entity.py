@@ -7,13 +7,14 @@ from copy import deepcopy
 
 import pygame
 
-from bush import animation
+from bush import animation, util
 
 
 class Entity(pygame.sprite.Sprite):
     """Basic Entity"""
 
     registry_groups = ("main",)
+    id_handler = util.IDHandler()
 
     def __init__(
         self,
@@ -25,6 +26,9 @@ class Entity(pygame.sprite.Sprite):
         topleft=False,
         no_debug=False,
     ):
+        if id is None:
+            id = self.id_handler.get_next()
+        self._id = id
         super().__init__(groups)
         self.image = surface
         self.anim = None
@@ -43,8 +47,6 @@ class Entity(pygame.sprite.Sprite):
         self._layer = 1
         if layer is not None:
             self._layer = layer
-        self._id = id
-        self.dirty = 2
         self.no_debug = no_debug
 
     def get_id(self):

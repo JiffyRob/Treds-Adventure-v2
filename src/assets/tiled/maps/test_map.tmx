@@ -69,8 +69,8 @@
    <properties>
     <property name="anim_name" value="green_ninja"/>
     <property name="gnome" type="bool" value="true"/>
-    <property name="interaction_script" value="test-script"/>
-    <property name="script" value="random-walk"/>
+    <property name="interaction_script" value="nick.snk"/>
+    <property name="script" value="random_walk.snk"/>
    </properties>
   </object>
   <object id="21" type="throwable" gid="620" x="80" y="128" width="16" height="16"/>

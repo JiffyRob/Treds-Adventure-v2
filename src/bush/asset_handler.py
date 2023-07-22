@@ -95,6 +95,8 @@ class AssetHandler:
         filepath = os.path.join(self.base, filepath)
         # get file extension
         filetype = filepath.split(".")[-1]
+        if filetype not in self.type_dict:
+            filetype = "generic"
         if filetype == "generic":
             print(
                 "WARNING: File extension",

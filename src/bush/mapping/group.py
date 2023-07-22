@@ -20,14 +20,12 @@ class EntityGroup(pygame.sprite.Group):
         self.on_duplicate = on_duplicate
         self.add(*sprites)
 
-    def add(self, *sprites, on_duplicate=None):
-        for spr in sprites:
-            if spr.__dict__.get("_id", None) is not None:
-                spr_id = spr._id
-                if spr_id in self.ids:
-                    self.on_duplicate(spr, self.ids[spr_id], self)
-                self.ids[spr_id] = spr
-        super().add(*sprites)
+    def add_internal(self, sprite):
+        sprite_id = sprite.get_id()
+        if sprite_id in self.ids:
+            self.on_duplicate(sprite, self.ids[sprite_id], self)
+        self.ids[sprite_id] = sprite
+        super().add_internal(sprite)
 
     def remove(self, *sprites):
         super().remove(*sprites)
@@ -36,6 +34,7 @@ class EntityGroup(pygame.sprite.Group):
                 self.ids.pop(spr._id)
 
     def get_by_id(self, id):
+        print(id, self.ids.keys())
         return self.ids.get(id, None)
 
 

@@ -11,7 +11,7 @@ class StaticNPC(base.GameObject):
     registry_groups = (
         "main",
         "collision",
-        "event",
+        "scriptable",
         "interactable",
     )
 
@@ -24,17 +24,14 @@ class StaticNPC(base.GameObject):
             physics.TYPE_STATIC, data.registry.get_group("collision")
         )
         self.mask = pygame.mask.from_surface(self.image)
-        self.normal_script = data.script
         self.interaction_script = data.interaction_script
-        if self.normal_script:
-            self.run_script(self.normal_script)
 
     def interact(self):
         self.run_script(self.interaction_script)
 
 
 class DynamicNPC(base.MobileGameObject):
-    registry_groups = ("main", "collision", "event", "interactable")
+    registry_groups = ("main", "collision", "scriptable", "interactable")
 
     def __init__(
         self,
@@ -55,16 +52,17 @@ class DynamicNPC(base.MobileGameObject):
             anim_dict=anim_dict,
         )
         self.mask = pygame.mask.from_surface(self.image)
-        self.normal_script = data.script
         self.interaction_script = data.interaction_script
-        self.run_script(self.normal_script)
-        self.speed = 24
+        self.script = data.script
+        self.run_script(self.script)
 
     def interact(self):
         self.facing = util.round_string_direction(
             util.string_direction(globals.player.pos - self.pos),
             util.METHOD_COUNTERCLOCKWISE,
         )
+        self.face(globals.player.pos)
+        self.stop()
         self.run_script(self.interaction_script)
 
     def get_anim_key(self):
