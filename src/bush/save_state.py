@@ -38,7 +38,6 @@ class LeveledGameState:
         save_path=None,
     ):
         self.loader = asset_handler.AssetHandler(save_directory)
-        self.loader.cache_asset_handler(asset_handler.glob_loader)  # in case of pygbag
         self.data = {}
         self.default_level = default_level
         self.save_path = save_path

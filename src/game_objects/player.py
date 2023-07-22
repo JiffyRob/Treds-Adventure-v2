@@ -15,7 +15,6 @@ SPEED_RUNNING = 140
 loader = asset_handler.AssetHandler(
     asset_handler.join(asset_handler.glob_loader.base, "sprites/player")
 )
-loader.cache_asset_handler(asset_handler.glob_loader)
 
 
 class Player(base.MobileGameObject):

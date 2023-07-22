@@ -8,7 +8,6 @@ from bush import animation, asset_handler, entity, physics, timer, util
 loader = asset_handler.AssetHandler(
     asset_handler.join(asset_handler.glob_loader.base, "sprites")
 )
-loader.cache_asset_handler(asset_handler.glob_loader)
 
 
 class GameObject(entity.Actor):

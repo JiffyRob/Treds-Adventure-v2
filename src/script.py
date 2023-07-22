@@ -7,7 +7,6 @@ from bush import asset_handler, util
 loader = asset_handler.AssetHandler(
     asset_handler.join(asset_handler.glob_loader.base, "scripts")
 )
-loader.cache_asset_handler(asset_handler.glob_loader)
 
 
 class Dialog(snek.SnekCommand):

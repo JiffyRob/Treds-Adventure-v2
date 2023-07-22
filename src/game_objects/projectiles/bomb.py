@@ -8,7 +8,6 @@ from game_objects.projectiles import base
 loader = asset_handler.AssetHandler(
     asset_handler.join(asset_handler.glob_loader.base, "sprites/projectiles")
 )
-loader.cache_asset_handler(asset_handler.glob_loader)
 
 
 class Bomb(base.Projectile):
