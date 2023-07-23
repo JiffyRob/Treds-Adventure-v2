@@ -4,9 +4,7 @@ import globals
 import snek
 from bush import asset_handler, util
 
-loader = asset_handler.AssetHandler(
-    asset_handler.join(asset_handler.glob_loader.base, "scripts")
-)
+loader = asset_handler.AssetHandler("scripts")
 
 
 class Dialog(snek.SnekCommand):

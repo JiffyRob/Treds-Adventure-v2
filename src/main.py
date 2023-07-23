@@ -8,7 +8,6 @@ startup.splash()  # later modules load assets that are pulled in from here
 
 import asyncio
 import functools
-import os
 import queue
 
 import pygame
@@ -27,7 +26,7 @@ loader = asset_handler.glob_loader
 START_SPOTS = loader.load("data/player_start_positions.json")
 sound_manager.music_player.add_tracks(
     {
-        key: asset_handler.join(loader.base, path)
+        key: asset_handler.join(asset_handler.AssetHandler.base, path)
         for key, path in loader.load("data/music_tracks.json", cache=False).items()
     }
 )
@@ -62,7 +61,7 @@ class Game:
         # game control state
         self.stack = state.StateStack()
         self.state = save_state.LeveledGameState(
-            asset_handler.join(loader.base, "data/saves"),
+            "data/saves",
             "test_level.tmx",
             save_hook=self.save_state,
             load_hook=self.load_new_state,

@@ -15,5 +15,5 @@ def splash():
 
     # load assets
     loader = asset_handler.glob_loader
-    loader.base = "assets"
+    asset_handler.AssetHandler.set_global_home("assets")
     loader.cache_folder()

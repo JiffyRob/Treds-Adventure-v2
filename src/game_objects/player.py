@@ -12,9 +12,7 @@ SPEED_MEANDERING = 32
 SPEED_WALKING = 96
 SPEED_RUNNING = 140
 
-loader = asset_handler.AssetHandler(
-    asset_handler.join(asset_handler.glob_loader.base, "sprites/player")
-)
+loader = asset_handler.AssetHandler("sprites/player")
 
 
 class Player(base.MobileGameObject):

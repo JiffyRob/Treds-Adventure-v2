@@ -92,18 +92,16 @@ class _MusicPlayer:
         return pygame.mixer.music.set_volume(volume)
 
     def get_metadata(self, track=None):
-        if pygame.version >= (2, 1, 4):
-            if track is None:
-                track = self.current_track
-            if track is None:
-                track = "all"
-            if track == "all":
-                output = {}
-                for name, path in self.tracks.items():
-                    output[name] = pygame.mixer.music.get_metadata(path)
-                return output
-            return pygame.mixer.music.get_metadata(self.tracks[track])
-        return {}
+        if track is None:
+            track = self.current_track
+        if track is None:
+            track = "all"
+        if track == "all":
+            output = {}
+            for name, path in self.tracks.items():
+                output[name] = pygame.mixer.music.get_metadata(path)
+            return output
+        return pygame.mixer.music.get_metadata(self.tracks[track])
 
 
 glob_player = SoundHandler(load_callback=asset_handler.glob_loader.load)

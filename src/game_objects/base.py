@@ -5,9 +5,7 @@ import globals
 import script
 from bush import animation, asset_handler, entity, physics, timer, util
 
-loader = asset_handler.AssetHandler(
-    asset_handler.join(asset_handler.glob_loader.base, "sprites")
-)
+loader = asset_handler.AssetHandler("sprites")
 
 
 class GameObject(entity.Actor):

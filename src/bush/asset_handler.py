@@ -46,7 +46,7 @@ class AssetHandler:
     def __init__(self, base=None, join=True, cache_all=False):
         if base is not None:
             if join:
-                self.base = os.path.join(base, self.base)
+                self.base = os.path.join(self.base, base)
             else:
                 self.base = os.path.join(base)
         if cache_all:
@@ -76,6 +76,10 @@ class AssetHandler:
 
     def set_home(self, path):
         self.base = os.path.join(path)
+
+    @classmethod
+    def set_global_home(cls, path):
+        cls.base = path
 
     def load(self, filepath, cache=True, loader=None, **kwargs):
         filepath = os.path.join(self.base, filepath)

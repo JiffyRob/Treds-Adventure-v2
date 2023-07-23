@@ -5,9 +5,7 @@ import particle_util
 from bush import animation, asset_handler, timer
 from game_objects.projectiles import base
 
-loader = asset_handler.AssetHandler(
-    asset_handler.join(asset_handler.glob_loader.base, "sprites/projectiles")
-)
+loader = asset_handler.AssetHandler("sprites/projectiles")
 
 
 class Bomb(base.Projectile):

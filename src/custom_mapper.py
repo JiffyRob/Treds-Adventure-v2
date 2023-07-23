@@ -20,9 +20,7 @@ class MapLoader(mapping.MapLoader):
         }
         self.default_player_layer = 4  # second layer (default sub)
         loader = asset_handler.glob_loader
-        self.mask_loader = asset_handler.AssetHandler(
-            asset_handler.join(loader.base, "masks")
-        )
+        self.mask_loader = asset_handler.AssetHandler("masks")
         self.map_size = None
         super().__init__(
             asset_handler.join(loader.base, "tiled/maps"),
