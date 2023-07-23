@@ -13,6 +13,7 @@ class MapLoader(mapping.MapLoader):
     def __init__(self):
         self.sprite_classes = {
             "teleport": teleport.Teleport,
+            "exit": teleport.Exit,
             "npc-static": npc.StaticNPC,
             "npc-dynamic": npc.DynamicNPC,
             "throwable": plant.Throwable,
@@ -23,7 +24,7 @@ class MapLoader(mapping.MapLoader):
         self.mask_loader = asset_handler.AssetHandler("masks")
         self.map_size = None
         super().__init__(
-            asset_handler.join(loader.base, "tiled/maps"),
+            "tiled/maps",
             sprite_creator=self.create_sprite,
             tile_handler=self.handle_tile,
             registry_creators={
@@ -98,8 +99,7 @@ class MapLoader(mapping.MapLoader):
             arg.from_mapping_object(obj, self.current_registry)
         )
 
-    def load(self, tmx_map, player_pos):
-        globals.player.kill()
+    def load(self, tmx_map, player_pos=None):
         if not isinstance(tmx_map, pytmx.TiledMap):
             tmx_map = self.loader.load(tmx_map, self.cache_files)
         self.map_size = pygame.Vector2(
@@ -107,12 +107,20 @@ class MapLoader(mapping.MapLoader):
         )
         self.current_registry, properties = super().load(tmx_map)
         sprite_group = self.current_registry.get_group("main")
+        if player_pos is None:
+            player_pos = pygame.Vector2(
+                [
+                    int(i)
+                    for i in tmx_map.properties.get("player_pos", "48, 48").split(", ")
+                ]
+            )
         globals.player.reset(
             player_pos,
             properties.get("player_layer", self.default_player_layer),
             self.current_registry,
         )
         self.current_registry.get_group("main").add(sprite_group)
+
         physics.optimize_for_physics(self.current_registry.get_group("collision"))
         for key in environment.TERRAIN_ORDER:
             if key not in self.current_registry.list_masks():

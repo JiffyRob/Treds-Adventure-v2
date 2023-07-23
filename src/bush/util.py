@@ -224,7 +224,3 @@ def repeat(image, size, alpha=False):
         for y in range(0, size[1], image_size[1]):
             new_surface.blit(image, (x, y))
     return new_surface
-
-
-spam = search((0, 0))
-print([next(spam) for _ in range(100)])

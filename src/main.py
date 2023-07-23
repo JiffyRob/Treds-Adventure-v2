@@ -102,13 +102,14 @@ class Game:
     def save_state(self, _):
         globals.player.save_data()
 
-    def load_map(self, tmx_path, player_pos):
+    def load_map(self, tmx_path, player_pos=None):
+        print(tmx_path)
         groups, properties = self.map_loader.load(tmx_path, player_pos)
         self.stack.push(
             world.MapState("game map", groups, properties.get("track", None))
         )
 
-    def load_world(self, world_path, player_pos):
+    def load_world(self, world_path, player_pos=None):
         self.stack.push(
             world.WorldState(
                 world_path,

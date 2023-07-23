@@ -10,7 +10,7 @@ from game_states import base, ui
 
 
 class MapState(base.GameState):
-    def __init__(self, map_name, registry, soundtrack=None):
+    def __init__(self, filename, registry, soundtrack=None):
         self.registry = registry
         self.sky = globals.engine.sky
         self.main_group = self.registry.get_group("main")
@@ -23,16 +23,20 @@ class MapState(base.GameState):
         rect = pygame.Rect(0, 4, 64, 9)
         rect.right = globals.engine.screen_size.x - 4
         gui.MagicMeter(globals.player, rect, 1, hud)
-        super().__init__(map_name, gui=hud)
+        super().__init__(filename, gui=hud)
         self.input_handler.update_bindings(
             self.loader.load("data/player_bindings.json")
         )
+        self.filename = filename
 
     def update(self, dt=0.03):
         super().update(dt)
         self.sky.update(dt)
         self.particle_manager.update(dt)
         self.main_group.update(dt)
+
+    def update_map(self):
+        pass
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -69,11 +73,9 @@ class WorldState(base.GameState):
     STATE_MAP = 0
     STATE_TRANSITIION = 1
 
-    def __init__(self, world_name, map_loader, initial_map=None, initial_pos=None):
+    def __init__(self, filename, map_loader, initial_map=None, initial_pos=None):
         # mapping
-        self.world = world.World(
-            self.loader.load(os.path.join("tiled/maps", world_name))
-        )
+        self.world = world.World(self.loader.load(os.path.join("tiled/maps", filename)))
         self.map_loader = map_loader
         self.sky = globals.engine.sky
         self.particle_manager = particle.ParticleManager()
@@ -101,7 +103,7 @@ class WorldState(base.GameState):
         rect = pygame.Rect(0, 4, 64, 9)
         rect.right = globals.engine.screen_size.x - 4
         gui.MagicMeter(globals.player, rect, 1, hud)
-        super().__init__(world_name, gui=hud)
+        super().__init__(filename, gui=hud)
         self.input_handler.update_bindings(
             self.loader.load("data/player_bindings.json")
         )
@@ -111,6 +113,8 @@ class WorldState(base.GameState):
             self.load_map(self.world.name_collidepoint(initial_pos))
         else:
             self.load_map(self.world.name_collidepoint((0, 0)))
+
+        self.filename = filename
 
     def load_map(self, map_name):
         self.map_name = map_name
@@ -128,7 +132,7 @@ class WorldState(base.GameState):
         player_facing = util.string_direction_to_vec(globals.player.facing)
         pos = player_facing * 16 + globals.player.pos + self.map_rect.topleft
         new_map = self.world.name_collidepoint(pos)
-
+        print(new_map, self.map_name)
         if new_map not in {None, self.map_name}:
             self.state = self.STATE_TRANSITIION
             self.player_offset = globals.player.pos.copy() - (

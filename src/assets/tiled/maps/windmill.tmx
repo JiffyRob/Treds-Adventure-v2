@@ -2,6 +2,7 @@
 <map version="1.8" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="2">
  <properties>
   <property name="ambience" type="int" propertytype="Ambience" value="0"/>
+  <property name="player_pos" value="70, 106"/>
  </properties>
  <tileset firstgid="1" source="../tilesets/interior.tsx"/>
  <tileset firstgid="1281" source="../tilesets/interior_floor.tsx"/>
@@ -18,9 +19,9 @@
 </data>
  </layer>
  <objectgroup id="2" name="objects">
-  <object id="1" type="pop-teleport" x="64" y="127" width="16" height="1">
+  <object id="1" type="exit" x="64" y="127" width="16" height="1">
    <properties>
-    <property name="dest" value="32, 184"/>
+    <property name="dest" value="32, 157"/>
     <property name="dest_map" value="test_map.tmx"/>
    </properties>
   </object>
