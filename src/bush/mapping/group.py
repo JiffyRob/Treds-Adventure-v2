@@ -34,7 +34,6 @@ class EntityGroup(pygame.sprite.Group):
                 self.ids.pop(spr._id)
 
     def get_by_id(self, id):
-        print(id, self.ids.keys())
         return self.ids.get(id, None)
 
 

@@ -89,7 +89,7 @@ class AssetHandler:
         if filepath in self._cache:
             return self._cache[filepath]
         # load file
-        print("loading", filepath)
+        # print("loading", filepath)
         loader = loader or self._loaders.get(filetype, load_text)
         result = loader(filepath, **kwargs)
         # add to cache if needed

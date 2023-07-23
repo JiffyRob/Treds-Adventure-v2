@@ -3,7 +3,6 @@ max_speed = 48;
 while 1 {
     counter = 3;
     while counter {
-        print("stop check");
         stopped = !direc(get_velocity(THIS));
         if stopped {
             veloc = randincircle(max_speed, 1);
@@ -12,7 +11,6 @@ while 1 {
         counter = sub(counter, 1);
         wait(500);
     }
-    print("flip");
     veloc = randincircle(max_speed, 1);
     move(THIS, veloc);
 }
