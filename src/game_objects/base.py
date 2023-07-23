@@ -176,6 +176,7 @@ class MobileGameObject(GameObject):
                 physics.TYPE_STATIC, pygame.sprite.Group()
             )
         self.collision_rect = self.rect.copy()
+        self.mobile = True
 
     def get_current_environment(self):
         return environment.TERRAIN_DATA[
@@ -187,12 +188,18 @@ class MobileGameObject(GameObject):
             or "default"
         ]
 
+    def mobilize(self):
+        self.mobile = True
+
+    def immobilize(self):
+        self.mobile = False
+
     def face(self, dest):
         if isinstance(dest, str):
             self.facing = dest
         else:
             self.facing = util.string_direction(
-                pygame.Vector2(util.direction(dest - self.pos))
+                pygame.Vector2(util.direction_orthag(dest - self.pos))
             )
 
     def update_rects(self):
@@ -203,6 +210,7 @@ class MobileGameObject(GameObject):
         return f"{self.state} {self.facing}"
 
     def update_physics(self, dt):
+        self.desired_velocity *= self.mobile
         self.update_rects()
         terrain = self.get_current_environment()
         # slippety-slide!

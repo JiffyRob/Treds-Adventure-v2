@@ -62,6 +62,15 @@ def direction(vec: pygame.Vector2):
     return x, y
 
 
+def direction_orthag(vec: pygame.Vector2):
+    vec = vec.copy()
+    index = 0
+    if abs(vec.y) > abs(vec.x):
+        index = 1
+    vec[index - 1] = 0
+    return sign(vec)
+
+
 def string_direction(vec: pygame.Vector2):
     """return a string representing direction eg <1, 3> -> 'right_down' or <0, 0> -> 'still' or <0, 1> -> 'right'"""
     return {
@@ -121,7 +130,7 @@ def string_direction_to_vec(string):
 
 def vec_abs(vec: pygame.Vector2):
     """return the 'absolute value' of the vector"""
-    return pygame.Vector2(abs(vec.x).abs(vec.y))
+    return pygame.Vector2(abs(vec.x), abs(vec.y))
 
 
 def circle_surf(radius, color, width=0):

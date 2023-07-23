@@ -1,3 +1,4 @@
+immobilize("player");
 # define ansewrs as constants so you don't have to remember them
 yes = "Sure am.";
 no = "Am not!";
@@ -11,3 +12,4 @@ switch response {
         dialog("Alright.  I like an honest person, so I'll be honest too.  Your dad has a peanut allergy.");
     }
 }
+mobilize("player");

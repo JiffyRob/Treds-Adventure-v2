@@ -182,9 +182,11 @@ class Player(base.MobileGameObject):
         self.tool = tool.get_tool(self, name)
 
     def immobilize(self):
+        super().immobilize()
         self.input_locked = True
 
-    def unimmobilize(self):
+    def mobilize(self):
+        super().mobilize()
         self.input_locked = False
 
     def save_data(self):
