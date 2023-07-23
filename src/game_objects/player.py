@@ -4,7 +4,7 @@ player - class for the player
 import pygame
 
 import globals
-import tool
+import inator
 from bush import animation, asset_handler, effect, event_binding, physics, util
 from game_objects import arg, base
 
@@ -179,7 +179,7 @@ class Player(base.MobileGameObject):
     def equip(self, name):
         # TODO
         print("equipping", name)
-        self.tool = tool.get_tool(self, name)
+        self.tool = inator.get_tool(self, name)
 
     def immobilize(self):
         super().immobilize()
