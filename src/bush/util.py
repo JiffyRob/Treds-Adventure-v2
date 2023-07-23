@@ -4,6 +4,7 @@ Bush util
 Basic utility module
 """
 import math
+import queue
 import random
 import sys
 
@@ -133,6 +134,31 @@ def vec_abs(vec: pygame.Vector2):
     return pygame.Vector2(abs(vec.x), abs(vec.y))
 
 
+def search(start: tuple | pygame.Vector2, dist: int | float = 1):
+    """yields positions in a grid of spacing 'dist', in order of rough proximity to 'start'"""
+
+    def neighbors(position: tuple[int]):
+        return (
+            (position[0], position[1] - 1),
+            (position[0] + 1, position[1]),
+            (position[0], position[1] + 1),
+            (position[0] - 1, position[1]),
+        )
+
+    # breadth first search (https://www.redblobgames.com/pathfinding/a-star/introduction.html)
+    frontier = queue.Queue()
+    frontier.put(tuple(start))
+    reached = set()
+    reached.add(tuple(start))
+    while True:
+        current = frontier.get()
+        for next in neighbors(current):
+            if next not in reached:
+                frontier.put(next)
+                reached.add(next)
+        yield current
+
+
 def circle_surf(radius, color, width=0):
     """Return a pygame surface of a circle"""
     surface = pygame.Surface((radius * 2, radius * 2), pygame.SRCALPHA)
@@ -198,3 +224,7 @@ def repeat(image, size, alpha=False):
         for y in range(0, size[1], image_size[1]):
             new_surface.blit(image, (x, y))
     return new_surface
+
+
+spam = search((0, 0))
+print([next(spam) for _ in range(100)])

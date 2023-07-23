@@ -11,6 +11,8 @@ TYPE_STATIC = 0
 TYPE_DYNAMIC = 1
 TYPE_TRIGGER = 2
 
+MAX_SPEED = 5
+
 PhysicsData = namedtuple("PhysicsData", ("type", "collision_group"))
 
 
@@ -44,51 +46,32 @@ def optimize_for_physics(group):
 
 
 def dynamic_update(self, dt, stop_on_collision=False):
-    for axis in range(2):
-        self.pos[axis] += self.velocity[axis] * dt
+    checked_velocity = pygame.Vector2()
+    sprite_velocity = self.velocity.copy() * dt
+    callbacks = (static_collision, dynamic_collision, trigger_collision)
+    while checked_velocity != sprite_velocity:
+        checked_velocity.move_towards_ip(sprite_velocity, MAX_SPEED)
+        self.pos += checked_velocity
         self.update_rects()
-        callbacks = (
-            static_collision,
-            dynamic_collision,
-            trigger_collision,
-        )
         for sprite in self.physics_data.collision_group:
-            callbacks[sprite.physics_data.type](self, sprite, axis, stop_on_collision)
+            callbacks[sprite.physics_data.type](self, sprite, stop_on_collision)
 
 
-def static_collision(dynamic, static, axis, stop_on_collision):
-    velocity = pygame.Vector2()
-    velocity[axis] = -dynamic.velocity[axis]
-    velocities = [velocity]
-    if not velocity:
-        velocity[axis] = 1
-        velocities = [velocity, -velocity]
-    motions = {}
-    start_pos = tuple(dynamic.pos)
-    for velocity in velocities:
-        if velocity.length_squared() < 0.0001:
-            continue
-        velocity.scale_to_length(0.2)
-        motion = pygame.Vector2()
-        while collision.collide_rect_mask(
-            dynamic.collision_rect, static.mask, static.rect.topleft
-        ):
-            dynamic.pos += velocity
-            motion += velocity
-            dynamic.update_rects()
-        motions[motion.length_squared()] = motion
-        dynamic.pos.update(start_pos)
+def static_collision(dynamic, static, stop_on_collision):
+    searcher = util.search(dynamic.pos)
+    while collision.collide_rect_mask(
+        dynamic.collision_rect, static.mask, static.rect.topleft
+    ):
+        dynamic.pos = pygame.Vector2(next(searcher))
         dynamic.update_rects()
-    if motions:
-        dynamic.pos += motions[min(motions.keys())]
 
 
-def dynamic_collision(dynamic1, dynamic2, axis, stop_on_collision):
+def dynamic_collision(dynamic1, dynamic2, stop_on_collision):
     # TODO
     pass
 
 
-def trigger_collision(dynamic, trigger, axis, stop_on_collision):
+def trigger_collision(dynamic, trigger, stop_on_collision):
     # TODO
     if collision.collide_rect_mask(
         dynamic.collision_rect.move(-trigger.rect.left, -trigger.rect.top), trigger.mask
