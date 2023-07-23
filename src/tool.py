@@ -6,7 +6,9 @@ from game_objects import arg
 from game_objects.projectiles import bomb
 
 
-class Tool:
+class Inator:
+    """ "Base tool class.  All Tools must follow the Doofenschmirtz class naming convention"""
+
     def __init__(self, player, usage_delay=250, push_state=None, mana_cost=0):
         self.player = player
         self.use_timer = timer.Timer(usage_delay)
@@ -33,12 +35,16 @@ class Tool:
         print(self, "used")
 
 
-class Sword(Tool):
+class Whackinator(Inator):
+    """ "Known as a 'Sword' to some heathens"""
+
     def __init__(self, player):
         super().__init__(player)
 
 
-class Bomb(Tool):
+class Boominator(Inator):
+    """Goes boom"""
+
     def can_be_used(self):
         return super().can_be_used() and globals.player.has("bomb")
 
@@ -50,8 +56,8 @@ class Bomb(Tool):
 def get_tool(player, tool_id):
     if tool_id in TOOL_DICT:
         return TOOL_DICT[tool_id](player)
-    print(f"Warning: tool_id {tool_id!r} not found.  Using Null Tool instead")
-    return Tool(player)
+    print(f"Warning: tool_id {tool_id!r} not found.  Using Null Inator instead")
+    return Inator(player)
 
 
-TOOL_DICT = {"base": Tool, "sword": Sword, "bomb": Bomb}
+TOOL_DICT = {"base": Inator, "Whackinator": Whackinator, "bomb": Boominator}
