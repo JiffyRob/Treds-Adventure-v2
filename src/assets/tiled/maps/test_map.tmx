@@ -62,7 +62,7 @@
   </object>
   <object id="19" name="Jake" type="npc-static" gid="592" x="144" y="160" width="16" height="16">
    <properties>
-    <property name="interaction_script" value="test-script"/>
+    <property name="interaction_script" value="magic.snk"/>
    </properties>
   </object>
   <object id="20" name="Nick" type="npc-dynamic" gid="594" x="304" y="80" width="16" height="16">

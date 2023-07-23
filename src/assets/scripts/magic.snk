@@ -1,0 +1,7 @@
+immobilize("player");
+answer = dialog("I'm a magician.  I can do all sorts of things, through the mystic force of SNEK.  Do you want a demonstration?", "Yes.", "I don't believe you");
+if answer == "Yes." {
+    dialog("Abracadabra!  Rain go away!");
+    weatherset(WEATHER_DNCYCLE);
+}
+mobilize("player");

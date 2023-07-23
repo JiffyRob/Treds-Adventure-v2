@@ -3,12 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/test_dark.tmx",
+    "activeFile": "maps/test_map.tmx",
     "expandedProjectPaths": [
-        "tilesets",
         "maps",
-        "worlds",
-        "."
+        "tilesets",
+        ".",
+        "worlds"
     ],
     "fileStates": {
         "maps/bg_forest.tmx": {
@@ -59,14 +59,14 @@
             "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": -19.333333333333343,
-                "y": -74.66666666666669
+                "x": 240,
+                "y": 159.3333333333333
             }
         },
         "maps/test_map.tmx": {
             "expandedObjectLayers": [
-                7,
-                3
+                3,
+                7
             ],
             "scale": 0.75,
             "selectedLayer": 1,
@@ -189,13 +189,13 @@
     "project": "tav2.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "maps/test_map.tmx",
-        "maps/windmill.tmx",
-        "maps/test2.tmx",
-        "maps/test_winter.tmx",
-        "tilesets/fish_net.tsx",
-        "tilesets/flag.tsx",
         "maps/test_dark.tmx",
+        "tilesets/flag.tsx",
+        "tilesets/fish_net.tsx",
+        "maps/test_winter.tmx",
+        "maps/test2.tmx",
+        "maps/windmill.tmx",
+        "maps/test_map.tmx",
         "maps/bg_forest.tmx",
         "maps/big_map.tmx",
         "tilesets/waterfall.tsx",

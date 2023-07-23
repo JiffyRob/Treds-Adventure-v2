@@ -1,6 +1,7 @@
 import pygame
 
 import globals
+import sky
 import snek
 from bush import asset_handler, util
 
@@ -23,8 +24,15 @@ class Dialog(snek.SnekCommand):
 class Script:
     def __init__(self, this, registry, script):
         self.registry = registry
+        const = sky.WeatherCycle
         namespace = {
             "THIS": this,  # will be an entity id or a whatever the script is run on
+            "WEATHER_DNCYCLE": const.WEATHERTYPE_DNCYCLE,
+            "WEATHER_RAINY": const.WEATHERTYPE_RAINY,
+            "WEATHER_SNOWING": const.WEATHERTYPE_SNOWING,
+            "WEATHER_FOGGY": const.WEATHERTYPE_FOGGY,
+            "WEATHER_DARK": const.WEATHERTYPE_DARK,
+            "WEATHER_THUNDER": const.WEATHERTYPE_THUNDER,
         }
         api = {  # TODO: add a lot to this!
             # game environment
