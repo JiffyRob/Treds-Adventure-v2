@@ -5,7 +5,7 @@ import globals
 import pytmx
 from bush import asset_handler, entity, physics
 from bush.mapping import group, mapping
-from game_objects import arg, npc, plant, teleport
+from game_objects import arg, npc, overworld, teleport
 from game_objects.enemies import slime
 
 
@@ -16,11 +16,11 @@ class MapLoader(mapping.MapLoader):
             "exit": teleport.Exit,
             "npc-static": npc.StaticNPC,
             "npc-dynamic": npc.DynamicNPC,
-            "throwable": plant.Throwable,
+            "throwable": overworld.Throwable,
+            "sign": overworld.Sign,
             "slime": slime.Slime,
         }
         self.default_player_layer = 4  # second layer (default sub)
-        loader = asset_handler.glob_loader
         self.mask_loader = asset_handler.AssetHandler("masks")
         self.map_size = None
         super().__init__(

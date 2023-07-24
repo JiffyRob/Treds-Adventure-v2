@@ -82,7 +82,7 @@ class Game:
     def time_phase(self, mult):
         self.dt_mult = mult
 
-    def dialog(self, text, answers, on_finish=lambda answer: None):
+    def dialog(self, text, answers=(), on_finish=lambda answer: None):
         self.dialog_queue.put((text, answers, on_finish))
 
     def spawn_particles(self, particles):

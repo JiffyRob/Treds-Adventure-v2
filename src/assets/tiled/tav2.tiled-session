@@ -3,12 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/test_map.tmx",
+    "activeFile": "tilesets/objects.tsx",
     "expandedProjectPaths": [
-        "maps",
-        "tilesets",
         ".",
-        "worlds"
+        "maps",
+        "worlds",
+        "tilesets"
     ],
     "fileStates": {
         "maps/bg_forest.tmx": {
@@ -41,6 +41,10 @@
                 "y": 390
             }
         },
+        "maps/objects.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "maps/test2.tmx": {
             "expandedObjectLayers": [
                 2
@@ -48,8 +52,8 @@
             "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 296.6666666666667,
-                "y": 239.99999999999994
+                "x": 224.66666666666669,
+                "y": 238.66666666666666
             }
         },
         "maps/test_dark.tmx": {
@@ -59,8 +63,8 @@
             "scale": 0.75,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 240,
-                "y": 159.3333333333333
+                "x": 496.66666666666663,
+                "y": 142.66666666666666
             }
         },
         "maps/test_map.tmx": {
@@ -71,16 +75,16 @@
             "scale": 3,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 77.5,
-                "y": 152
+                "x": 62.16666666666667,
+                "y": 100.33333333333333
             }
         },
         "maps/test_winter.tmx": {
             "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 240,
-                "y": 160.5
+                "x": 432.5,
+                "y": 148
             }
         },
         "maps/windmill.tmx": {
@@ -90,8 +94,8 @@
             "scale": 3.6960937499999997,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 40.98922003804694,
-                "y": 63.85119425068697
+                "x": 11.228070175438596,
+                "y": 114.44514901712112
             }
         },
         "tilesets/dungeon.tmx": {
@@ -144,6 +148,10 @@
         "tilesets/npc.tsx": {
             "scaleInDock": 1
         },
+        "tilesets/objects.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "tilesets/propeller.tsx": {
             "scaleInDock": 1
         },
@@ -167,7 +175,7 @@
             "scaleInEditor": 1
         }
     },
-    "last.imagePath": "/home/jack/Python Workspace/CurrentGame/src/assets/particles",
+    "last.imagePath": "/home/jack/Python Workspace/CurrentGame/src/assets/tiles",
     "last.worldFilePath": "/home/jack/Python Workspace/CurrentGame/src/assets/tiled/maps",
     "loadedWorlds": [
         "/home/jack/Python Workspace/CurrentGame/src/assets/tiled/maps/overworld.world"
@@ -179,32 +187,27 @@
     "map.width": 30,
     "openFiles": [
         "maps/test_map.tmx",
-        "maps/windmill.tmx",
-        "maps/test2.tmx",
-        "maps/test_winter.tmx",
-        "tilesets/fish_net.tsx",
-        "tilesets/flag.tsx",
-        "maps/test_dark.tmx"
+        "tilesets/objects.tsx"
     ],
     "project": "tav2.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "maps/test_dark.tmx",
-        "tilesets/flag.tsx",
-        "tilesets/fish_net.tsx",
-        "maps/test_winter.tmx",
-        "maps/test2.tmx",
-        "maps/windmill.tmx",
         "maps/test_map.tmx",
+        "tilesets/objects.tsx",
+        "maps/windmill.tmx",
+        "maps/test2.tmx",
+        "maps/test_winter.tmx",
+        "tilesets/fish_net.tsx",
+        "tilesets/flag.tsx",
+        "maps/test_dark.tmx",
+        "maps/objects.tsx",
         "maps/bg_forest.tmx",
         "maps/big_map.tmx",
-        "tilesets/waterfall.tsx",
-        "tilesets/floor.tsx",
-        "tilesets/water.tsx"
+        "tilesets/waterfall.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
-        "height": 8,
-        "width": 8
+        "height": 16,
+        "width": 16
     }
 }

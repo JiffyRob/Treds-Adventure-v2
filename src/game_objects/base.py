@@ -23,7 +23,7 @@ class GameObject(entity.Actor):
         hit_effect=None,
     ):
         surface = data.surface
-        if data.surface is None and anim_dict is not None:
+        if surface is None and anim_dict is not None:
             surface = anim_dict[min(anim_dict.keys())].image()
         super().__init__(
             data.pos,
