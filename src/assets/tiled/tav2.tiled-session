@@ -72,11 +72,11 @@
                 3,
                 7
             ],
-            "scale": 3,
+            "scale": 4,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 62.16666666666667,
-                "y": 100.33333333333333
+                "x": 127,
+                "y": 123.75
             }
         },
         "maps/test_winter.tmx": {

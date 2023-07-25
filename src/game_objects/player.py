@@ -156,19 +156,21 @@ class Player(base.MobileGameObject):
     def heal_mp(self, mp):
         self.current_mana += mp
 
-    def get(self, thing):
-        if thing[0] == "$":
-            pass  # TODO: add money
-        else:
-            self.items[thing] = self.items.get(thing, 0) + 1
+    def get(self, *things):
+        for thing in things:
+            if thing[0] == "$":
+                pass  # TODO: add money
+            else:
+                self.items[thing] = self.items.get(thing, 0) + 1
 
-    def lose(self, thing):
-        if thing[0] == "$":
-            pass  # TODO: add money
-        elif thing in self.items.keys():
-            self.items[thing] -= 1
-            if not self.items[thing]:
-                self.items.pop(thing)
+    def lose(self, *things):
+        for thing in things:
+            if thing[0] == "$":
+                pass  # TODO: add money
+            elif thing in self.items.keys():
+                self.items[thing] -= 1
+                if not self.items[thing]:
+                    self.items.pop(thing)
 
     def has(self, thing):
         if thing[0] == "$":

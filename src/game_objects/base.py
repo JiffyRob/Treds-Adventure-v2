@@ -6,6 +6,7 @@ import script
 from bush import animation, asset_handler, entity, physics, timer, util
 
 loader = asset_handler.AssetHandler("sprites")
+tile_loader = asset_handler.AssetHandler("tiled/tilesets")
 
 
 class GameObject(entity.Actor):
@@ -234,3 +235,14 @@ def get_anim_dict(path, size):
         "idle left": animation.Animation(frames[2:3]),
         "idle right": animation.Animation(frames[3:4]),
     }
+
+
+def load_tile(tile_index, tileset="objects", tile_size=(16, 16)):
+    return tile_loader.load_spritesheet(tileset + ".png", tile_size)[tile_index]
+
+
+def load_tiles(tile_indices, tileset="objects", tile_size=(16, 16)):
+    tiles = []
+    for tile_index in tile_indices:
+        tiles.append(load_tile(tile_index, tileset, tile_size))
+    return tiles

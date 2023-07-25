@@ -5,7 +5,7 @@ import globals
 import pytmx
 from bush import asset_handler, entity, physics
 from bush.mapping import group, mapping
-from game_objects import arg, npc, overworld, teleport
+from game_objects import arg, dungeon, npc, overworld, teleport
 from game_objects.enemies import slime
 
 
@@ -19,6 +19,8 @@ class MapLoader(mapping.MapLoader):
             "throwable": overworld.Throwable,
             "sign": overworld.Sign,
             "slime": slime.Slime,
+            "chest": dungeon.Chest,
+            "globe-switch": dungeon.GlobeSwitch,
         }
         self.default_player_layer = 4  # second layer (default sub)
         self.mask_loader = asset_handler.AssetHandler("masks")
