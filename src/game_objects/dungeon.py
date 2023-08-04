@@ -1,7 +1,7 @@
 import pygame
+from bush import animation, physics, util
 
 import globals
-from bush import animation, physics, util
 from game_objects import base
 
 
@@ -34,3 +34,21 @@ class Chest(base.GameObject):
 
                 else:
                     globals.engine.dialog("The chest is empty")
+
+
+class Pickup(base.GameObject):
+    registry_groups = ("main", "physics")
+
+    def __init__(self, data):
+        super().__init__(
+            data,
+            physics_data=physics.PhysicsData(
+                physics.TYPE_TRIGGER, data.registry.get("physics")
+            ),
+        )
+        self.thing = data.misc.get("thing")
+
+    def on_collision(self, collided):
+        if collided is globals.player:
+            globals.player.get(self.thing)
+            self.kill()

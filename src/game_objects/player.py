@@ -2,10 +2,10 @@
 player - class for the player
 """
 import pygame
+from bush import animation, asset_handler, effect, event_binding, physics, util
 
 import globals
 import inator
-from bush import animation, asset_handler, effect, event_binding, physics, util
 from game_objects import arg, base
 
 SPEED_MEANDERING = 32
@@ -155,11 +155,17 @@ class Player(base.MobileGameObject):
 
     def heal_mp(self, mp):
         self.current_mana += mp
+        self.current_mana = pygame.math.clamp(self.current_mana, 0, self.mana_capacity)
 
     def get(self, *things):
+        """things that begin in '$' are money, things that begin in '~' are health, things that begin in '*' are mana points"""
         for thing in things:
             if thing[0] == "$":
                 pass  # TODO: add money
+            elif thing[0] == "~":
+                self.heal(int(thing[1:]))
+            elif thing[0] == "*":
+                self.heal_mp(int(thing[1:]))
             else:
                 self.items[thing] = self.items.get(thing, 0) + 1
 
@@ -167,6 +173,10 @@ class Player(base.MobileGameObject):
         for thing in things:
             if thing[0] == "$":
                 pass  # TODO: add money
+            elif thing[0] == "~":
+                self.hurt(int(thing[1:]))
+            elif thing[0] == "*":
+                self.heal_mp(-int(thing[1:]))
             elif thing in self.items.keys():
                 self.items[thing] -= 1
                 if not self.items[thing]:

@@ -49,22 +49,22 @@
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 0.75,
+            "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 224.66666666666669,
-                "y": 238.66666666666666
+                "x": 57,
+                "y": 272
             }
         },
         "maps/test_dark.tmx": {
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 0.75,
+            "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 496.66666666666663,
-                "y": 142.66666666666666
+                "x": 215,
+                "y": 91
             }
         },
         "maps/test_map.tmx": {
@@ -72,19 +72,19 @@
                 3,
                 7
             ],
-            "scale": 4,
+            "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 127,
-                "y": 123.75
+                "x": 216,
+                "y": 412
             }
         },
         "maps/test_winter.tmx": {
             "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 432.5,
-                "y": 148
+                "x": 45,
+                "y": 507
             }
         },
         "maps/windmill.tmx": {
