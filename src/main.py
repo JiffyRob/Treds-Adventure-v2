@@ -44,11 +44,14 @@ class Game:
         self.bgcolor = (20, 27, 27)
         try:
             self.screen = pygame.display.set_mode(
-                util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE, vsync=1
+                util.rvec(self.screen_size),
+                pygame.SCALED * (not util.is_pygbag()) | pygame.RESIZABLE,
+                vsync=1,
             )
         except pygame.error:
             self.screen = pygame.display.set_mode(
-                util.rvec(self.screen_size), pygame.SCALED | pygame.RESIZABLE
+                util.rvec(self.screen_size),
+                pygame.SCALED * (not util.is_pygbag()) | pygame.RESIZABLE,
             )
         cursor_images = loader.load_spritesheet("hud/cursor.png", (16, 16))
         self.cursor = joy_cursor.JoyCursor(

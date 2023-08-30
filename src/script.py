@@ -37,7 +37,7 @@ class Script:
         api = {  # TODO: add a lot to this!
             # game environment
             "weatherset": snek.snek_command(globals.engine.sky.set_weather),
-            "give_": snek.snek_command(globals.player.get),
+            "give": snek.snek_command(globals.player.get),
             "take": snek.snek_command(globals.player.lose),
             "dialog": Dialog,
             "trackset": lambda track: None,  # TODO

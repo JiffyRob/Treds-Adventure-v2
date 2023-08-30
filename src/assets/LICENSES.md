@@ -25,6 +25,8 @@ Composed and arranged by JiffyRob.
 
 The Silver Font is licensed by PoppyWorks - please see their page at https://poppyworks.itch.io/silver
 
+The Teeny Tiny Pixls font is "free for all use," by Chequered Ink on https://dafont.com
+
 All images and sound effects are licensed under a
 [Creative Commons Attribution-ShareAlike 4.0 International License][cc-by-sa].
 

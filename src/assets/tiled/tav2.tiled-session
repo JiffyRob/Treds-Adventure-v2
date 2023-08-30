@@ -3,12 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "tilesets/objects.tsx",
+    "activeFile": "maps/test_map.tmx",
     "expandedProjectPaths": [
-        ".",
+        "tilesets",
         "maps",
         "worlds",
-        "tilesets"
+        "."
     ],
     "fileStates": {
         "maps/bg_forest.tmx": {
@@ -75,8 +75,8 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 216,
-                "y": 412
+                "x": 365,
+                "y": 215
             }
         },
         "maps/test_winter.tmx": {
@@ -192,8 +192,8 @@
     "project": "tav2.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "maps/test_map.tmx",
         "tilesets/objects.tsx",
+        "maps/test_map.tmx",
         "maps/windmill.tmx",
         "maps/test2.tmx",
         "maps/test_winter.tmx",
