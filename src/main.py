@@ -83,15 +83,20 @@ class Game:
         globals.player = player.Player()
 
     def time_phase(self, mult):
+        """Phase time for one frame"""
         self.dt_mult = mult
 
     def dialog(self, text, answers=(), on_finish=lambda answer: None):
+        """Run an interactive dialog.
+        Text is the prompt, if any answers are given they will be displayed, and then the on kill will be called with the answer given"""
         self.dialog_queue.put((text, answers, on_finish))
 
     def spawn_particles(self, particles):
+        """Spawn a list of particles to the global particle manager"""
         self.stack.get_current().particle_manager.add(particles)
 
     def load_new_state(self, _):
+        """Called when a new save is opened"""
         globals.player.load_data()
         self.map_loader.clear_cache()  # new save, all previous stuff gone
         map_path = self.state.get("map", "engine")
@@ -103,9 +108,13 @@ class Game:
             self.load_world(map_path, START_SPOTS.get(map_path, (30, 30)))
 
     def save_state(self, _):
+        """Save game state to save file"""
         globals.player.save_data()
 
     def load_map(self, tmx_path, player_pos=None):
+        """Load map at given path, relative to the "tiled" asset directory.
+
+        If the player position is given the player will spawn there.  Else it will use the default specified by the map"""
         print(tmx_path)
         groups, properties = self.map_loader.load(tmx_path, player_pos)
         self.stack.push(
@@ -113,6 +122,9 @@ class Game:
         )
 
     def load_world(self, world_path, player_pos=None):
+        """Load world at given path, relative to the "tiled" asset directory.
+
+        If the player position is given the player will spawn there.  Else it will use the default specified by the map"""
         self.stack.push(
             world.WorldState(
                 world_path,
@@ -122,16 +134,19 @@ class Game:
         )
 
     def toggle_fullscreen(self):
+        """Attempt to switch to full screen mode"""
         if not util.is_pygbag():
             pygame.display.toggle_fullscreen()
 
     def tick(self):
+        """Handles a frame change.  Do not call this unless you know what yo uare doing"""
         dt = self.clock.tick(self.fps) / 1000
         dt *= self.dt_mult
         self.dt_mult = 1
         return dt
 
     async def run(self):
+        """Starts up a game and runs it until finished"""
         globals.engine = self  # set the global engine reference
         globals.player = player.Player()
         pygame.display.set_caption(self.caption)
@@ -171,6 +186,7 @@ class Game:
         self.screen = None
 
     def quit(self):
+        """Exit game, if allowed on current platform"""
         print("QUIT", self.stack)
         self.running = False or util.is_pygbag()  # don't quit in pygbag
 
