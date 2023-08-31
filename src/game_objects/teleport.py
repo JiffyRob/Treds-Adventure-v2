@@ -29,7 +29,7 @@ class Teleport(entity.Entity):
         self.pos = pygame.Vector2(self.rect.center)
         self.mask = pygame.Mask(self.rect.size, True)
 
-    def on_collision(self, collided):
+    def on_collision(self, collided, dt):
         if collided is globals.player:
             if globals.engine.current_map != self.dest_map:
                 globals.engine.load_map(self.dest_map, self.dest)
