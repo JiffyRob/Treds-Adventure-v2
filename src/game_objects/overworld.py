@@ -1,7 +1,5 @@
 import random
 
-import pygame
-
 import globals
 import particle_util
 from bush import collision, particle, util
@@ -20,14 +18,14 @@ class Throwable(base.GameObject):
     )
 
     def __init__(self, data):
+        print(data.pos)
         super().__init__(data)
         self.state = STATE_GROUND
-        self.velocity = pygame.Vector2()
-        self.dest_height = None
         self.accum_height = 0
         self.speed = 400
         self.weight = 10
         self.particle = data.misc.get("particle", "grass")
+        print(self.pos3.z, self.velocity.z)
 
     def kill(self):
         frames = particle_util.load(self.particle, (12, 13))
@@ -46,33 +44,28 @@ class Throwable(base.GameObject):
 
     def interact(self):
         if globals.player.pick_up(self):
+            self.pos = globals.player.pos
+            self.pos3.z = globals.player.rect.height - 16
             self.state = STATE_HELD
-            self.registry.get_group("interactable").remove(self)
 
     def throw(self):
         self.speed = 250
         self.weight = 15
-        self.accum_height = 0
         self.state = STATE_THROWN
         globals.player.carrying = None
-        self.velocity = util.string_direction_to_vec(globals.player.facing) * self.speed
-        self.dest_height = globals.player.rect.bottom - self.rect.bottom
-        self.dest_height += globals.player.rect.height
-        if self.velocity.y > 0:
-            self.dest_height += 5
-
-    def position(self):
-        self.pos.update(globals.player.rect.midtop)
+        self.velocity.xy = (
+            util.string_direction_to_vec(globals.player.facing) * self.speed
+        )
+        self.velocity.z = self.speed / 6
 
     def update(self, dt):
         super().update(dt)
         if self.state == STATE_THROWN:
-            self.velocity += (0, self.weight)
+            self.velocity += (0, 0, -self.weight)
             self.velocity.scale_to_length(self.speed)
             veloc = self.velocity * dt
-            self.pos += veloc
-            self.accum_height += self.accum_height + (self.weight * dt)
-            if self.accum_height >= self.dest_height:
+            self.pos3 += veloc
+            if self.pos3.z <= 0:
                 self.kill()
             for sprite in self.registry.get_group("main").sprites():
                 if collision.collides(self.rect, sprite.rect) and sprite not in {

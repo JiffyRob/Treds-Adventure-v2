@@ -1,10 +1,10 @@
 import pygame
-from bush import asset_handler, entity, physics
-from bush.mapping import group, mapping
 
 import environment
 import globals
 import pytmx
+from bush import asset_handler, entity, physics
+from bush.mapping import group, mapping
 from game_objects import arg, dungeon, npc, overworld, teleport
 from game_objects.enemies import slime
 

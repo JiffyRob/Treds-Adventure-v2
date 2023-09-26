@@ -2,10 +2,10 @@
 player - class for the player
 """
 import pygame
-from bush import animation, asset_handler, effect, event_binding, physics, util
 
 import globals
 import inator
+from bush import animation, asset_handler, effect, event_binding, physics, util
 from game_objects import arg, base
 
 SPEED_MEANDERING = 32
@@ -266,13 +266,13 @@ class Player(base.MobileGameObject):
         for sprite in self.registry.get_group("interactable").sprites():
             if sprite.rect.colliderect(self.get_interaction_rect()):
                 sprite.interact()
-                print("interacting with sprite", sprite.get_id())
+                print("interacting with sprite", sprite.get_id(), sprite)
                 self.stop()
                 break
 
     def pick_up(self, sprite):
-        if sprite.rect.colliderect(self.get_interaction_rect()):
-            self.carrying = sprite
+        self.carrying = sprite
+        return True
 
     def throw(self):
         if self.carrying is not None:
@@ -293,14 +293,12 @@ class Player(base.MobileGameObject):
     def get_anim_key(self):
         return ("tiny " * self.tiny) + f"{self.state} {self.facing}"
 
-    def update_throwable(self):
-        if self.carrying is not None:
-            self.carrying.position()
-
     def update(self, dt):
         super().update(dt)
         self.current_mana = min(self.current_mana + (dt * 0.1), self.mana_capacity)
-        self.update_throwable()
+        if self.carrying:
+            self.carrying.pos = self.pos
+            self.carrying.update_rects()
 
     def on_teleport(self):
         self.throw()

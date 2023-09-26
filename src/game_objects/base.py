@@ -121,7 +121,7 @@ class GameObject(entity.Actor):
             self.image = effect.apply(self.image)
 
     def update_physics(self, dt):
-        self.pos += self.velocity * dt
+        self.pos3 += self.velocity * dt
         self.update_rects()
 
     def update_behaviour(self, dt):

@@ -88,7 +88,8 @@ class Game:
 
     def dialog(self, text, answers=(), on_finish=lambda answer: None):
         """Run an interactive dialog.
-        Text is the prompt, if any answers are given they will be displayed, and then the on kill will be called with the answer given"""
+        Text is the prompt, if any answers are given they will be displayed, and then the on kill will be called with the answer given
+        """
         self.dialog_queue.put((text, answers, on_finish))
 
     def spawn_particles(self, particles):
@@ -114,7 +115,8 @@ class Game:
     def load_map(self, tmx_path, player_pos=None):
         """Load map at given path, relative to the "tiled" asset directory.
 
-        If the player position is given the player will spawn there.  Else it will use the default specified by the map"""
+        If the player position is given the player will spawn there.  Else it will use the default specified by the map
+        """
         print(tmx_path)
         groups, properties = self.map_loader.load(tmx_path, player_pos)
         self.stack.push(
@@ -124,7 +126,8 @@ class Game:
     def load_world(self, world_path, player_pos=None):
         """Load world at given path, relative to the "tiled" asset directory.
 
-        If the player position is given the player will spawn there.  Else it will use the default specified by the map"""
+        If the player position is given the player will spawn there.  Else it will use the default specified by the map
+        """
         self.stack.push(
             world.WorldState(
                 world_path,

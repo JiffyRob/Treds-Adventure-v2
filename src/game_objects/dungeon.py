@@ -1,7 +1,7 @@
 import pygame
-from bush import animation, physics, util
 
 import globals
+from bush import animation, physics, util
 from game_objects import base
 
 
