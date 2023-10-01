@@ -123,6 +123,7 @@ class WorldState(base.GameState):
         )
         self.map_rect = pygame.Rect(self.world.get_rect_by_name(map_name))
         self.main_group = self.registry.get_group("main")
+        reload_map(self.main_group)
         self.soundtrack = properties.get("track", None)
         self.sky.set_weather(properties.get("ambience", self.sky.WEATHERTYPE_DNCYCLE))
         if self.soundtrack is not None:
@@ -220,3 +221,9 @@ class WorldState(base.GameState):
             )
         self.sky.render(surface)
         super().draw(surface)
+
+
+def reload_map(sprite_group):
+    for sprite in sprite_group.sprites():
+        if hasattr(sprite, "reload"):
+            sprite.reload()

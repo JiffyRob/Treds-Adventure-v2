@@ -1,6 +1,8 @@
 """
 player - class for the player
 """
+from copy import deepcopy
+
 import pygame
 
 import globals
@@ -204,10 +206,12 @@ class Player(base.MobileGameObject):
     def save_data(self):
         for field in self.save_fields:
             globals.engine.state.set(field, getattr(self, field), "player")
+            print("saving", field)
 
     def load_data(self):
         for field in self.save_fields:
-            setattr(self, field, globals.engine.state.get(field, "player"))
+            setattr(self, field, deepcopy(globals.engine.state.get(field, "player")))
+            print("loading", field, globals.engine.state.get(field, "player"))
 
     def event(self, event):
         if event.type == event_binding.BOUND_EVENT:

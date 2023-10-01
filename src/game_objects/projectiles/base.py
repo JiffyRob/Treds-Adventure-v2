@@ -31,6 +31,9 @@ class Projectile(entity.Entity):
         self.life_timer = timer.DTimer(duration, on_finish=self.kill)
         self.life_timer.reset()
 
+    def reload(self):
+        self.kill(False)
+
     def update(self, dt):
         super().update(dt)
         physics.dynamic_update(self, dt)

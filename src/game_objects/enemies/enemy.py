@@ -28,8 +28,6 @@ class BaseObstacle(base.GameObject):
 
 
 class BaseEnemy(base.MobileGameObject):
-    """Runs a script.  Damage and such to be implemented later"""
-
     registry_groups = ("main", "collision", "attackable", "scriptable")
 
     def __init__(
@@ -57,11 +55,27 @@ class BaseEnemy(base.MobileGameObject):
         self.speed = speed
         self.touch_damage = touch_damage
         self.run_script(script)
+        self.updating = True
+
+    def kill(self):
+        self.drawable = False
+        self.updating = False
+
+    def update(self, dt):
+        if self.updating:
+            super().update(dt)
 
     def update_state(self, dt):
         super().update_state(dt)
         if globals.player.collision_rect.colliderect(self.collision_rect):
             globals.player.hurt(self.touch_damage)
+
+    def reload(self):
+        self.respawn()
+        self.drawable = True
+        self.updating = True
+        self.update_rects()
+        self.visual_effects.clear()
 
 
 def get_anim_dict(path, size):

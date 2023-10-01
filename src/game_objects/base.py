@@ -63,6 +63,8 @@ class GameObject(entity.Actor):
         self.visual_effects = []
         self.hit_effect = hit_effect
         self.script_stack = []
+        self.spawn_point = self.pos3.copy()
+        self.spawn_groups = tuple(self.groups())
 
     def get_anim_key(self):
         return self.state
@@ -72,6 +74,15 @@ class GameObject(entity.Actor):
 
     def heal(self, amount):
         self.current_health = min(self.health_capacity, self.current_health + amount)
+
+    def respawn(self, health=None):
+        self.pos3 = pygame.Vector3(self.spawn_point)
+        if health is None:
+            self.current_health = self.health_capacity
+        else:
+            self.current_health = pygame.math.clamp(health, 0, self.health_capacity)
+        for group in self.spawn_groups:
+            group.add(self)
 
     def hurt(self, amount):
         print("ouch!", self, amount)
