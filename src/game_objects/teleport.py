@@ -61,8 +61,8 @@ class Exit(entity.Entity):
 
     def on_collision(self, collided, dt):
         if collided is globals.player:
-            globals.engine.stack.pop()  # remove this map
-            state = globals.engine.stack.pop()  # this is the map below
+            globals.engine.stack.pop()  # remove the currently loaded map
+            state = globals.engine.stack.pop()  # remove the map below and reload it
             if ".world" in state.filename:
                 globals.engine.load_world(state.filename, self.dest)
             else:
