@@ -149,6 +149,7 @@ class Player(base.MobileGameObject):
         self.update_rects()
         self.layer = layer
         self.registry = registry
+        self.input_locked = False
         for key in self.true_groups:
             self.registry.get_group(key).add(self)
         self.physics_data = physics.PhysicsData(
@@ -212,6 +213,7 @@ class Player(base.MobileGameObject):
         for field in self.save_fields:
             setattr(self, field, deepcopy(globals.engine.state.get(field, "player")))
             print("loading", field, globals.engine.state.get(field, "player"))
+        self.carrying = None
 
     def event(self, event):
         if event.type == event_binding.BOUND_EVENT:
