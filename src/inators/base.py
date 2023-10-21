@@ -36,7 +36,7 @@ class Inator:
 
 
 class Whackinator(Inator):
-    """ "Known as a 'Sword' to some heathens"""
+    """Known as a 'Sword' to some heathens"""
 
     def __init__(self, player):
         super().__init__(player)
