@@ -117,8 +117,8 @@ class Player(base.MobileGameObject):
             "x": SPEED_WALKING,
             "y": SPEED_WALKING,
         }
-        self.current_mana = 6
-        self.mana_capacity = 12
+        self.current_mana = 60
+        self.mana_capacity = 120
         self.items = {
             "sword": 1,
             "cheddar": 3,
@@ -145,6 +145,7 @@ class Player(base.MobileGameObject):
         self.throw()
         self.kill()
         self.tiny = tiny
+        print(pos)
         self.pos = pygame.Vector2(pos)
         self.update_rects()
         self.layer = layer

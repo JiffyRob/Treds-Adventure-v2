@@ -9,7 +9,7 @@ class Inator:
         self.use_timer = timer.Timer(usage_delay)
         self.use_timer.finish()
         self.push_state = push_state
-        self.mana_cost = 0
+        self.mana_cost = mana_cost
 
     def equip(self):
         self.use_timer.finish()
@@ -21,8 +21,8 @@ class Inator:
         return self.use_timer.done() and globals.player.current_mana >= self.mana_cost
 
     def use(self):
-        globals.player.current_mana -= self.mana_cost
         if self.can_be_used():
+            globals.player.current_mana -= self.mana_cost
             self.use_callback()
             if self.push_state is not None:
                 globals.player.push_state(self.push_state)

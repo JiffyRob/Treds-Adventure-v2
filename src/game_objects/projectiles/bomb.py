@@ -27,7 +27,7 @@ class Bomb(base.Projectile):
             self.pos, globals.engine.stack.get_current().particle_manager, 6, 0, 0, 1, 0
         )
         max_dist = 32
-        max_damage = 5
+        max_damage = 10
         for sprite in self.registry.get_group("attackable").sprites():
             dist = (sprite.pos - self.pos).length()
             if dist < max_dist:

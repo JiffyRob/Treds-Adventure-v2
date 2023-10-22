@@ -1,0 +1,32 @@
+{
+  "engine": {
+    "map": "overworld.world"
+  },
+  "player": {
+    "current_mana": 30,
+    "mana_capacity": 120,
+    "current_health": 8,
+    "health_capacity": 12,
+    "items": {
+      "sword": 1,
+      "stick": 1,
+      "bow": 1,
+      "thunder emblem": 1,
+      "fire emblem": 1,
+      "ice emblem": 1,
+      "sea emblem": 1,
+      "destruction emblem": 1,
+      "healing emblem": 1,
+      "bomb": 1,
+      "cheddar": 1,
+      "white cheddar": 1,
+      "empty bottle": 1,
+      "green stuff": 1,
+      "red stuff": 1,
+      "yellow stuff": 1,
+      "lead boots": 1,
+      "bug net": 1,
+      "key": 1
+    }
+  }
+}

@@ -3,12 +3,13 @@
     "map": "overworld.world"
   },
   "player": {
-    "current_mana": 0,
-    "mana_capacity": 12,
+    "current_mana": 30,
+    "mana_capacity": 120,
     "current_health": 8,
     "health_capacity": 12,
     "items": {
       "sword": 1,
+
       "cheddar": 3,
       "empty bottle": 2,
       "bug net": 1,

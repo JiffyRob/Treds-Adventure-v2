@@ -5,7 +5,14 @@
   "image_order": [
     "empty",
     "sword",
+    "stick",
     "bow",
+    "thunder emblem",
+    "fire emblem",
+    "ice emblem",
+    "sea emblem",
+    "destruction emblem",
+    "healing emblem",
     "bomb",
     "cheddar",
     "white cheddar",
@@ -19,7 +26,14 @@
   ],
   "hud_order": [
     "sword",
+    "stick",
     "bow",
+    "fire emblem",
+    "ice emblem",
+    "thunder emblem",
+    "sea emblem",
+    "healing emblem",
+    "destruction emblem",
     "cheddar",
     "white cheddar",
     "key",
@@ -54,6 +68,12 @@
         "tool_id": "sword"
       }
     },
+    "stick": {
+      "type": "tool",
+      "params": {
+        "tool_id": "stick"
+      }
+    },
     "bow": {
       "type": "tool",
       "params": {
@@ -64,6 +84,36 @@
       "type": "tool",
       "params": {
         "tool_id": "bomb"
+      }
+    },
+    "thunder emblem": {
+      "type": "tool",
+      "params": {
+        "tool_id": "thunder"
+      }
+    },
+    "ice emblem": {
+      "type": "tool",
+      "params": {
+        "toold_id": "ice"
+      }
+    },
+    "sea emblem": {
+      "type": "tool",
+      "params": {
+        "tool_id": "sea"
+      }
+    },
+    "destruction emblem": {
+      "type": "tool",
+      "params": {
+        "tool_id": "destruction"
+      }
+    },
+    "healing emblem": {
+      "type": "tool",
+      "params": {
+        "tool_id": "healing"
       }
     },
     "cheddar": {

@@ -21,7 +21,7 @@ class GameObjectArgs:
     topleft: bool = False  # whether pos is topleft or center.  Positioning done from center normally
     script: str | None = None  # main script (may not be used)
     interaction_script: str | None = None  # script for interaction (may not be used)
-    misc: dict | None = None  # misc properties
+    misc: dict = field(default_factory=dict)  # misc properties
 
 
 def from_mapping_object(obj, registry):
