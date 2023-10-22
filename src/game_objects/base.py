@@ -98,6 +98,9 @@ class GameObject(entity.Actor):
             self.add_visual_effect(self.hit_effect)
         self.immunity_timer.reset()
 
+    def push_state(self, state):
+        self.pushed_state = state
+
     def move(self, direction):
         self.desired_velocity = direction
 
@@ -171,6 +174,7 @@ class MobileGameObject(GameObject):
         max_health=1,
         immunity=150,
         hit_effect=None,
+        weight=0.5,
     ):
         super().__init__(
             data=data,
@@ -189,6 +193,11 @@ class MobileGameObject(GameObject):
             )
         self.collision_rect = self.rect.copy()
         self.mobile = True
+        self.knockback_remaining = pygame.Vector2()
+        self.weight = weight
+
+    def knockback(self, from_pos, amount):
+        self.velocity += (from_pos - self.pos).normalize() * amount
 
     def get_current_environment(self):
         return environment.TERRAIN_DATA[

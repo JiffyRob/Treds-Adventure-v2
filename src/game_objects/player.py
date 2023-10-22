@@ -6,7 +6,7 @@ from copy import deepcopy
 import pygame
 
 import globals
-import inator
+import inators
 from bush import animation, asset_handler, effect, event_binding, physics, util
 from game_objects import arg, base
 
@@ -194,7 +194,7 @@ class Player(base.MobileGameObject):
     def equip(self, name):
         # TODO
         print("equipping", name)
-        self.tool = inator.get_tool(self, name)
+        self.tool = inators.get_inator(name)
 
     def immobilize(self):
         super().immobilize()
