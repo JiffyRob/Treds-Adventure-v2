@@ -63,58 +63,31 @@
     },
     "empty": {},
     "sword": {
-      "type": "tool",
-      "params": {
-        "tool_id": "sword"
-      }
+      "type": "tool"
     },
     "stick": {
-      "type": "tool",
-      "params": {
-        "tool_id": "stick"
-      }
+      "type": "tool"
     },
     "bow": {
-      "type": "tool",
-      "params": {
-        "tool_id": "bow"
-      }
+      "type": "tool"
     },
     "bomb": {
-      "type": "tool",
-      "params": {
-        "tool_id": "bomb"
-      }
+      "type": "tool"
     },
     "thunder emblem": {
-      "type": "tool",
-      "params": {
-        "tool_id": "thunder"
-      }
+      "type": "tool"
     },
     "ice emblem": {
-      "type": "tool",
-      "params": {
-        "toold_id": "ice"
-      }
+      "type": "tool"
     },
     "sea emblem": {
-      "type": "tool",
-      "params": {
-        "tool_id": "sea"
-      }
+      "type": "tool"
     },
     "destruction emblem": {
-      "type": "tool",
-      "params": {
-        "tool_id": "destruction"
-      }
+      "type": "tool"
     },
     "healing emblem": {
-      "type": "tool",
-      "params": {
-        "tool_id": "healing"
-      }
+      "type": "tool"
     },
     "cheddar": {
       "type": "food",
@@ -154,10 +127,7 @@
       "type": "event"
     },
     "bug net": {
-      "type": "tool",
-      "params": {
-        "tool_id": "bug net"
-      }
+      "type": "tool"
     },
     "key": {
       "type": "event"

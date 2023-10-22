@@ -2,6 +2,7 @@ import math
 
 import pygame
 
+import globals
 from bush import asset_handler, event_binding, timer
 
 loader = asset_handler.glob_loader
@@ -43,6 +44,7 @@ LIGHT_GREY = (171, 194, 188)
 LIGHT_BLUISH_GREY = (184, 220, 229)
 DARK_GREY = (78, 82, 74)
 BLUISH_GREEN = (74, 82, 112)
+RED = (224, 57, 76)
 
 BUTTON_BACKGROUND_COLORS = (LIGHT_GREY, LIGHT_BLUISH_GREY, DARK_GREY)
 BUTTON_TEXT_COLOR = BLACK
@@ -350,6 +352,37 @@ class MagicMeter(UIElement):
         )
         if self.current_data != self.last_data:
             self.rebuild()
+
+
+class ToolGauge(UIElement):
+    COLORS = [RED, LIGHT_GREY]
+
+    def __init__(self, rect, layer, group):
+        super().__init__(rect, layer, group)
+        self.image = pygame.Surface((16, 16)).convert()
+        self.image.fill(COLORKEY)
+        self.image.set_colorkey(COLORKEY)
+        self.usable = False
+        self.tool = globals.player.tool_name
+        self.rebuild()
+
+    @staticmethod
+    def get_usable():
+        if globals.player.tool is None:
+            return False
+        return globals.player.tool.can_be_used()
+
+    def update(self, dt):
+        super().update(dt)
+        self.rebuild()
+
+    def rebuild(self):
+        self.usable = self.get_usable()
+        self.tool = globals.player.tool_name
+        self.image.fill(COLORKEY)
+        pygame.draw.rect(self.image, self.COLORS[self.usable], (0, 0, 16, 16), 1)
+        if globals.player.tool_name is not None:
+            self.image.blit(ITEM_IMAGES[globals.player.tool_name], (0, 0))
 
 
 class Dialog(UIElement):

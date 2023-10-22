@@ -5,7 +5,7 @@ TOOL_DICT = {
     "stick": melee.Whackinator,
     "sword": melee.Swooshinator,
     "bomb": range.Boominator,
-    "thunder": magic.SpellInator,
+    "thunder emblem": magic.SpellInator,
 }
 
 

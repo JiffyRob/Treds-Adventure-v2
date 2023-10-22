@@ -103,6 +103,9 @@ class WorldState(base.GameState):
         rect = pygame.Rect(0, 4, 64, 9)
         rect.right = globals.engine.screen_size.x - 4
         gui.MagicMeter(globals.player, rect, 1, hud)
+        rect = pygame.Rect(8, 0, 16, 16)
+        rect.bottom = globals.engine.screen_size.y - 8
+        gui.ToolGauge(rect, 1, hud)
         super().__init__(filename, gui=hud)
         self.input_handler.update_bindings(
             self.loader.load("data/player_bindings.json")
@@ -127,7 +130,9 @@ class WorldState(base.GameState):
         self.soundtrack = properties.get("track", None)
         self.sky.set_weather(properties.get("ambience", self.sky.WEATHERTYPE_DNCYCLE))
         if self.soundtrack is not None:
-            self.music_player.play(self.soundtrack)
+            # self.music_player.play(self.soundtrack)
+            # TODO
+            pass
 
     def update_map(self):
         player_facing = util.string_direction_to_vec(globals.player.facing)

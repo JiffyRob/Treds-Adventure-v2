@@ -137,6 +137,7 @@ class Player(base.MobileGameObject):
         self.input_locked = False
         self.load_data()
         self.tool = None
+        self.tool_name = None
         self.carrying = None
         self.facing = "down"
         self.speed = 72
@@ -156,10 +157,17 @@ class Player(base.MobileGameObject):
         self.physics_data = physics.PhysicsData(
             physics.TYPE_DYNAMIC, self.registry.get_group("collision")
         )
+        self.tool_name = self.tool = None
 
     def heal_mp(self, mp):
-        self.current_mana += mp
-        self.current_mana = pygame.math.clamp(self.current_mana, 0, self.mana_capacity)
+        self.current_mana = pygame.math.clamp(
+            self.current_mana + mp, 0, self.mana_capacity
+        )
+
+    def hurt_mp(self, mp):
+        self.current_mana = pygame.math.clamp(
+            self.current_mana - mp, 0, self.mana_capacity
+        )
 
     def get(self, *things):
         """things that begin in '$' are money, things that begin in '~' are health, things that begin in '*' are mana points"""
@@ -193,8 +201,7 @@ class Player(base.MobileGameObject):
             return thing in self.items.keys()
 
     def equip(self, name):
-        # TODO
-        print("equipping", name)
+        self.tool_name = name
         self.tool = inators.get_inator(name)
 
     def immobilize(self):

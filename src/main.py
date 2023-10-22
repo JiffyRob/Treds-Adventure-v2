@@ -17,19 +17,13 @@ import globals
 import gui
 import menu
 import sky
-from bush import asset_handler, joy_cursor, save_state, sound_manager, util
+from bush import asset_handler, joy_cursor, save_state, sound, util
 from bush.ai import state
 from game_objects import player
 from game_states import ui, world
 
 loader = asset_handler.glob_loader
 START_SPOTS = loader.load("data/player_start_positions.json")
-sound_manager.music_player.add_tracks(
-    {
-        key: asset_handler.join(asset_handler.AssetHandler.base, path)
-        for key, path in loader.load("data/music_tracks.json", cache=False).items()
-    }
-)
 
 
 class Game:

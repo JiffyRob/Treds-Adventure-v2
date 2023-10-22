@@ -40,11 +40,11 @@ class ItemCallback:
         self.player.heal(hp)
         self.player.heal_mp(mp)
 
-    def tool_item(self, tool_id):
-        self.player.equip(tool_id)
+    def tool_item(self):
+        self.player.equip(self.item_name)
 
     def nothing_item(self, *args, **kwargs):
-        print("This item does nothning, so here is some debug info:")
+        print("This item does nothing, so here is some debug info:")
         print(self.player.items, args, kwargs)
 
     def __call__(self):

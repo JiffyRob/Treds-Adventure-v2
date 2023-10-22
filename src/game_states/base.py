@@ -1,12 +1,11 @@
 import pygame
 
 import globals
-from bush import asset_handler, event_binding, sound_manager
+from bush import asset_handler, event_binding, sound
 from bush.ai import state
 
 
 class GameState(state.StackState):
-    music_player = sound_manager.music_player
     loader = asset_handler.glob_loader
     save_ext = ".json"
 
