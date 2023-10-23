@@ -7,9 +7,16 @@ import pygame
 from bush import asset_handler, particle, util
 
 loader = asset_handler.AssetHandler("particles")
+FIREBALL_FRAMES = None
+SMOKE_FRAMES = None
 
-fireball_frames = loader.load_spritesheet("fireball.png")
-smoke_frames = loader.load_spritesheet("smoke.png", (32, 32))
+
+def init():
+    global FIREBALL_FRAMES
+    global SMOKE_FRAMES
+    global loader
+    FIREBALL_FRAMES = loader.load_spritesheet("fireball.png")
+    SMOKE_FRAMES = loader.load_spritesheet("smoke.png", (32, 32))
 
 
 def load(name, size=None):
@@ -77,7 +84,7 @@ def explosion(
                         pos + offset,
                         0,
                         particle.AnimData(
-                            iter(smoke_frames), max(50, max_time - (shrink_speed * i))
+                            iter(SMOKE_FRAMES), max(50, max_time - (shrink_speed * i))
                         ),
                     )
                 )
@@ -88,7 +95,7 @@ def explosion(
             offset = util.randincircle(radius, True) + pygame.Vector2(-16, -16)
             particles.append(
                 particle.AnimParticle(
-                    pos + offset, 0, particle.AnimData(iter(smoke_frames), 150)
+                    pos + offset, 0, particle.AnimData(iter(SMOKE_FRAMES), 150)
                 )
             )
     # duh duh duh duh-duh duh -- FIREBALL!
@@ -99,7 +106,7 @@ def explosion(
                 particle.AnimParticle(
                     pos + offset,
                     offset.normalize() * size * 6,
-                    particle.AnimData(cycle(fireball_frames), 250),
+                    particle.AnimData(cycle(FIREBALL_FRAMES), 250),
                     particle.DurationCallback(1),
                 )
             )

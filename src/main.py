@@ -2,28 +2,29 @@
 Main - runs game and holds game loop.
 Has Access to all other modules
 """
-import startup
-
-startup.splash()  # later modules load assets that are pulled in from here
-
 import asyncio
 import functools
 import queue
 
 import pygame
 
+from bush import asset_handler
+
+asset_handler.AssetHandler.set_global_home("assets")
+
 import custom_mapper
 import globals
 import gui
 import menu
 import sky
+import startup
 from bush import asset_handler, joy_cursor, save_state, sound, util
 from bush.ai import state
 from game_objects import player
 from game_states import ui, world
 
 loader = asset_handler.glob_loader
-START_SPOTS = loader.load("data/player_start_positions.json")
+START_SPOTS = None
 
 
 class Game:
@@ -36,29 +37,8 @@ class Game:
         self.fps = 30 * (not util.is_pygbag())  # no framerate limiting on browser
         self.running = False
         self.bgcolor = (20, 27, 27)
-
-        if util.is_pygbag():
-            self.screen = pygame.display.set_mode(util.rvec(self.screen_size), 0)
-        else:
-            try:
-                self.screen = pygame.display.set_mode(
-                    util.rvec(self.screen_size),
-                    pygame.SCALED | pygame.RESIZABLE,
-                    vsync=1,
-                )
-            except pygame.error:
-                self.screen = pygame.display.set_mode(
-                    util.rvec(self.screen_size),
-                    pygame.SCALED | pygame.RESIZABLE,
-                )
-        cursor_images = loader.load_spritesheet("hud/cursor.png", (16, 16))
-        self.cursor = joy_cursor.JoyCursor(
-            pygame.transform.scale2x(cursor_images[0]),
-            pygame.Vector2(4, 2),
-            alternate=pygame.transform.scale2x(cursor_images[1]),
-            alternate_chance=0.01,
-        )
-        self.cursor_group = pygame.sprite.GroupSingle(self.cursor)
+        self.cursor = None
+        self.cursor_group = None
         # game control state
         self.stack = state.StateStack()
         self.state = save_state.LeveledGameState(
@@ -68,7 +48,7 @@ class Game:
             load_hook=self.load_new_state,
         )
         # day/night
-        self.sky = sky.WeatherCycle(self.screen_size)
+        self.sky = None
         # initial map load
         self.dt_mult = 1
         self.map_loader = custom_mapper.MapLoader()
@@ -78,7 +58,6 @@ class Game:
         # global state setting
         self.current_map = None
         globals.engine = self
-        globals.player = player.Player()
 
     def time_phase(self, mult):
         """Phase time for one frame"""
@@ -146,8 +125,46 @@ class Game:
         self.dt_mult = 1
         return dt
 
+    async def setup(self):
+        global START_SPOTS
+        # load all assets behind a neato splash screen
+        await startup.setup()
+        START_SPOTS = loader.load("data/player_start_positions.json")
+
+        cursor_images = loader.load_spritesheet("hud/cursor.png", (16, 16))
+        self.cursor = joy_cursor.JoyCursor(
+            pygame.transform.scale2x(cursor_images[0]),
+            pygame.Vector2(4, 2),
+            alternate=pygame.transform.scale2x(cursor_images[1]),
+            alternate_chance=0.01,
+        )
+        self.cursor_group = pygame.sprite.GroupSingle(self.cursor)
+
+        self.sky = sky.WeatherCycle(self.screen_size)
+
+        globals.player = player.Player()
+
+    def create_screen(self):
+        if util.is_pygbag():
+            self.screen = pygame.display.set_mode(util.rvec(self.screen_size), 0)
+        else:
+            try:
+                self.screen = pygame.display.set_mode(
+                    util.rvec(self.screen_size),
+                    pygame.SCALED | pygame.RESIZABLE,
+                    vsync=1,
+                )
+            except pygame.error:
+                self.screen = pygame.display.set_mode(
+                    util.rvec(self.screen_size),
+                    pygame.SCALED | pygame.RESIZABLE,
+                )
+
     async def run(self):
         """Starts up a game and runs it until finished"""
+        await self.setup()
+        self.create_screen()
+
         globals.engine = self  # set the global engine reference
         globals.player = player.Player()
         pygame.display.set_caption(self.caption)

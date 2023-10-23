@@ -20,13 +20,20 @@ EnvironmentData = namedtuple(
         "traction",
     ),
 )
-TERRAIN_DATA = loader.load("data/terrain.json")
-DEFAULT_DATA = TERRAIN_DATA["default"]
-TERRAIN_ORDER = TERRAIN_DATA.pop("order")
-TERRAIN_ORDER.reverse()
-for key, value in TERRAIN_DATA.items():
-    TERRAIN_DATA[key] = EnvironmentData(**{**DEFAULT_DATA, **value})
-del key, value  # don't want those cluttering up the namespace
+TERRAIN_DATA = None
+DEFAULT_DATA = None
+TERRAIN_ORDER = None
+
+
+def init():
+    global TERRAIN_DATA, DEFAULT_DATA, TERRAIN_ORDER
+    TERRAIN_DATA = loader.load("data/terrain.json")
+    DEFAULT_DATA = TERRAIN_DATA["default"]
+    TERRAIN_ORDER = TERRAIN_DATA.pop("order")
+    TERRAIN_ORDER.reverse()
+    for key, value in TERRAIN_DATA.items():
+        TERRAIN_DATA[key] = EnvironmentData(**{**DEFAULT_DATA, **value})
+    del key, value  # don't want those cluttering up the namespace
 
 
 class EnvironmentHandler:

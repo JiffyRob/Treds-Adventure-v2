@@ -3,9 +3,14 @@ import pygame
 import globals
 import gui
 
-ITEM_DATA = gui.ITEM_DATA
+ITEM_DATA = None
 
 pygame.font.init()
+
+
+def init():
+    global ITEM_DATA
+    ITEM_DATA = gui.ITEM_DATA
 
 
 class ItemCallback:

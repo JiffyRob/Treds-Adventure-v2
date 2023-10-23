@@ -7,24 +7,37 @@ from bush import asset_handler, event_binding, timer
 
 loader = asset_handler.glob_loader
 
-ITEM_GLOB = loader.load("data/items.json", cache=False)
-ITEM_IMAGES = dict(
-    zip(
-        ITEM_GLOB["image_order"],
-        loader.load_spritesheet("hud/items.png", (16, 16)),
+ITEM_GLOB = None
+ITEM_IMAGES = None
+ITEM_DATA = None
+BG_IMAGES = None
+HEART_IMAGES = None
+UI_FONT = None
+NUMBER_FONT = None
+
+
+def init():
+    global ITEM_GLOB, ITEM_IMAGES, ITEM_DATA, BG_IMAGES, HEART_IMAGES, UI_FONT, NUMBER_FONT
+    ITEM_GLOB = loader.load("data/items.json", cache=False)
+    ITEM_IMAGES = dict(
+        zip(
+            ITEM_GLOB["image_order"],
+            loader.load_spritesheet("hud/items.png", (16, 16)),
+        )
     )
-)
-ITEM_DATA = ITEM_GLOB["data"]
+    ITEM_DATA = ITEM_GLOB["data"]
 
-BG_IMAGES = [
-    loader.load(f"hud/{i}.png") for i in ("empty", "empty-hovered", "empty-selected")
-]
-HEART_IMAGES = loader.load_spritesheet("hud/heart.png", (16, 16))
-UI_FONT = pygame.font.Font(asset_handler.join(loader.base, "hud/silver.ttf"), 18)
+    BG_IMAGES = [
+        loader.load(f"hud/{i}.png")
+        for i in ("empty", "empty-hovered", "empty-selected")
+    ]
+    HEART_IMAGES = loader.load_spritesheet("hud/heart.png", (16, 16))
+    UI_FONT = pygame.font.Font(asset_handler.join(loader.base, "hud/silver.ttf"), 18)
 
-NUMBER_FONT = pygame.font.Font(
-    asset_handler.join(loader.base, "hud/TeenyTinyPixls.ttf"), 5
-)
+    NUMBER_FONT = pygame.font.Font(
+        asset_handler.join(loader.base, "hud/TeenyTinyPixls.ttf"), 5
+    )
+
 
 # button states
 STATE_NORMAL = 0
