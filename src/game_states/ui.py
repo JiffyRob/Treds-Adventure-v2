@@ -60,9 +60,14 @@ class PauseMenu(MenuState):
         self.gui = menu.create_menu(
             "PauseMenu",
             ["Resume", "Items", "Load/Save", "Quit"],
-            [self.pop, self.run_item_menu, self.run_loadsave_menu, globals.engine.quit],
+            [self.pop, self.run_item_menu, self.run_loadsave_menu, self.double_pop],
             globals.engine.screen_size,
         )
+
+    def double_pop(self):
+        stack = self._stack
+        stack.pop()
+        stack.pop()
 
     def run_item_menu(self):
         self.run_submenu(ItemMenu)
