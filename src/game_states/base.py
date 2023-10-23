@@ -41,9 +41,6 @@ class GameState(state.StackState):
         self.cursor.event(event)
         self.input_handler.process_event(event)
         if event.type == event_binding.BOUND_EVENT:
-            if event.name == "pop state":
-                print("pop!")
-                self.pop()
             if event.name == "toggle fullscreen":
                 globals.engine.toggle_fullscreen()
             if event.name == "quit":

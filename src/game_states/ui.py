@@ -5,7 +5,7 @@ import globals
 import gui
 import items
 import menu
-from bush import text_util, util
+from bush import event_binding, text_util, util
 from game_states import base
 
 
@@ -44,6 +44,9 @@ class MenuState(base.GameState):
 
     def handle_event(self, event):
         super().handle_event(event)
+        if event.type == event_binding.BOUND_EVENT:
+            if event.name == "pop state":
+                self.pop()
 
     def run_submenu(self, menu_type, **kwargs):
         self._stack.push(menu_type(supermenu=self, **kwargs))
