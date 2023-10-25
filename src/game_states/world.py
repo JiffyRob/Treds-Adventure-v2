@@ -1,12 +1,15 @@
+import logging
 import os
 
 import pygame
 
 import globals
 import gui
-from bush import event_binding, particle, timer, util
+from bush import event_binding, particle, sound, timer, util
 from bush.mapping import world
 from game_states import base, ui
+
+logger = logging.getLogger(__name__)
 
 
 class MapState(base.GameState):
@@ -17,7 +20,7 @@ class MapState(base.GameState):
         self.soundtrack = soundtrack
         self.particle_manager = particle.ParticleManager()
         if self.soundtrack is not None:
-            self.music_player.play(self.soundtrack)
+            sound.glob_player.switch_track(self.soundtrack)
         hud = gui.UIGroup()
         gui.HeartMeter(globals.player, pygame.Rect(8, 8, 192, 64), 1, hud)
         rect = pygame.Rect(0, 4, 64, 9)
@@ -118,6 +121,8 @@ class WorldState(base.GameState):
             self.load_map(self.world.name_collidepoint((0, 0)))
 
         self.filename = filename
+        if self.soundtrack is not None:
+            sound.glob_player.switch_track(self.soundtrack)
 
     def load_map(self, map_name):
         self.map_name = map_name
@@ -129,17 +134,13 @@ class WorldState(base.GameState):
         reload_map(self.main_group)
         self.soundtrack = properties.get("track", None)
         self.sky.set_weather(properties.get("ambience", self.sky.WEATHERTYPE_DNCYCLE))
-        if self.soundtrack is not None:
-            # self.music_player.play(self.soundtrack)
-            # TODO
-            pass
 
     def update_map(self):
         player_facing = util.string_direction_to_vec(globals.player.facing)
         pos = player_facing * 16 + globals.player.pos + self.map_rect.topleft
         new_map = self.world.name_collidepoint(pos)
-        print(new_map, self.map_name)
         if new_map not in {None, self.map_name}:
+            logger.info(f"Switch map from {self.map_name} to {new_map}")
             self.state = self.STATE_TRANSITIION
             self.player_offset = globals.player.pos.copy() - (
                 pygame.Vector2(globals.player.rect.size) // 2

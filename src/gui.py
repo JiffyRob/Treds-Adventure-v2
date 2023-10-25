@@ -1,3 +1,4 @@
+import logging
 import math
 
 import pygame
@@ -6,6 +7,7 @@ import globals
 from bush import asset_handler, event_binding, timer
 
 loader = asset_handler.glob_loader
+logger = logging.getLogger(__name__)
 
 ITEM_GLOB = None
 ITEM_IMAGES = None
@@ -459,7 +461,7 @@ class Dialog(UIElement):
         pygame.draw.rect(self.image, BORDER_COLOR, ((0, 0), self.rect.size), 1)
 
     def choose(self):
-        print("chosen")
+        logger.debug(f"Answer picked {self.answer_index}")
         self.chosen_index = self.answer_index
         self.state = STATE_COMPLETE
         self.kill()

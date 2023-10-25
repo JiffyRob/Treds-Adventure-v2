@@ -1,6 +1,7 @@
 """
 player - class for the player
 """
+import logging
 from copy import deepcopy
 
 import pygame
@@ -15,6 +16,7 @@ SPEED_WALKING = 96
 SPEED_RUNNING = 140
 
 loader = asset_handler.AssetHandler("sprites/player")
+logger = logging.getLogger(__name__)
 
 
 class Player(base.MobileGameObject):
@@ -146,7 +148,7 @@ class Player(base.MobileGameObject):
         self.throw()
         self.kill()
         self.tiny = tiny
-        print(pos)
+        logger.info(f"reset to {pos}")
         self.pos = pygame.Vector2(pos)
         self.update_rects()
         self.layer = layer
@@ -157,7 +159,6 @@ class Player(base.MobileGameObject):
         self.physics_data = physics.PhysicsData(
             physics.TYPE_DYNAMIC, self.registry.get_group("collision")
         )
-        self.tool_name = self.tool = None
 
     def heal_mp(self, mp):
         self.current_mana = pygame.math.clamp(
@@ -215,13 +216,14 @@ class Player(base.MobileGameObject):
     def save_data(self):
         for field in self.save_fields:
             globals.engine.state.set(field, getattr(self, field), "player")
-            print("saving", field)
+            logger.debug("saving", field)
 
     def load_data(self):
         for field in self.save_fields:
             setattr(self, field, deepcopy(globals.engine.state.get(field, "player")))
-            print("loading", field, globals.engine.state.get(field, "player"))
+            logger.debug("loading", field, globals.engine.state.get(field, "player"))
         self.carrying = None
+        self.tool_name = self.tool = None
 
     def event(self, event):
         if event.type == event_binding.BOUND_EVENT:
@@ -243,7 +245,9 @@ class Player(base.MobileGameObject):
             if words[1] == "running":
                 self.speeds[words[2]] = SPEED_RUNNING
             self.speed = max(self.speeds.values())
-            print(words, self.speeds, self.speed)
+            logger.debug(
+                f"Moving words={words} speeds={self.speeds} speed={self.speed}"
+            )
         if words[0] == "go":
             directions = {
                 "up": (self.desired_velocity.x, -self.speed),
@@ -280,7 +284,7 @@ class Player(base.MobileGameObject):
         for sprite in self.registry.get_group("interactable").sprites():
             if sprite.rect.colliderect(self.get_interaction_rect()):
                 sprite.interact()
-                print("interacting with sprite", sprite.get_id(), sprite)
+                logger.info("interacting with sprite", sprite.get_id(), sprite)
                 self.stop()
                 break
 

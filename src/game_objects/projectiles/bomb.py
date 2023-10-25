@@ -11,7 +11,6 @@ loader = asset_handler.AssetHandler("sprites/projectiles")
 class Bomb(base.Projectile):
     def __init__(self, data):
         self.frames = loader.load_spritesheet("bomb.png", (16, 16))
-        print(len(self.frames))
         self.flipped = False
         data.surface = animation.Animation(self.frames[:6], 100)
         super().__init__(data, 5000)

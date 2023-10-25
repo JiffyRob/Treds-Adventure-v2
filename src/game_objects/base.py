@@ -1,3 +1,5 @@
+import logging
+
 import pygame
 
 import environment
@@ -7,6 +9,8 @@ from bush import animation, asset_handler, entity, physics, timer, util
 
 loader = asset_handler.AssetHandler("sprites")
 tile_loader = asset_handler.AssetHandler("tiled/tilesets")
+
+logger = logging.getLogger(__name__)
 
 
 class GameObject(entity.Actor):
@@ -85,7 +89,7 @@ class GameObject(entity.Actor):
             group.add(self)
 
     def hurt(self, amount):
-        print("ouch!", self, amount)
+        logger.info(f"Sprite {self._id} hurt by {amount}", self, amount)
         if self.immunity_timer.done():
             self.current_health -= amount
             if self.current_health <= 0:

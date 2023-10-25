@@ -4,6 +4,7 @@ Has Access to all other modules
 """
 import asyncio
 import functools
+import logging
 import queue
 
 import pygame
@@ -24,6 +25,7 @@ from game_objects import player
 from game_states import ui, world
 
 loader = asset_handler.glob_loader
+logger = logging.getLogger(__name__)
 START_SPOTS = None
 
 
@@ -94,7 +96,7 @@ class Game:
 
         If the player position is given the player will spawn there.  Else it will use the default specified by the map
         """
-        print(tmx_path)
+        logger.info(f"loading map '{tmx_path}'")
         groups, properties = self.map_loader.load(tmx_path, player_pos)
         self.stack.push(
             world.MapState("game map", groups, properties.get("track", None))
@@ -199,13 +201,15 @@ class Game:
             await asyncio.sleep(0)
             dt = self.tick()
 
-        print("exiting game")
+        logger.critical(
+            "Game is over.  Quitting is obviously a critical error on your part."
+        )
         pygame.quit()
         self.screen = None
 
     def quit(self):
         """Exit game, if allowed on current platform"""
-        print("QUIT", self.stack)
+        logger.warning(f"Game quit with state stack {self.stack}")
         self.running = False or util.is_pygbag()  # don't quit in pygbag
 
 

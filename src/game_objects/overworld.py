@@ -18,14 +18,12 @@ class Throwable(base.GameObject):
     )
 
     def __init__(self, data):
-        print(data.pos)
         super().__init__(data)
         self.state = STATE_GROUND
         self.accum_height = 0
         self.speed = 400
         self.weight = 10
         self.particle = data.misc.get("particle", "grass")
-        print(self.pos3.z, self.velocity.z)
 
     def kill(self):
         frames = particle_util.load(self.particle, (12, 13))
@@ -76,7 +74,6 @@ class Throwable(base.GameObject):
                         if collision.collide_rect_mask(
                             self.rect, sprite.mask, sprite.rect.topleft
                         ):
-                            print("smash")
                             self.kill()
 
     def limit(self, map_rect):

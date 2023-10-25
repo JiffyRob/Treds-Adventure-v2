@@ -1,3 +1,5 @@
+import logging
+
 import pygame
 
 import globals
@@ -6,6 +8,8 @@ import gui
 ITEM_DATA = None
 
 pygame.font.init()
+
+logger = logging.getLogger(__name__)
 
 
 def init():
@@ -32,7 +36,7 @@ class ItemCallback:
                 **item_data.get("params", {}),  # item params
             },
         }
-        # print(self.item_name, self.item_data)
+        logger.debug(f"Item Callback for {self.item_name, self.item_data} created")
         self.item_callback = {
             "food": self.food_item,
             "tool": self.tool_item,
@@ -44,13 +48,14 @@ class ItemCallback:
     def food_item(self, hp, mp, hp_aftereffect):
         self.player.heal(hp)
         self.player.heal_mp(mp)
+        if hp_aftereffect:
+            logger.warning("hp aftereffect not implemented")
 
     def tool_item(self):
         self.player.equip(self.item_name)
 
     def nothing_item(self, *args, **kwargs):
-        print("This item does nothing, so here is some debug info:")
-        print(self.player.items, args, kwargs)
+        logger.warning("This item does nothing")
 
     def __call__(self):
         self.item_callback(**self.item_kwargs)
@@ -62,7 +67,7 @@ class ItemCallback:
                 if self.player.items[self.item_name] < 1:
                     self.player.items.pop(self.item_name)
             if self.consume_to == "empty":
-                print("bye bye item!")
+                logger.info("item destroyed")
             elif self.consume_to in self.player.items:
                 self.player.items[self.consume_to] += 1
             else:

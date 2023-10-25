@@ -1,5 +1,9 @@
+import logging
+
 import globals
 from bush import timer
+
+logger = logging.getLogger(__name__)
 
 
 class Inator:
@@ -28,7 +32,7 @@ class Inator:
                 globals.player.push_state(self.push_state)
 
     def use_callback(self):
-        print(self, "used")
+        logger.warning("This tool does nothing")
 
 
 def interaction_rect_collide(player, sprite):
