@@ -1,6 +1,7 @@
 import pygame
 
 import globals
+from bush import collision
 from inators import base
 
 
@@ -11,11 +12,11 @@ class Whackinator(base.Inator):
         super().__init__(200)
 
     def use_callback(self):
-        whacked = pygame.sprite.spritecollide(
-            globals.player, globals.player.registry.get_group("attackable"), False
-        )
-        for sprite in whacked:
-            if sprite is not globals.player:
+        player_rect = globals.player.get_interaction_rect().inflate(-3, -3)
+        for sprite in globals.player.registry.get_group("attackable"):
+            if sprite is not globals.player and sprite.collision_rect.colliderect(
+                player_rect
+            ):
                 sprite.hurt(1)
                 sprite.knockback(globals.player.pos, 3)
 
@@ -27,10 +28,10 @@ class Swooshinator(base.Inator):
         super().__init__(100)  #
 
     def use_callback(self):
-        whacked = pygame.sprite.spritecollide(
-            globals.player, globals.player.registry.get_group("attackable"), False
-        )
-        for sprite in whacked:
-            if sprite is not globals.player:
+        player_rect = globals.player.get_interaction_rect()
+        for sprite in globals.player.registry.get_group("attackable"):
+            if sprite is not globals.player and sprite.collision_rect.colliderect(
+                player_rect
+            ):
                 sprite.hurt(1)
-                sprite.knockback(globals.player.pos, 5)
+                sprite.knockback(globals.player.pos, 3)

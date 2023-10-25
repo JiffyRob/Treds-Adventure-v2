@@ -3,12 +3,11 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/test_map.tmx",
+    "activeFile": "maps/test_dark.tmx",
     "expandedProjectPaths": [
-        "tilesets",
+        ".",
         "maps",
-        "worlds",
-        "."
+        "worlds"
     ],
     "fileStates": {
         "maps/bg_forest.tmx": {
@@ -60,23 +59,23 @@
             "expandedObjectLayers": [
                 2
             ],
-            "scale": 1,
+            "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 215,
-                "y": 91
+                "x": 89.25,
+                "y": 37.25
             }
         },
         "maps/test_map.tmx": {
             "expandedObjectLayers": [
-                3,
-                7
+                7,
+                3
             ],
-            "scale": 1,
+            "scale": 0.33,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 365,
-                "y": 215
+                "x": 401.5151515151515,
+                "y": 133.33333333333326
             }
         },
         "maps/test_winter.tmx": {
@@ -178,7 +177,7 @@
     "last.imagePath": "/home/jack/Python Workspace/CurrentGame/src/assets/tiles",
     "last.worldFilePath": "/home/jack/Python Workspace/CurrentGame/src/assets/tiled/maps",
     "loadedWorlds": [
-        "/home/jack/Python Workspace/CurrentGame/src/assets/tiled/maps/overworld.world"
+        "/home/jiffyrob/Programming/Python Workspace/Treds-Adventure-v2/src/assets/tiled/maps/overworld.world"
     ],
     "map.height": 20,
     "map.lastUsedFormat": "tmx",
@@ -187,19 +186,20 @@
     "map.width": 30,
     "openFiles": [
         "maps/test_map.tmx",
-        "tilesets/objects.tsx"
+        "tilesets/objects.tsx",
+        "maps/test_dark.tmx"
     ],
     "project": "tav2.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "tilesets/objects.tsx",
         "maps/test_map.tmx",
+        "tilesets/objects.tsx",
+        "maps/test_dark.tmx",
         "maps/windmill.tmx",
         "maps/test2.tmx",
         "maps/test_winter.tmx",
         "tilesets/fish_net.tsx",
         "tilesets/flag.tsx",
-        "maps/test_dark.tmx",
         "maps/objects.tsx",
         "maps/bg_forest.tmx",
         "maps/big_map.tmx",

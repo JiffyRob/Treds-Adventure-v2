@@ -199,9 +199,10 @@ class MobileGameObject(GameObject):
         self.mobile = True
         self.knockback_remaining = pygame.Vector2()
         self.weight = weight
+        self.force = pygame.Vector2()
 
     def knockback(self, from_pos, amount):
-        self.velocity += (from_pos - self.pos).normalize() * amount
+        self.force += (self.pos - from_pos).normalize() * amount * 200
 
     def get_current_environment(self):
         return environment.TERRAIN_DATA[
@@ -243,6 +244,9 @@ class MobileGameObject(GameObject):
             self.velocity += (self.desired_velocity * terrain.speed) * terrain.traction
         else:
             self.velocity = self.desired_velocity * terrain.speed
+        self.force *= 1.5 - terrain.traction
+        self.velocity += self.force
+
         physics.dynamic_update(self, dt)
         self.update_rects()
 
