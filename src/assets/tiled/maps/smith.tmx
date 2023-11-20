@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="git" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="18">
+ <tileset firstgid="1" source="../tilesets/interior.tsx"/>
+ <tileset firstgid="1281" source="../tilesets/interior_floor.tsx"/>
+ <tileset firstgid="1655" source="../tilesets/objects.tsx"/>
+ <layer id="1" name="Floor" width="10" height="10">
+  <data encoding="csv">
+3,4,10,11,12,10,11,12,13,14,
+35,36,42,43,44,42,43,44,45,46,
+195,196,1556,1557,1557,1557,1557,1558,205,206,
+195,196,1578,1579,1579,1579,1579,1580,237,238,
+195,196,1578,1579,1579,1579,1579,1579,205,206,
+195,196,1578,1579,1579,1579,1579,1579,237,238,
+195,196,1578,1579,1579,1579,1579,1580,205,206,
+227,228,1600,1601,1584,1601,1601,1602,237,238,
+579,580,583,584,1581,585,586,588,589,590,
+611,612,615,616,1603,617,618,620,621,622
+</data>
+ </layer>
+ <objectgroup id="2" name="Object Layer 1">
+  <object id="1" gid="1819" x="112" y="96" width="16" height="16"/>
+  <object id="2" gid="1817" x="96" y="96" width="16" height="16"/>
+  <object id="4" gid="1817" x="48" y="96" width="16" height="16"/>
+  <object id="5" gid="1818" x="96" y="96" width="16" height="16"/>
+  <object id="6" gid="1818" x="80" y="96" width="16" height="16"/>
+  <object id="7" gid="1818" x="64" y="96" width="16" height="16"/>
+  <object id="8" gid="1831" x="32" y="32" width="16" height="16"/>
+  <object id="9" gid="1831" x="48" y="32" width="16" height="16"/>
+  <object id="10" gid="1831" x="64" y="32" width="16" height="16"/>
+  <object id="14" gid="1821" x="96" y="0" width="16" height="16"/>
+  <object id="15" gid="1820" x="112" y="32" width="16" height="16"/>
+  <object id="16" type="chest" gid="1661" x="80" y="32" width="16" height="16">
+   <properties>
+    <property name="item" value="bomb"/>
+   </properties>
+  </object>
+  <object id="17" type="exit" x="64" y="157.75" width="16" height="2.25"/>
+ </objectgroup>
+</map>

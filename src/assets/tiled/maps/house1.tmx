@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="git" orientation="orthogonal" renderorder="right-down" width="10" height="10" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="4">
+ <properties>
+  <property name="ambience" type="int" propertytype="Ambience" value="32"/>
+  <property name="player_layer" type="int" value="7"/>
+ </properties>
+ <tileset firstgid="1" source="../tilesets/interior_floor.tsx"/>
+ <tileset firstgid="375" source="../tilesets/interior.tsx"/>
+ <tileset firstgid="1655" source="../tilesets/objects.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="10" height="10">
+  <data encoding="csv">
+377,378,385,385,385,385,385,385,387,388,
+409,410,417,417,417,417,417,417,419,420,
+569,570,133,134,134,134,134,135,579,580,
+569,570,155,156,156,156,156,157,611,612,
+569,570,155,156,156,156,156,157,643,644,
+569,570,155,156,156,156,156,157,579,580,
+569,570,155,156,156,156,156,157,579,580,
+601,602,177,178,163,178,178,179,611,612,
+953,954,957,958,158,959,960,962,963,964,
+985,986,989,990,243,991,992,994,995,996
+</data>
+ </layer>
+ <layer id="3" name="Tile Layer 2" width="10" height="10">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,1775,1776,0,0,
+0,0,0,0,0,0,1791,1792,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,1775,1776,0,0,0,0,0,0,
+0,0,1791,1792,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="2" name="Objects">
+  <object id="2" type="exit" x="64" y="158.5" width="16" height="1.5">
+   <properties>
+    <property name="dest" value="326, 190"/>
+   </properties>
+  </object>
+  <object id="3" type="chest" gid="1661" x="32" y="48" width="16" height="16">
+   <properties>
+    <property name="item" value="empty bottle"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

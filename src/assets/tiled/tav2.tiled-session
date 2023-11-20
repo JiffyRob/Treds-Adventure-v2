@@ -3,13 +3,100 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/test_dark.tmx",
+    "activeFile": "",
     "expandedProjectPaths": [
         ".",
         "maps",
         "worlds"
     ],
+    "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
+        "/home/jiffyrob/Programming/Python Workspace/phj2023/assets/data/rooms/1.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 703.75,
+                "y": 383.75
+            }
+        },
+        "/home/jiffyrob/Programming/Python Workspace/phj2023/assets/data/rooms/2.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 368.66666666666663,
+                "y": 433.3333333333333
+            }
+        },
+        "/home/jiffyrob/Programming/Python Workspace/phj2023/assets/data/rooms/2.tmx#tiles": {
+            "scaleInDock": 1
+        },
+        "/home/jiffyrob/Programming/Python Workspace/phj2023/assets/data/rooms/3.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 640.6666666666667,
+                "y": 637.3333333333333
+            }
+        },
+        "/home/jiffyrob/Programming/Python Workspace/phj2023/assets/data/rooms/4.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 795.3333333333333,
+                "y": 637.3333333333333
+            }
+        },
+        "/home/jiffyrob/Programming/Python Workspace/phj2023/assets/data/rooms/5.tmx": {
+            "scale": 1.3121875,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 320.4572517266016,
+                "y": 502.97689926172893
+            }
+        },
+        "/home/jiffyrob/Programming/Python Workspace/phj2023/assets/data/rooms/6.tmx": {
+            "scale": 1.3121875,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 320.4572517266016,
+                "y": 320.07620862110025
+            }
+        },
+        "/home/jiffyrob/Programming/Python Workspace/phj2023/assets/data/rooms/7.tmx": {
+            "scale": 1.3121875,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 320.4572517266016,
+                "y": 320.07620862110025
+            }
+        },
+        "/home/jiffyrob/Programming/Python Workspace/phj2023/assets/data/rooms/8.tmx": {
+            "scale": 1.3121875,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 320.4572517266016,
+                "y": 320.07620862110025
+            }
+        },
+        "/home/jiffyrob/Programming/Python Workspace/phj2023/assets/data/rooms/9.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 396.66666666666663,
+                "y": 468
+            }
+        },
+        "/home/jiffyrob/Programming/Python Workspace/phj2023/assets/data/rooms/magic-blocks.tsx": {
+            "scaleInDock": 1
+        },
+        "/home/jiffyrob/Programming/Python Workspace/phj2023/assets/data/tmx/placeholders.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1.5
+        },
+        "/home/jiffyrob/Programming/Python Workspace/phj2023/assets/data/tmx/tiles.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1.5
+        },
         "maps/bg_forest.tmx": {
             "expandedObjectLayers": [
                 3
@@ -17,8 +104,8 @@
             "scale": 0.5,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": -95,
-                "y": 379
+                "x": -96,
+                "y": 378
             }
         },
         "maps/big_map.tmx": {
@@ -40,6 +127,44 @@
                 "y": 390
             }
         },
+        "maps/cowshed.tmx": {
+            "scale": 3,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 49,
+                "y": 128.66666666666663
+            }
+        },
+        "maps/farmhouse.tmx": {
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 49,
+                "y": 62
+            }
+        },
+        "maps/house1.tmx": {
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 75.5,
+                "y": 121.5
+            }
+        },
+        "maps/house2.tmx": {
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 3,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 87.66666666666667,
+                "y": 97.66666666666667
+            }
+        },
         "maps/objects.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -51,8 +176,8 @@
             "scale": 1,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 57,
-                "y": 272
+                "x": -304,
+                "y": 59
             }
         },
         "maps/test_dark.tmx": {
@@ -62,8 +187,8 @@
             "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 89.25,
-                "y": 37.25
+                "x": 267.75,
+                "y": 112.5
             }
         },
         "maps/test_map.tmx": {
@@ -71,11 +196,11 @@
                 7,
                 3
             ],
-            "scale": 0.33,
+            "scale": 4,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 401.5151515151515,
-                "y": 133.33333333333326
+                "x": 71,
+                "y": 81
             }
         },
         "maps/test_winter.tmx": {
@@ -86,6 +211,17 @@
                 "y": 507
             }
         },
+        "maps/village.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 2,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 458,
+                "y": 83.5
+            }
+        },
         "maps/windmill.tmx": {
             "expandedObjectLayers": [
                 2
@@ -93,16 +229,20 @@
             "scale": 3.6960937499999997,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 11.228070175438596,
-                "y": 114.44514901712112
+                "x": 82.51955189177764,
+                "y": 74.40287465652084
             }
+        },
+        "tilesets/cow.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "tilesets/dungeon.tmx": {
             "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 123.5,
-                "y": 108.75
+                "x": 122.5,
+                "y": 108.5
             }
         },
         "tilesets/dungeon.tsx": {
@@ -119,14 +259,23 @@
         },
         "tilesets/floor.tsx": {
             "scaleInDock": 1,
-            "scaleInEditor": 1
+            "scaleInEditor": 11
         },
         "tilesets/floor_detail.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "tilesets/floorb.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilesets/hole.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "tilesets/house.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "tilesets/interior.tsx": {
             "scaleInDock": 0.5,
@@ -140,19 +289,29 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "tilesets/narrow_house.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "tilesets/nature.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "tilesets/npc.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "tilesets/objects.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 3
+        },
+        "tilesets/pipes.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
         "tilesets/propeller.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "tilesets/raindrop.tsx": {
             "scaleInDock": 1,
@@ -163,7 +322,8 @@
             "scaleInEditor": 1
         },
         "tilesets/trees.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "tilesets/water.tsx": {
             "scaleInDock": 1,
@@ -174,40 +334,38 @@
             "scaleInEditor": 1
         }
     },
-    "last.imagePath": "/home/jack/Python Workspace/CurrentGame/src/assets/tiles",
+    "frame.defaultDuration": 500,
+    "last.imagePath": "/home/jiffyrob/Programming/Python Workspace/Treds-Adventure-v2/src/assets/tiled/tilesets",
     "last.worldFilePath": "/home/jack/Python Workspace/CurrentGame/src/assets/tiled/maps",
     "loadedWorlds": [
         "/home/jiffyrob/Programming/Python Workspace/Treds-Adventure-v2/src/assets/tiled/maps/overworld.world"
     ],
-    "map.height": 20,
+    "map.height": 10,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 30,
+    "map.width": 10,
     "openFiles": [
-        "maps/test_map.tmx",
-        "tilesets/objects.tsx",
-        "maps/test_dark.tmx"
     ],
     "project": "tav2.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "maps/test_map.tmx",
+        "tilesets/interior_floor.tsx",
+        "tilesets/waterfall.tsx",
+        "maps/house1.tmx",
         "tilesets/objects.tsx",
-        "maps/test_dark.tmx",
-        "maps/windmill.tmx",
+        "maps/village.tmx",
+        "tilesets/round_house.tsx",
+        "tilesets/house.tsx",
+        "maps/test_map.tmx",
         "maps/test2.tmx",
-        "maps/test_winter.tmx",
-        "tilesets/fish_net.tsx",
-        "tilesets/flag.tsx",
-        "maps/objects.tsx",
-        "maps/bg_forest.tmx",
-        "maps/big_map.tmx",
-        "tilesets/waterfall.tsx"
+        "maps/house2.tmx",
+        "tilesets/npc.tsx",
+        "tilesets/nature.tsx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {
         "height": 16,
-        "width": 16
+        "width": 32
     }
 }

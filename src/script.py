@@ -17,7 +17,7 @@ class Dialog(snek.SnekCommand):
         return self.value
 
     def finish(self, answer):
-        logger.info(f"Answer received {answer}")
+        snek.logger.info(f"Answer received {answer}")
         self.value = answer
 
 

@@ -143,6 +143,7 @@ class Player(base.MobileGameObject):
         self.carrying = None
         self.facing = "down"
         self.speed = 72
+        self.exit_queue = []
 
     def reset(self, pos, layer, registry, tiny=False):
         self.throw()
@@ -284,7 +285,7 @@ class Player(base.MobileGameObject):
         for sprite in self.registry.get_group("interactable").sprites():
             if sprite.rect.colliderect(self.get_interaction_rect()):
                 sprite.interact()
-                logger.info("interacting with sprite", sprite.get_id(), sprite)
+                logger.info(f"interacting with sprits {sprite.get_id()} {sprite}")
                 self.stop()
                 break
 

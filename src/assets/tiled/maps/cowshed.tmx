@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="git" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="2">
+ <tileset firstgid="1" source="../tilesets/interior.tsx"/>
+ <tileset firstgid="1281" source="../tilesets/floor.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="8" height="8">
+  <data encoding="csv">
+643,644,647,647,647,647,653,654,
+675,676,679,679,679,679,685,686,
+835,836,1458,1458,1458,1458,845,846,
+835,836,1458,1458,1458,1458,877,878,
+835,836,1458,1458,1458,1458,845,846,
+867,868,1458,1458,1458,1458,877,878,
+1219,1220,1224,1458,1225,1228,1229,1230,
+1251,1252,1256,1458,1257,1260,1261,1262
+</data>
+ </layer>
+ <objectgroup id="2" name="Object Layer 1">
+  <object id="1" type="exit" x="48" y="125.844" width="16" height="2.15625"/>
+ </objectgroup>
+</map>

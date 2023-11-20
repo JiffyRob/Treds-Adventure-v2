@@ -13,14 +13,12 @@ logger = logging.getLogger(__name__)
 
 
 class MapState(base.GameState):
-    def __init__(self, filename, registry, soundtrack=None):
+    def __init__(self, filename, registry, properties):
         self.registry = registry
         self.sky = globals.engine.sky
         self.main_group = self.registry.get_group("main")
-        self.soundtrack = soundtrack
         self.particle_manager = particle.ParticleManager()
-        if self.soundtrack is not None:
-            sound.glob_player.switch_track(self.soundtrack)
+        self.map_properties = {}
         hud = gui.UIGroup()
         gui.HeartMeter(globals.player, pygame.Rect(8, 8, 192, 64), 1, hud)
         rect = pygame.Rect(0, 4, 64, 9)
@@ -31,6 +29,7 @@ class MapState(base.GameState):
             self.loader.load("data/player_bindings.json")
         )
         self.filename = filename
+        self.reload_map()
 
     def update(self, dt=0.03):
         super().update(dt)
@@ -71,6 +70,16 @@ class MapState(base.GameState):
         )
         super().draw(surface)
 
+    def map_to_world(self, local_pos, map_name=None):
+        return local_pos
+
+    def reload_map(self):
+        reload_map(self.main_group)
+        self.sky.set_weather(
+            self.map_properties.get("ambience", self.sky.WEATHERTYPE_DNCYCLE)
+        )
+        sound.glob_player.switch_track(self.map_properties.get("track", None))
+
 
 class WorldState(base.GameState):
     STATE_MAP = 0
@@ -80,13 +89,13 @@ class WorldState(base.GameState):
         # mapping
         self.world = world.World(self.loader.load(os.path.join("tiled/maps", filename)))
         self.map_loader = map_loader
+        self.map_properties = {}
         self.sky = globals.engine.sky
         self.particle_manager = particle.ParticleManager()
         self.registry = None
         self.main_group = None
         self.map_rect = None
         self.map_name = None
-        self.soundtrack = None
         self.state = self.STATE_MAP
         # transitions
         # map1 is the map to be transitioned out of
@@ -116,24 +125,33 @@ class WorldState(base.GameState):
         if initial_map is not None:
             self.load_map(initial_map)
         elif initial_pos is not None:
-            self.load_map(self.world.name_collidepoint(initial_pos))
+            name = self.world.name_collidepoint(initial_pos)
+            player_pos = (
+                pygame.Vector2(initial_pos) - self.world.name_to_rect[name][0:2]
+            )
+            self.load_map(name)
+            globals.player.pos = player_pos
         else:
             self.load_map(self.world.name_collidepoint((0, 0)))
 
         self.filename = filename
-        if self.soundtrack is not None:
-            sound.glob_player.switch_track(self.soundtrack)
+        self.reload_map()
 
     def load_map(self, map_name):
         self.map_name = map_name
-        self.registry, properties = self.map_loader(
+        self.registry, self.map_properties = self.map_loader(
             self.world.get_map_by_name(map_name)
         )
         self.map_rect = pygame.Rect(self.world.get_rect_by_name(map_name))
         self.main_group = self.registry.get_group("main")
+        self.reload_map()
+
+    def reload_map(self):
         reload_map(self.main_group)
-        self.soundtrack = properties.get("track", None)
-        self.sky.set_weather(properties.get("ambience", self.sky.WEATHERTYPE_DNCYCLE))
+        self.sky.set_weather(
+            self.map_properties.get("ambience", self.sky.WEATHERTYPE_DNCYCLE)
+        )
+        sound.glob_player.switch_track(self.map_properties.get("track", None))
 
     def update_map(self):
         player_facing = util.string_direction_to_vec(globals.player.facing)
@@ -227,6 +245,11 @@ class WorldState(base.GameState):
             )
         self.sky.render(surface)
         super().draw(surface)
+
+    def map_to_world(self, local_pos, map_name=None):
+        if map_name is None:
+            map_name = self.map_name
+        return pygame.Vector2(local_pos) + self.world.name_to_rect[map_name][:2]
 
 
 def reload_map(sprite_group):

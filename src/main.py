@@ -24,6 +24,7 @@ from bush.ai import state
 from game_objects import player
 from game_states import ui, world
 
+logging.basicConfig(level=logging.DEBUG)
 loader = asset_handler.glob_loader
 logger = logging.getLogger(__name__)
 START_SPOTS = None
@@ -98,15 +99,14 @@ class Game:
         """
         logger.info(f"loading map '{tmx_path}'")
         groups, properties = self.map_loader.load(tmx_path, player_pos)
-        self.stack.push(
-            world.MapState("game map", groups, properties.get("track", None))
-        )
+        self.stack.push(world.MapState(tmx_path, groups, properties))
 
     def load_world(self, world_path, player_pos=None):
         """Load world at given path, relative to the "tiled" asset directory.
 
         If the player position is given the player will spawn there.  Else it will use the default specified by the map
         """
+        logger.info(f"loading world '{world_path}'")
         self.stack.push(
             world.WorldState(
                 world_path,

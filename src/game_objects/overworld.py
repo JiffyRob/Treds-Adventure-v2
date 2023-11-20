@@ -94,3 +94,10 @@ class Sign(Throwable):
             globals.engine.dialog(self.text)
         else:
             super().interact()
+
+
+class Cow(base.GameObject):
+    registry_groups = ("main", "interactable")
+
+    def interact(self):
+        globals.engine.dialog("Moooooo.")

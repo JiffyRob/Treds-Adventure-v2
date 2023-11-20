@@ -21,6 +21,7 @@ class MapLoader(mapping.MapLoader):
             "slime": slime.Slime,
             "chest": dungeon.Chest,
             "pickup": dungeon.Pickup,
+            "cow": overworld.Cow,
         }
         self.default_player_layer = 4  # second layer (default sub)
         self.mask_loader = asset_handler.AssetHandler("masks")
@@ -43,12 +44,18 @@ class MapLoader(mapping.MapLoader):
                 "scriptable": lambda x: group.EntityGroup(),
                 "interactable": lambda x: pygame.sprite.Group(),
                 "attackable": lambda x: pygame.sprite.Group(),
+                "teleports": lambda x: group.EntityGroup(),
             },
         )
 
     def handle_tile(self, tile, sprite_group):
         terrain = tile.properties.get("terrain", None)
-        mask = tile.properties.get("mask", None) or pygame.mask.from_surface(tile.image)
+        if tile.image is not None:
+            mask = tile.properties.get("mask", None) or pygame.mask.from_surface(
+                tile.image
+            )
+        else:
+            mask = pygame.Mask((16, 16))
         if terrain:
             if terrain not in self.current_registry.list_masks():
                 self.current_registry.add_mask(terrain, pygame.Mask(self.map_size))

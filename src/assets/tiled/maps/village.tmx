@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="git" orientation="orthogonal" renderorder="right-down" width="50" height="20" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="80">
+ <properties>
+  <property name="player_layer" type="int" value="7"/>
+ </properties>
+ <tileset firstgid="1" source="../tilesets/floor.tsx"/>
+ <tileset firstgid="573" source="../tilesets/house.tsx"/>
+ <tileset firstgid="581" source="../tilesets/round_house.tsx"/>
+ <tileset firstgid="584" source="../tilesets/cow.tsx"/>
+ <tileset firstgid="586" source="../tilesets/trees.tsx"/>
+ <tileset firstgid="598" source="../tilesets/objects.tsx"/>
+ <layer id="1" name="ground" width="50" height="20">
+  <data encoding="csv">
+278,276,280,280,280,279,278,278,278,278,279,278,277,277,280,279,279,279,280,280,278,277,276,278,280,280,279,276,277,280,277,278,278,277,279,276,280,277,276,280,278,278,278,277,276,277,280,276,280,277,
+276,280,280,280,276,278,277,278,279,277,278,278,279,279,277,279,276,278,276,277,279,276,280,276,279,280,278,278,276,279,279,276,276,280,278,280,278,280,280,278,280,278,277,279,277,279,278,280,277,279,
+280,276,277,278,279,279,280,280,277,276,279,280,278,278,278,276,276,277,277,276,278,276,280,276,280,277,276,279,280,280,276,279,280,276,277,276,280,278,277,280,278,276,279,279,279,277,276,277,277,276,
+276,279,280,277,277,277,277,280,277,279,280,279,278,278,278,280,278,280,276,279,278,280,278,278,276,277,279,276,276,277,280,279,276,278,280,278,277,278,279,278,277,280,276,278,280,280,279,279,278,276,
+278,277,276,279,278,276,277,280,276,276,277,280,280,278,279,280,280,277,277,278,278,277,276,278,278,279,278,278,279,277,278,279,279,279,280,278,279,278,278,277,279,276,278,279,276,277,278,277,279,277,
+278,278,278,276,276,278,278,278,276,277,276,276,277,276,278,280,279,280,280,279,276,280,278,276,278,279,276,277,277,276,277,276,166,168,280,280,278,276,276,280,280,278,277,276,280,277,279,280,277,280,
+277,277,276,280,279,278,276,280,276,279,277,276,277,276,277,280,277,276,278,279,277,279,280,278,278,278,276,279,277,280,279,279,188,215,167,168,279,280,279,276,277,280,279,278,279,277,280,280,276,280,
+280,277,276,276,279,276,278,278,276,166,167,167,167,167,167,167,167,167,167,168,280,279,278,280,280,277,280,277,276,279,278,276,188,193,194,215,168,277,276,276,277,276,279,279,276,279,279,280,278,280,
+280,276,278,279,280,279,278,278,278,188,257,257,257,257,257,189,189,257,255,215,168,279,280,279,276,278,280,278,277,278,279,166,197,212,210,194,215,167,168,279,280,278,279,278,278,280,279,279,277,279,
+277,279,276,279,277,277,279,279,166,216,189,257,257,189,257,257,189,257,189,257,215,168,278,278,276,279,278,276,278,278,280,188,190,276,279,210,194,254,215,167,168,277,278,278,276,279,277,279,280,279,
+280,276,277,279,278,277,277,277,188,257,257,257,257,189,257,189,257,257,257,257,257,190,279,277,276,277,278,279,280,279,279,188,190,278,276,278,210,211,211,211,175,167,167,168,279,276,280,280,279,276,
+280,276,278,279,277,280,278,276,188,189,189,257,189,257,189,189,189,189,257,189,257,190,276,280,276,279,278,277,277,277,166,216,190,276,276,278,278,278,280,166,197,211,211,212,276,279,279,280,277,277,
+278,278,277,280,280,276,276,279,210,194,257,257,257,189,257,189,189,189,189,254,193,212,278,276,277,277,276,280,280,166,216,193,212,280,280,279,280,279,166,197,212,278,280,276,277,278,277,276,279,278,
+279,279,280,278,280,280,278,276,276,210,211,194,257,257,257,257,189,255,189,257,215,167,167,167,167,167,167,167,167,216,254,215,167,167,167,167,167,167,216,215,167,167,167,167,167,168,276,277,280,278,
+277,279,280,278,276,276,277,279,279,280,276,210,211,211,194,189,189,189,193,211,211,211,211,211,194,193,211,211,211,211,211,211,211,211,211,211,211,211,194,193,211,211,211,211,211,212,276,277,277,277,
+279,278,276,279,276,276,279,280,278,276,279,278,276,279,210,211,211,211,212,278,279,280,276,276,188,190,278,279,278,277,278,278,278,276,279,277,279,280,188,190,277,280,280,277,279,276,278,277,279,277,
+276,279,279,280,280,278,277,277,277,279,278,279,279,280,280,279,279,279,278,280,279,280,278,279,188,190,278,276,280,280,278,277,279,278,279,279,280,279,188,190,279,277,278,278,279,278,280,279,277,277,
+279,280,279,279,280,276,279,277,279,277,279,279,276,278,277,278,276,276,278,277,276,280,278,279,188,190,278,277,280,280,277,278,277,279,277,279,276,279,210,175,168,277,278,280,277,276,280,279,276,278,
+277,280,280,280,279,278,279,279,276,279,279,277,276,278,277,279,279,276,279,277,280,280,276,279,188,190,279,277,276,278,279,277,276,279,276,280,278,278,279,188,190,278,277,279,280,280,277,277,278,277,
+276,277,277,277,276,276,276,278,276,276,279,280,276,276,278,279,279,276,277,277,278,278,278,279,188,190,277,276,280,279,276,279,278,280,277,280,280,279,280,210,237,233,234,280,276,276,280,276,278,280
+</data>
+ </layer>
+ <layer id="4" name="decor" width="50" height="20">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="3" name="objects">
+  <object id="2" gid="573" x="496" y="-48" width="64" height="128">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="house.png"/>
+   </properties>
+  </object>
+  <object id="3" gid="573" x="304" y="48" width="64" height="128">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="house.png"/>
+   </properties>
+  </object>
+  <object id="5" gid="573" x="656" y="176" width="64" height="128">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="house.png"/>
+   </properties>
+  </object>
+  <object id="6" gid="576" x="656" y="32" width="64" height="128">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="house.png"/>
+   </properties>
+  </object>
+  <object id="7" gid="581" x="144" y="32" width="48" height="128">
+   <properties>
+    <property name="groups" value="main, collision"/>
+   </properties>
+  </object>
+  <object id="9" type="cow" gid="584" x="160" y="176" width="24" height="32"/>
+  <object id="10" type="cow" gid="584" x="240" y="144" width="24" height="32"/>
+  <object id="11" type="cow" gid="584" x="208" y="208" width="24" height="32"/>
+  <object id="13" name="cowshed" type="teleport" x="160" y="144" width="16" height="16">
+   <properties>
+    <property name="dest_map" value="cowshed.tmx"/>
+   </properties>
+  </object>
+  <object id="15" name="farmhouse" type="teleport" x="320" y="160" width="16" height="16">
+   <properties>
+    <property name="dest_map" value="farmhouse.tmx"/>
+   </properties>
+  </object>
+  <object id="17" name="house1" type="teleport" x="512" y="64" width="16" height="16">
+   <properties>
+    <property name="dest_map" value="house1.tmx"/>
+   </properties>
+  </object>
+  <object id="18" name="smith" type="teleport" x="672" y="144" width="16" height="16">
+   <properties>
+    <property name="dest_map" value="smith.tmx"/>
+   </properties>
+  </object>
+  <object id="19" name="house2" type="teleport" x="672" y="288" width="16" height="16">
+   <properties>
+    <property name="dest_map" value="house2.tmx"/>
+   </properties>
+  </object>
+  <object id="20" gid="587" x="560" y="288" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="21" gid="587" x="576" y="256" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="23" gid="587" x="416" y="208" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="24" gid="587" x="352" y="208" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="25" gid="587" x="112" y="96" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="26" gid="587" x="96" y="112" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="27" gid="587" x="80" y="144" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="28" gid="587" x="96" y="176" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="29" gid="587" x="112" y="208" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="30" gid="587" x="144" y="208" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="31" gid="587" x="80" y="208" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="32" gid="587" x="64" y="176" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="33" gid="587" x="160" y="240" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="34" gid="587" x="192" y="240" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="35" gid="587" x="336" y="224" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="36" gid="587" x="320" y="240" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="38" gid="587" x="288" y="240" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="39" gid="587" x="304" y="224" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="40" gid="587" x="256" y="240" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="41" gid="587" x="224" y="240" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="44" gid="587" x="96" y="64" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="47" gid="587" x="112" y="48" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="48" gid="587" x="128" y="32" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="49" gid="587" x="160" y="32" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="50" gid="587" x="192" y="32" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="51" gid="587" x="224" y="32" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="52" gid="587" x="256" y="32" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="53" gid="587" x="240" y="64" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="54" gid="587" x="208" y="64" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="55" gid="587" x="288" y="48" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="56" gid="587" x="368" y="144" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="57" gid="587" x="384" y="112" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="58" gid="587" x="368" y="80" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="59" gid="587" x="352" y="48" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="60" gid="587" x="336" y="16" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="61" gid="587" x="304" y="16" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="62" gid="587" x="400" y="80" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="63" gid="587" x="416" y="64" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="64" gid="587" x="448" y="48" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="65" gid="587" x="416" y="16" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="66" gid="587" x="560" y="32" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="67" gid="587" x="592" y="48" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="68" gid="587" x="624" y="80" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="69" gid="587" x="624" y="48" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="70" gid="587" x="544" y="128" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="71" gid="587" x="720" y="96" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="72" gid="587" x="736" y="128" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="73" gid="587" x="752" y="160" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="74" gid="587" x="736" y="192" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="75" gid="587" x="720" y="224" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="76" gid="587" x="736" y="256" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="77" gid="587" x="752" y="224" width="32" height="64">
+   <properties>
+    <property name="groups" value="main, collision"/>
+    <property name="mask" value="tree.png"/>
+   </properties>
+  </object>
+  <object id="78" gid="631" x="400" y="208" width="16" height="16"/>
+  <object id="79" gid="587" x="464" y="208" width="32" height="64"/>
+ </objectgroup>
+</map>
